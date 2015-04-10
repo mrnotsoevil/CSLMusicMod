@@ -6,6 +6,12 @@ namespace CSLMusicMod
 {
     public class CSLCustomMusicEntry
     {
+        public String Name
+        {
+            get;
+            set;
+        }
+
         private bool _enable = true;
         public bool Enable
         {
@@ -54,22 +60,19 @@ namespace CSLMusicMod
             }
         }
 
-
-        public bool IsVanilla { get; private set;}
-
-        public CSLCustomMusicEntry(bool enable, String good, String bad, bool enable_bad, String sky, bool enable_sky, bool  isvanilla)
+        public CSLCustomMusicEntry(bool enable, String name, String good, String bad, bool enable_bad, String sky, bool enable_sky)
         {
+            Name = name;
             _enable = enable;
             GoodMusic = good;
             BadMusic = bad;
             _enableBadMusic = enable_bad;
             SkyMusic = sky;
             _enableSkyMusic = enable_sky;
-            IsVanilla = isvanilla;
         }
 
-        public CSLCustomMusicEntry(String good, String bad, String sky, bool  isvanilla) 
-            : this(true, good, bad, true, sky, true, isvanilla)
+        public CSLCustomMusicEntry(String name, String good, String bad, String sky) 
+            : this(true, name, good, bad, true, sky, true)
         {
            
         }

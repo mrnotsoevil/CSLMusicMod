@@ -82,6 +82,29 @@ namespace CSLMusicMod
             return Path.GetFileNameWithoutExtension(filename).Replace("#bad", "").Replace("#sky", "").Trim();
         }
 
+        private static String GetVanillaMusicBaseName(String filename)
+        {
+            filename = Path.GetFileNameWithoutExtension(filename);
+
+            if (filename.EndsWith("s"))
+                return filename.Substring(0, filename.Length - 1);
+            if (filename.EndsWith("b"))
+                return filename.Substring(0, filename.Length - 1);
+
+            return filename;
+        }
+
+        public static CSLCustomMusicEntry GetEntryByName(String name)
+        {
+            foreach (CSLCustomMusicEntry entry in MusicEntries)
+            {
+                if (entry.Name == name)
+                    return entry;
+            }
+
+            return null;
+        }
+
         private static bool AddUnknownCustomMusicFiles()
         {
             bool foundsomething = false;
@@ -93,8 +116,6 @@ namespace CSLMusicMod
              * */
 
             Debug.Log("[CSLMusic] Fetching unknown custom music files ...");
-
-            Dictionary<String, CSLCustomMusicEntry> result = new Dictionary<String, CSLCustomMusicEntry>();
 
             //Get other music
             foreach (String file in Directory.GetFiles("CSLMusicMod_Music"))
@@ -109,19 +130,10 @@ namespace CSLMusicMod
                         continue;
                 }
 
-                CSLCustomMusicEntry entry = new CSLCustomMusicEntry(file, "", "", false);
+                CSLCustomMusicEntry entry = new CSLCustomMusicEntry(GetCustomMusicBaseName(file), file, "", "");
 
-                Debug.Log("Adding as 'Good' Music file: " + file);
-
-                if (AutoAddMusicTypesForCustomMusic)
-                {
-                    //Add as result entry for later search 
-                    result[GetCustomMusicBaseName(file)] = entry;
-                }
-                else
-                {
-                    MusicEntries.Add(entry);
-                }
+                Debug.Log("Adding as 'Good' Music file: " + file);              
+                MusicEntries.Add(entry);
 
                 foundsomething = true;
             }
@@ -138,13 +150,9 @@ namespace CSLMusicMod
                         continue;
 
                     String baseName = GetCustomMusicBaseName(file);
-                    CSLCustomMusicEntry entry;
+                    CSLCustomMusicEntry entry = GetEntryByName(baseName);
 
-                    if (result.ContainsKey(baseName))
-                    {
-                        entry = result[baseName];
-                    }
-                    else
+                    if (entry == null)
                     {
                         Debug.Log("[CSLMusic] Could not find music entry for " + file + ". Ignoring that file.");
                         continue;
@@ -163,12 +171,6 @@ namespace CSLMusicMod
                         foundsomething = true;
                     }
                 }
-
-                //Put into list
-                foreach (CSLCustomMusicEntry entry in result.Values)
-                {
-                    MusicEntries.Add(entry);
-                }
             }
 
             Debug.Log("... done");
@@ -179,8 +181,6 @@ namespace CSLMusicMod
         private static bool AddUnknownVanillaMusicFiles()
         {
             bool foundsomething = false;
-
-            Dictionary<String, CSLCustomMusicEntry> result = new Dictionary<String, CSLCustomMusicEntry>();
 
             String audioFileLocation = ReflectionHelper.GetPrivateField<String>(
                 Singleton<AudioManager>.instance, "m_audioLocation");
@@ -201,8 +201,9 @@ namespace CSLMusicMod
                 {
                     Debug.Log("'Good' Music file: " + file);
 
-                    CSLCustomMusicEntry entry = new CSLCustomMusicEntry(file, "", "", true);                   
-                    result.Add(baseName, entry);
+                    CSLCustomMusicEntry entry = new CSLCustomMusicEntry(
+                        GetVanillaMusicBaseName(file), file, "", "");                   
+                    MusicEntries.Add(entry);
 
                     foundsomething = true;
                 }
@@ -217,38 +218,34 @@ namespace CSLMusicMod
                     continue;
 
                 String baseName = Path.GetFileNameWithoutExtension(file);
-                String mainName = baseName.Substring(0, baseName.Length - 1);
+                String mainName = GetVanillaMusicBaseName(file);
 
-                if (baseName.EndsWith("s"))
+                if (baseName.EndsWith("s") || baseName.EndsWith("b"))
                 {
-                    Debug.Log("'Sky' Music file: " + file);
+                    CSLCustomMusicEntry entry = GetEntryByName(mainName);
 
-                    if (result.ContainsKey(mainName))
-                    {   
-                        CSLCustomMusicEntry entry = result[mainName];
-                        entry.SkyMusic = file;
+                    if (entry != null)
+                    {
+                        if (baseName.EndsWith("s"))
+                        {
+                            Debug.Log("'Sky' Music file: " + file);
+                            entry.SkyMusic = file;
 
-                        foundsomething = true;
+                            foundsomething = true;
+                        }
+                        else if (baseName.EndsWith("b"))
+                        {
+                            Debug.Log("'Bad' Music file: " + file);
+                            entry.BadMusic = file;
+
+                            foundsomething = true;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("[CSLMusic] Could not add vanilla music: " + entry + ". Music entry not found.");
                     }
                 }
-                else if (baseName.EndsWith("b"))
-                {
-                    Debug.Log("'Bad' Music file: " + file);
-
-                    if (result.ContainsKey(mainName))
-                    {   
-                        CSLCustomMusicEntry entry = result[mainName];
-                        entry.BadMusic = file;
-
-                        foundsomething = true;
-                    }
-                }
-            }
-
-            //Put into list
-            foreach (CSLCustomMusicEntry entry in result.Values)
-            {
-                MusicEntries.Add(entry);
             }
 
             Debug.Log("... done");
@@ -315,8 +312,10 @@ namespace CSLMusicMod
                                 sky_enable = false;
                             }
 
+                            String name = Path.GetFileNameWithoutExtension(good);
+
                             //Create the entry
-                            MusicEntries.Add(new CSLCustomMusicEntry(enabled, good, bad, bad_enable, sky, sky_enable, false));
+                            MusicEntries.Add(new CSLCustomMusicEntry(enabled, name, good, bad, bad_enable, sky, sky_enable));
                         }
                     }
                 }

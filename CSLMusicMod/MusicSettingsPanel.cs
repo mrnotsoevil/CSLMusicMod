@@ -123,11 +123,11 @@ namespace CSLMusicMod
             panel.itemPadding = new RectOffset(0, 0, 4, 4);
             panel.tooltip = "Click on an item to play the song. Double click to enable/disable the item";
            
-            panel.scrollbar = AddUIComponent<UIScrollbar>();
+            /*panel.scrollbar = AddUIComponent<UIScrollbar>();
             panel.scrollbar.width = 20;
             panel.scrollbar.height = 335;
             panel.scrollbar.relativePosition = new Vector3(width - 20, 55);
-            panel.scrollbar.Show();
+            panel.scrollbar.Show();*/
            
             panel.Show();
 
@@ -164,9 +164,7 @@ namespace CSLMusicMod
                 String annot = "";
 
                 if (!entry.Enable)
-                    annot += "[Disabled]";
-                if (entry.IsVanilla)
-                    annot += "[Vanilla]";
+                    annot += "[Disabled]";               
 
                 String music = Path.GetFileNameWithoutExtension(entry.GoodMusic);
 
