@@ -11,10 +11,14 @@ With CSL music mod, you can add custom music to Cities: Skylines.
 - You can enable or disable Chirpy, "Mood" and "Height" music, ... in a configuration file
 - Automatically puts together matching music files to a track with "Mood"/"Height" if you wish
 
+![Yay Chirpy](./Readme_Resources/C:S Music Mod_Chirpy.png)
+
 ##Adding music files
 The mod gets its music files from _CSLMusicMod_Music_ folder (location depends by platform, you can find the folder where many other mods are storing their data).
 
 Just put \*.ogg or \*.raw files into that folder and if you start the game, the music will be used.
+
+![Example of folder with music files](./Readme_Resources/C:S Music Mod_Example_Filenames.png)
 
 ###\*.raw files
 You can create \*.raw files manually if you want. Just export raw audio data in an audio editor (e.g. Audacity) with following settings:
@@ -48,8 +52,15 @@ The mod will be active when you load a city or create a new one. If you keep the
 
 ##Configuration
 
+###Ingame configuration
+If you press [M] key (default setting), the music list opens. If you click on "Settings", you can access some settings.
+
+![Music list with settings](./Readme_Resources/C:S Music Mod_Settings_List.png)
+
+Everything you set there will be written into the configuration file.
+
 ###Configuration file
-You can configure the mod using *CSLMusicMod_Settings.ini*
+You can also configure the mod using *CSLMusicMod_Settings.ini* 
 
 ```
 [Music Selection]
@@ -96,7 +107,7 @@ This happens because \*.ogg files have to be converted to \*.raw files. This onl
 
 ##Planned features
 
-- Add ingame settings panel
+- ~~Add ingame settings panel~~
 - Add ingame music list reload
 
 ##Development stuff
