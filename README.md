@@ -8,13 +8,17 @@ With CSL music mod, you can add custom music to Cities: Skylines.
 - Support for "Mood" and "Height": Game will switch to other songs when camera is height or your citicens are not very happy
 - Uses chirps to show which track is playing (Only if you select the track manually)
 - ~~Chirps cannot be disabled because Chirpy is not holding a gun on my head~~
-- You can enable or disable Chirpy, "Mood" and "Height" music, ... in a configuration file
+- You can enable or disable Chirpy, "Mood" and "Height" music
 - Automatically puts together matching music files to a track with "Mood"/"Height" if you wish
+
+![Yay Chirpy](./Readme_Resources/C:S Music Mod_Chirpy.png)
 
 ##Adding music files
 The mod gets its music files from _CSLMusicMod_Music_ folder (location depends by platform, you can find the folder where many other mods are storing their data).
 
 Just put \*.ogg or \*.raw files into that folder and if you start the game, the music will be used.
+
+![Example of folder with music files](./Readme_Resources/C:S Music Mod_Example_Filenames.png)
 
 ###\*.raw files
 You can create \*.raw files manually if you want. Just export raw audio data in an audio editor (e.g. Audacity) with following settings:
@@ -48,8 +52,15 @@ The mod will be active when you load a city or create a new one. If you keep the
 
 ##Configuration
 
+###Ingame configuration
+If you press [M] key (default setting), the music list opens. If you click on "Settings", you can access some settings.
+
+![Music list with settings](./Readme_Resources/C:S Music Mod_Settings_List.png)
+
+Everything you set there will be written into the configuration file.
+
 ###Configuration file
-You can configure the mod using *CSLMusicMod_Settings.ini*
+You can also configure the mod using *CSLMusicMod_Settings.ini* 
 
 ```
 [Music Selection]
@@ -94,9 +105,25 @@ Try to remove ID3 tags by using Audacity or programs like EasyTag.
 ###My game is loading too long
 This happens because \*.ogg files have to be converted to \*.raw files. This only happens once, so get a cup of tea and wait until it's finished :)
 
+###If I add 'mood' and/or 'sky' music, the music restarts. I want to crossfade the music.
+The songs must have almost the same length.
+
+```
+long length = this.m_previousMusicStream.Length;
+long length2 = this.m_currentMusicStream.Length;
+if (Mathf.Abs((float)(length - length2)) < 1024f)
+{
+    long position = this.m_previousMusicStream.Position;
+    if (position < length2)
+    {
+        this.m_currentMusicStream.Position = position;
+    }
+}
+```
+
 ##Planned features
 
-- Add ingame settings panel
+- ~~Add ingame settings panel~~
 - Add ingame music list reload
 
 ##Development stuff
