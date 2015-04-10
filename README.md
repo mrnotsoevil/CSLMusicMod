@@ -42,6 +42,10 @@ Rename your other music files like this:
 
 __Note: You must provide a music file for 'normal'/'good' condition. You cannot have songs only for 'bad' and 'sky'__
 
+##Ingame
+
+The mod will be active when you load a city or create a new one. If you keep the default settings, press [N] to switch to the next track and [M] to open the music list.
+
 ##Configuration
 
 ###Configuration file
@@ -89,6 +93,11 @@ Try to remove ID3 tags by using Audacity or programs like EasyTag.
 
 ###My game is loading too long
 This happens because \*.ogg files have to be converted to \*.raw files. This only happens once, so get a cup of tea and wait until it's finished :)
+
+##Planned features
+
+- Add ingame settings panel
+- Add ingame music list reload
 
 ##Development stuff
 
