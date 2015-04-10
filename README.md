@@ -8,7 +8,7 @@ With CSL music mod, you can add custom music to Cities: Skylines.
 - Support for "Mood" and "Height": Game will switch to other songs when camera is height or your citicens are not very happy
 - Uses chirps to show which track is playing (Only if you select the track manually)
 - ~~Chirps cannot be disabled because Chirpy is not holding a gun on my head~~
-- You can enable or disable Chirpy, "Mood" and "Height" music, ... in a configuration file
+- You can enable or disable Chirpy, "Mood" and "Height" music
 - Automatically puts together matching music files to a track with "Mood"/"Height" if you wish
 
 ![Yay Chirpy](./Readme_Resources/C:S Music Mod_Chirpy.png)
