@@ -10,11 +10,11 @@ namespace CSLMusicMod
     public static class CSLMusicModSettings
     {
         public static SimpleIni SettingsFile = new SimpleIni("CSLMusicMod_Settings.ini");
-
         public const String MusicSettingsFileName = "CSLMusicMod_MusicFiles.csv";
         public static bool HeightDependentMusic = true;
         public static bool MoodDependentMusic = true;
         public static bool MusicWhileLoading = true;
+        public static bool AutoAddMusicTypesForCustomMusic = true;
         public static KeyCode Key_NextTrack = KeyCode.N;
         public static KeyCode Key_Settings = KeyCode.M;
         public static bool EnableChirper = true;
@@ -76,6 +76,12 @@ namespace CSLMusicMod
             return false;
         }
 
+        private static String GetCustomMusicBaseName(String filename)
+        {
+            //Get filename without extension without #bad #sky
+            return Path.GetFileNameWithoutExtension(filename).Replace("#bad", "").Replace("#sky", "").Trim();
+        }
+
         private static bool AddUnknownCustomMusicFiles()
         {
             bool foundsomething = false;
@@ -88,6 +94,8 @@ namespace CSLMusicMod
 
             Debug.Log("[CSLMusic] Fetching unknown custom music files ...");
 
+            Dictionary<String, CSLCustomMusicEntry> result = new Dictionary<String, CSLCustomMusicEntry>();
+
             //Get other music
             foreach (String file in Directory.GetFiles("CSLMusicMod_Music"))
             {              
@@ -95,13 +103,72 @@ namespace CSLMusicMod
                     continue;
                 if (MusicFileKnown(file))
                     continue;
+                if (AutoAddMusicTypesForCustomMusic)
+                {
+                    if (file.Contains("#bad") || file.Contains("#sky"))
+                        continue;
+                }
 
                 CSLCustomMusicEntry entry = new CSLCustomMusicEntry(file, "", "", false);
 
                 Debug.Log("Adding as 'Good' Music file: " + file);
-                MusicEntries.Add(entry);
+
+                if (AutoAddMusicTypesForCustomMusic)
+                {
+                    //Add as result entry for later search 
+                    result[GetCustomMusicBaseName(file)] = entry;
+                }
+                else
+                {
+                    MusicEntries.Add(entry);
+                }
 
                 foundsomething = true;
+            }
+
+            //Find bad/sky music if enabled
+            if (AutoAddMusicTypesForCustomMusic)
+            {
+                //Add remaining music
+                foreach (String file in Directory.GetFiles("CSLMusicMod_Music"))
+                { 
+                    if (Path.GetExtension(file) != ".raw")
+                        continue;
+                    if (MusicFileKnown(file))
+                        continue;
+
+                    String baseName = GetCustomMusicBaseName(file);
+                    CSLCustomMusicEntry entry;
+
+                    if (result.ContainsKey(baseName))
+                    {
+                        entry = result[baseName];
+                    }
+                    else
+                    {
+                        Debug.Log("[CSLMusic] Could not find music entry for " + file + ". Ignoring that file.");
+                        continue;
+                    }
+
+                    if (file.Contains("#bad"))
+                    {
+                        entry.BadMusic = file;
+                        Debug.Log("Adding as 'Bad' Music file: " + file);
+                        foundsomething = true;
+                    }
+                    else if (file.Contains("#sky"))
+                    {
+                        entry.SkyMusic = file;
+                        Debug.Log("Adding as 'Sky' Music file: " + file);
+                        foundsomething = true;
+                    }
+                }
+
+                //Put into list
+                foreach (CSLCustomMusicEntry entry in result.Values)
+                {
+                    MusicEntries.Add(entry);
+                }
             }
 
             Debug.Log("... done");
@@ -178,7 +245,7 @@ namespace CSLMusicMod
                 }
             }
 
-            //Put into dictionary
+            //Put into list
             foreach (CSLCustomMusicEntry entry in result.Values)
             {
                 MusicEntries.Add(entry);
@@ -291,6 +358,8 @@ namespace CSLMusicMod
             SettingsFile.Set("Music Selection", "HeightDependentMusic", HeightDependentMusic);
             SettingsFile.Set("Music Selection", "MoodDependentMusic", MoodDependentMusic);
 
+            SettingsFile.Set("Music Library", "AutoAddMusicTypesForCustomMusic", AutoAddMusicTypesForCustomMusic);
+
             SettingsFile.Set("Tweaks", "MusicWhileLoading", MusicWhileLoading);
 
             SettingsFile.Set("Chirper", "EnableChirper", EnableChirper);
@@ -315,6 +384,8 @@ namespace CSLMusicMod
 
             HeightDependentMusic = SettingsFile.GetAsBool("Music Selection", "HeightDependentMusic", true);
             MoodDependentMusic = SettingsFile.GetAsBool("Music Selection", "MoodDependentMusic", true);
+
+            AutoAddMusicTypesForCustomMusic = SettingsFile.GetAsBool("Music Library", "AutoAddMusicTypesForCustomMusic", true);
 
             MusicWhileLoading = SettingsFile.GetAsBool("Tweaks", "MusicWhileLoading", true);
 
