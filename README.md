@@ -105,6 +105,22 @@ Try to remove ID3 tags by using Audacity or programs like EasyTag.
 ###My game is loading too long
 This happens because \*.ogg files have to be converted to \*.raw files. This only happens once, so get a cup of tea and wait until it's finished :)
 
+###If I add 'mood' and/or 'sky' music, the music restarts. I want to crossfade the music.
+The songs must have almost the same length.
+
+```
+long length = this.m_previousMusicStream.Length;
+								long length2 = this.m_currentMusicStream.Length;
+								if (Mathf.Abs((float)(length - length2)) < 1024f)
+								{
+									long position = this.m_previousMusicStream.Position;
+									if (position < length2)
+									{
+										this.m_currentMusicStream.Position = position;
+									}
+								}
+			```
+
 ##Planned features
 
 - ~~Add ingame settings panel~~
