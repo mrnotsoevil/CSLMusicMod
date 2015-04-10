@@ -20,7 +20,7 @@ namespace CSLMusicMod
         {
             get
             {
-                return "Load your custom music into Cities: Skylines";
+                return "Add custom music into the game";
             }
         }
 
@@ -30,12 +30,15 @@ namespace CSLMusicMod
 
         public CSLMusicMod()
         {
-            CSLMusicModSettings.CreateFolders();
+
         }
 
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
+
+            //Create folders if not available
+            CSLMusicModSettings.CreateFolders();
 
             //Load settings 
             CSLMusicModSettings.LoadModSettings();

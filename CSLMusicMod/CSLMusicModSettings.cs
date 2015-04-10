@@ -307,7 +307,7 @@ namespace CSLMusicMod
 
                             if (!File.Exists(sky))
                             {
-                                Debug.Log("... Cannot find 'bad' music " + sky + ". Ignoring this file.");
+                                Debug.Log("... Cannot find 'sky' music " + sky + ". Ignoring this file.");
                                 sky = "";
                                 sky_enable = false;
                             }
