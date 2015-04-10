@@ -158,7 +158,7 @@ Because I want to prevent conflicts with other mods, which may use NVorbis. Also
 ###What changes did you make in NVorbis?
 I Changed the namespaces to prevent conflicts
 
-Acknowledgements
+##Acknowledgements
 
 - Cities: Skylines developers and publisher for this great game
 - NVorbis \- I hope you are not mad that I include your code
