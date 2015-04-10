@@ -121,13 +121,16 @@ namespace CSLMusicMod
             //If user requests switch
             if (_switchMusic_Requested)
             {
+                CSLCustomMusicEntry _cur = _currentMusic;
+
                 Debug.Log("[CSLMusic] User requested switch");
                 SwitchMusic(listenerInfo);
 
                 _switchMusic_Requested = false;
 
                 //Yay chirp
-                MusicUI.ChirpNowPlaying(_currentMusic);
+                if (_currentMusic != _cur)
+                    MusicUI.ChirpNowPlaying(_currentMusic);
             }
 
             /**
