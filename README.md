@@ -110,16 +110,16 @@ The songs must have almost the same length.
 
 ```
 long length = this.m_previousMusicStream.Length;
-								long length2 = this.m_currentMusicStream.Length;
-								if (Mathf.Abs((float)(length - length2)) < 1024f)
-								{
-									long position = this.m_previousMusicStream.Position;
-									if (position < length2)
-									{
-										this.m_currentMusicStream.Position = position;
-									}
-								}
-			```
+long length2 = this.m_currentMusicStream.Length;
+if (Mathf.Abs((float)(length - length2)) < 1024f)
+{
+    long position = this.m_previousMusicStream.Position;
+    if (position < length2)
+    {
+        this.m_currentMusicStream.Position = position;
+    }
+}
+```
 
 ##Planned features
 
