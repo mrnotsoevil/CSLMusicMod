@@ -422,7 +422,7 @@ namespace CSLMusicMod
                 w.WriteLine("NVorbis (https://nvorbis.codeplex.com) is used for converting");
                 w.WriteLine("the audio files. If NVorbis could not convert your file,");
                 w.WriteLine("check for extremly large ID3 tags (e.g. Cover images).");
-                w.WriteLine("NVorbis usually fails when ID3 tags are too large.");
+                w.WriteLine("NVorbis usually fails if ID3 tags are too large.");
 
             }
         }
