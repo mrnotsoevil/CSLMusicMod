@@ -1,0 +1,31 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/MusicSettingsPanel.cs">
+    <Files>
+      <File FileName="CSLMusicMod/CSLMusicMod.cs" Line="51" Column="38" />
+      <File FileName="CSLMusicMod/MusicInjector.cs" Line="55" Column="10" />
+      <File FileName="CSLMusicMod/MusicUI.cs" Line="34" Column="59" />
+      <File FileName="CSLMusicMod/MusicSettingsPanel.cs" Line="35" Column="50" />
+      <File FileName="CSLMusicMod/CSLAudioWatcher.cs" Line="247" Column="14" />
+      <File FileName="CSLMusicMod/CSLMusicChirperMessage.cs" Line="59" Column="60" />
+    </Files>
+    <Pads>
+      <Pad Id="ClassPad">
+        <State expanded="True">
+          <Node name="CSLMusicMod" expanded="True">
+            <Node name="CSLMusicMod" expanded="True">
+              <Node name="CSLMusicMod.CSLAudioWatcher" expanded="True" />
+              <Node name="CSLMusicMod.CSLMusicModSettings" expanded="True">
+                <Node name="LoadSettings" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
