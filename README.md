@@ -8,7 +8,7 @@ With CSL Music Mod you can add custom music to Cities: Skylines.
 - Plays your music randomly
 - You can enable or disable tracks
 - (For now) very "lightweight" UI to select/disable/enable tracks
-- Support for "Mood" and "Height": Game will switch to other songs when camera is height or your citicens are not very happy
+- Support for "Mood" and "Height": Game will switch to other songs when camera is high or your citicens are not very happy
 - Uses chirps to show which track is playing (Only if you select the track manually)
 - ~~Chirps cannot be disabled because Chirpy is not holding a gun on my head~~
 - You can enable or disable Chirpy, "Mood" and "Height" music
@@ -67,7 +67,7 @@ You can also configure the mod using *CSLMusicMod_Settings.ini*
 
 ```
 [Music Selection]
-# Enable changing music when you are heigh enough above your city
+# Enable changing music when you are high enough above your city
 HeightDependentMusic=True
 # Enable changing music when your city is not running well
 MoodDependentMusic=True

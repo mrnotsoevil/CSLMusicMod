@@ -32,6 +32,12 @@ namespace CSLMusicMod
             _enable_Chirpy = mkCheckBox("Use Chirpy", 30, 50 + 34 * 4);
             _enable_MusicWhileLoading = mkCheckBox("Music while loading", 30, 50 + 34 * 5);
 
+            //Add tooltips
+            _enable_Sky.tooltip = "Change music if you float high enough above your city";
+            _enable_Bad.tooltip = "Change music depending on your popularity";
+            _enable_Chirpy.tooltip = "Great leader Chirpy will tell you which music is playing";
+            _enable_MusicWhileLoading.tooltip = "Play menu music while loading. Useful if music stutters while loading";
+
             _initialized = true;
 
             //Add events
