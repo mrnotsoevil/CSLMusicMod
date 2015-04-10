@@ -67,7 +67,9 @@
     <Compile Include="MusicUI.cs" />
     <Compile Include="CSLMusicChirperMessage.cs" />
     <Compile Include="SimpleIni.cs" />
+    <Compile Include="MusicListPanel.cs" />
     <Compile Include="MusicSettingsPanel.cs" />
+    <Compile Include="UICheckButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

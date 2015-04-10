@@ -1,22 +1,18 @@
 using System;
-using UnityEngine;
 using ColossalFramework.UI;
-using ColossalFramework;
-using System.IO;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace CSLMusicMod
 {
     public class MusicSettingsPanel : UIPanel
-    {     
-        //UIPanel _optionsBackgroundPanel;
-        UILabel _currentMusic;
-        UIListBox _musicList;
-        /*private UICheckBox _enableMood;
-        private UICheckBox _enableSky;
-        private UICheckBox _loading_Music;
-        private UICheckBox _enableChirpy;*/
+    {
         public CSLAudioWatcher AudioWatcher { get; set; }
+
+        private bool _initialized;
+        private UICheckButton _enable_Sky;
+        private UICheckButton _enable_Bad;
+        private UICheckButton _enable_Chirpy;
+        private UICheckButton _enable_MusicWhileLoading;
 
         public MusicSettingsPanel()
         {
@@ -26,157 +22,97 @@ namespace CSLMusicMod
         {
             base.Start();
 
-            Vector2 screenResolution = GetUIView().GetScreenResolution();
-
             backgroundSprite = "MenuPanel2";
             wrapLayout = true;
-            this.width = 500;
-            this.height = 400;
-            relativePosition = new Vector3(screenResolution.x - width - 10, screenResolution.y - height - 120);
-            this.isVisible = false;
-            this.canFocus = true;
-            this.isInteractive = true;
+          
+            mkLabel("Music selection", 10, 50 + 5);
+            _enable_Sky = mkCheckBox("Height dependent music", 30, 50 + 34);
+            _enable_Bad = mkCheckBox("Mood dependent music", 30, 50 + 34 * 2);
+            mkLabel("Tweaks", 10, 50 + 34 * 3 + 5);
+            _enable_Chirpy = mkCheckBox("Use Chirpy", 30, 50 + 34 * 4);
+            _enable_MusicWhileLoading = mkCheckBox("Music while loading", 30, 50 + 34 * 5);
 
-            //Adding "Current playing"
-            _currentMusic = AddUIComponent<UILabel>();
-            _currentMusic.textColor = new Color32(128, 128, 128, 255);
-            _currentMusic.width = width;
-            _currentMusic.height = 50;
-            _currentMusic.relativePosition = new Vector3(15, 14);
-            _currentMusic.isVisible = true;
+            _initialized = true;
 
-
-            //AddOptionsPanel();
-            //AddOptions();
-            AddList();
-
-        }
-
-        public override void Update()
-        {
-            base.Update();
-
-            if (isVisible)
+            //Add events
+            _enable_Sky.checkStateChanged += delegate(UICheckButton sender, bool state)
             {
-                if (_currentMusic != null && AudioWatcher != null && AudioWatcher.CurrentMusicEntry != null && AudioWatcher.CurrentMusicFile != null)
+                if (CSLMusicModSettings.HeightDependentMusic != state)
                 {
-                    _currentMusic.text = "Now playing: " + Path.GetFileNameWithoutExtension(AudioWatcher.CurrentMusicFile);
-                }
-                else
-                {
-                    _currentMusic.text = "Now playing: -";
-                }
-            }
-        }
-        /*private void AddOptionsPanel()
-        {
-            var panel = _optionsBackgroundPanel = AddUIComponent<UIPanel>();
-            panel.width = 200;
-            panel.height = 335;
-            panel.relativePosition = new Vector3(width - panel.width - 10, 55);
-            panel.backgroundSprite = "SubcategoriesPanel";
-            panel.color = new Color32(0, 0, 0, 20);
-            panel.Show();
-        }*/
-        /*private void AddOptions()
-        {
-            _enableMood = AddUIComponent<UICheckBox>();
-            _enableSky = AddUIComponent<UICheckBox>();
-            _loading_Music = AddUIComponent<UICheckBox>();
-            _enableChirpy = AddUIComponent<UICheckBox>();
-
-            _enableMood.width = 200;
-            _enableMood.height = 20;
-            _enableSky.width = 200;
-            _enableSky.height = 20;
-            _loading_Music.width = 200;
-            _loading_Music.height = 20;
-            _enableChirpy.width = 200;
-            _enableChirpy.height = 20;           
-
-            _enableMood.relativePosition = new Vector3(5, 5);
-            _enableSky.relativePosition = new Vector3(5, 45);
-            _loading_Music.relativePosition = new Vector3(5, 85);
-            _enableChirpy.relativePosition = new Vector3(5, 125);
-
-            _enableMood.Show();
-            _enableSky.Show();
-            _loading_Music.Show();
-            _enableChirpy.Show();
-
-
-            _enableMood.text = "Enable 'bad' music";
-            _enableSky.text = "Enable 'sky' music";
-            _loading_Music.text = "Music while loading";
-            _enableChirpy.text = "Use Chirper";
-        }*/
-        private void AddList()
-        {
-            var panel = _musicList = AddUIComponent<UIListBox>();
-            //panel.width = 280;
-            panel.width = width - 30;
-            panel.height = 335;
-            panel.relativePosition = new Vector3(10, 55);
-            panel.textColor = new Color32(150, 150, 150, 255);
-            panel.itemHover = "SubcategoriesPanel";
-            panel.itemHeight = 32;
-            panel.itemPadding = new RectOffset(0, 0, 4, 4);
-            panel.tooltip = "Click on an item to play the song. Double click to enable/disable the item";
-           
-            /*panel.scrollbar = AddUIComponent<UIScrollbar>();
-            panel.scrollbar.width = 20;
-            panel.scrollbar.height = 335;
-            panel.scrollbar.relativePosition = new Vector3(width - 20, 55);
-            panel.scrollbar.Show();*/
-           
-            panel.Show();
-
-            UpdateMusicList();
-
-            panel.eventItemClicked += delegate(UIComponent component, int value)
-            {
-                if (AudioWatcher != null)
-                {
-                    if (value >= 0 && CSLMusicModSettings.MusicEntries.m_size > value)
-                    {
-                        AudioWatcher.RequestSwitchMusic(CSLMusicModSettings.MusicEntries[value]);
-                    }
+                    CSLMusicModSettings.HeightDependentMusic = state;
+                    CSLMusicModSettings.SaveModSettings();
                 }
             };
-            panel.eventItemDoubleClicked += delegate(UIComponent component, int value)
+            _enable_Bad.checkStateChanged += delegate(UICheckButton sender, bool state)
             {
-                if (value >= 0 && CSLMusicModSettings.MusicEntries.m_size > value)
+                if (CSLMusicModSettings.MoodDependentMusic != state)
                 {
-                    CSLCustomMusicEntry entry = CSLMusicModSettings.MusicEntries[value];
-                    entry.Enable = !entry.Enable;
-
-                    UpdateMusicList();
+                    CSLMusicModSettings.MoodDependentMusic = state;
+                    CSLMusicModSettings.SaveModSettings();
+                }
+            };
+            _enable_Chirpy.checkStateChanged += delegate(UICheckButton sender, bool state)
+            {
+                if (CSLMusicModSettings.EnableChirper != state)
+                {
+                    CSLMusicModSettings.EnableChirper = state;
+                    CSLMusicModSettings.SaveModSettings();
+                }
+            };
+            _enable_MusicWhileLoading.checkStateChanged += delegate(UICheckButton sender, bool state)
+            {
+                if (CSLMusicModSettings.MusicWhileLoading != state)
+                {
+                    CSLMusicModSettings.MusicWhileLoading = state;
+                    CSLMusicModSettings.SaveModSettings();
                 }
             };
         }
 
-        private void UpdateMusicList()
+        private UILabel mkLabel(String text, int x, int y)
         {
-            List<String> entries = new List<string>();
+            var label = AddUIComponent<UILabel>();
+            label.textColor = new Color32(200, 200, 200, 255);
+            label.width = width;
+            label.height = 32;
+            label.relativePosition = new Vector3(x, y);
+            label.isVisible = true;
+            label.text = text;
+            label.verticalAlignment = UIVerticalAlignment.Middle;
 
-            foreach (CSLCustomMusicEntry entry in CSLMusicModSettings.MusicEntries)
+            return label;
+        }
+
+        private UICheckButton mkCheckBox(String text, int x, int y)
+        {
+            var button = AddUIComponent<UICheckButton>();
+            button.relativePosition = new Vector3(x, y);
+            button.text = text;
+            button.width = width - 20 - 20;
+            button.height = 32;
+            button.normalBgSprite = "SubcategoriesPanel";
+           
+            button.isVisible = true;
+            return button;
+        }
+
+        protected override void OnVisibilityChanged()
+        {
+            base.OnVisibilityChanged();
+
+            UpdateValues();
+        }
+
+        private void UpdateValues()
+        {
+            if (_initialized)
             {
-                String annot = "";
-
-                if (!entry.Enable)
-                    annot += "[Disabled]";               
-
-                String music = Path.GetFileNameWithoutExtension(entry.GoodMusic);
-
-                if (!String.IsNullOrEmpty(entry.BadMusic))
-                    music += ", " + Path.GetFileNameWithoutExtension(entry.BadMusic);
-                if (!String.IsNullOrEmpty(entry.SkyMusic))               
-                    music += ", " + Path.GetFileNameWithoutExtension(entry.SkyMusic);
-
-                entries.Add(String.Format("{0} {1}", annot, music));
+                _enable_Sky.isChecked = CSLMusicModSettings.HeightDependentMusic;
+                _enable_Bad.isChecked = CSLMusicModSettings.MoodDependentMusic;
+                _enable_Chirpy.isChecked = CSLMusicModSettings.EnableChirper;
+                _enable_MusicWhileLoading.isChecked = CSLMusicModSettings.MusicWhileLoading;
             }
-
-            _musicList.items = entries.ToArray();
         }
     }
 }
+

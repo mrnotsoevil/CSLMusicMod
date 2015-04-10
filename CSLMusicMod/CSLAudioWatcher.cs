@@ -185,7 +185,7 @@ namespace CSLMusicMod
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " has restarted"); 
                     SwitchMusic(info);
                 }
-                else if (pos >= CurrentMusicStream.Length - 65536)
+                else if (pos >= CurrentMusicStream.Length - 65536 * 2)
                 {
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " is ending"); 
                     SwitchMusic(info);

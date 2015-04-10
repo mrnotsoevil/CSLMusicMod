@@ -8,7 +8,7 @@ namespace CSLMusicMod
     {
         private bool _key_NextTrack_IsDown = false;
         private bool _key_MusicSettings_IsDown = false;
-        private MusicSettingsPanel _current_Settings_Panel;
+        private MusicListPanel _current_Settings_Panel;
 
         private CSLAudioWatcher AudioWatcher
         {
@@ -30,8 +30,8 @@ namespace CSLMusicMod
         public void Start()
         {
             //Create ui
-            UIView v = UIView.GetAView ();
-            _current_Settings_Panel = (MusicSettingsPanel)v.AddUIComponent (typeof(MusicSettingsPanel));
+            UIView v = UIView.GetAView();
+            _current_Settings_Panel = (MusicListPanel)v.AddUIComponent(typeof(MusicListPanel));
             _current_Settings_Panel.AudioWatcher = AudioWatcher;
             _current_Settings_Panel.Hide();
         }
@@ -39,30 +39,36 @@ namespace CSLMusicMod
         public void Update()
         {
             //Next track
-            if (Input.GetKeyDown(CSLMusicModSettings.Key_NextTrack))
+            if (CSLMusicModSettings.Key_NextTrack != KeyCode.None)
             {
-                _key_NextTrack_IsDown = true;
-            }
-            else if (Input.GetKeyUp(CSLMusicModSettings.Key_NextTrack) && _key_NextTrack_IsDown)
-            {
-                _key_NextTrack_IsDown = false;
+                if (Input.GetKeyDown(CSLMusicModSettings.Key_NextTrack))
+                {
+                    _key_NextTrack_IsDown = true;
+                }
+                else if (Input.GetKeyUp(CSLMusicModSettings.Key_NextTrack) && _key_NextTrack_IsDown)
+                {
+                    _key_NextTrack_IsDown = false;
 
-                AudioWatcher.RequestSwitchMusic();
+                    AudioWatcher.RequestSwitchMusic();
+                }
             }
 
             //Settings panel
-            if (Input.GetKeyDown(CSLMusicModSettings.Key_Settings))
+            if (CSLMusicModSettings.Key_Settings != KeyCode.None)
             {
-                _key_MusicSettings_IsDown = true;
-            }
-            else if (Input.GetKeyUp(CSLMusicModSettings.Key_Settings) && _key_MusicSettings_IsDown)
-            {
-                _key_MusicSettings_IsDown = false;
+                if (Input.GetKeyDown(CSLMusicModSettings.Key_Settings))
+                {
+                    _key_MusicSettings_IsDown = true;
+                }
+                else if (Input.GetKeyUp(CSLMusicModSettings.Key_Settings) && _key_MusicSettings_IsDown)
+                {
+                    _key_MusicSettings_IsDown = false;
 
-                if (_current_Settings_Panel.isVisible)
-                    _current_Settings_Panel.Hide();
-                else
-                    _current_Settings_Panel.Show();
+                    if (_current_Settings_Panel.isVisible)
+                        _current_Settings_Panel.Hide();
+                    else
+                        _current_Settings_Panel.Show();
+                }
             }
         }
 
