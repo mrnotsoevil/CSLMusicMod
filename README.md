@@ -152,4 +152,16 @@ Because I spent hours trying to get Unity3D to load my files correctly (Did not 
 
 I cannot believe that such a popular engine cannot load an audio file from file system properly.
 
+###Why are you including NVorbis in your source?
+Because I want to prevent conflicts with other mods, which may use NVorbis. Also I want to achieve that C:S can compile the source files, which is not possible if NVorbis is not distributed as source.
+
+###What changes did you make in NVorbis?
+I Changed the namespaces to prevent conflicts
+
+Acknowledgements
+
+- Cities: Skylines developers and publisher for this great game
+- NVorbis \- I hope you are not mad that I include your code
+- Add more
+
  

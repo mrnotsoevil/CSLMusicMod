@@ -51,9 +51,6 @@
       <HintPath>..\..\..\.local\share\Steam\SteamApps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="NVorbis">
-      <HintPath>..\..\NVorbis\NVorbis.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,6 +67,34 @@
     <Compile Include="MusicListPanel.cs" />
     <Compile Include="MusicSettingsPanel.cs" />
     <Compile Include="UICheckButton.cs" />
+    <Compile Include="NVorbis\BufferedReadStream.cs" />
+    <Compile Include="NVorbis\DataPacket.cs" />
+    <Compile Include="NVorbis\Huffman.cs" />
+    <Compile Include="NVorbis\IContainerReader.cs" />
+    <Compile Include="NVorbis\IPacketProvider.cs" />
+    <Compile Include="NVorbis\IVorbisStreamStatus.cs" />
+    <Compile Include="NVorbis\Mdct.cs" />
+    <Compile Include="NVorbis\NewStreamEventArgs.cs" />
+    <Compile Include="NVorbis\ParameterChangeEventArgs.cs" />
+    <Compile Include="NVorbis\RingBuffer.cs" />
+    <Compile Include="NVorbis\StreamReadBuffer.cs" />
+    <Compile Include="NVorbis\Utils.cs" />
+    <Compile Include="NVorbis\VorbisCodebook.cs" />
+    <Compile Include="NVorbis\VorbisFloor.cs" />
+    <Compile Include="NVorbis\VorbisMapping.cs" />
+    <Compile Include="NVorbis\VorbisMode.cs" />
+    <Compile Include="NVorbis\VorbisReader.cs" />
+    <Compile Include="NVorbis\VorbisResidue.cs" />
+    <Compile Include="NVorbis\VorbisStreamDecoder.cs" />
+    <Compile Include="NVorbis\VorbisTime.cs" />
+    <Compile Include="NVorbis\Ogg\OggContainerReader.cs" />
+    <Compile Include="NVorbis\Ogg\OggCrc.cs" />
+    <Compile Include="NVorbis\Ogg\OggPacket.cs" />
+    <Compile Include="NVorbis\Ogg\OggPacketReader.cs" />
+    <Compile Include="NVorbis\Ogg\OggPageFlags.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="NVorbis\" />
+  </ItemGroup>
 </Project>
