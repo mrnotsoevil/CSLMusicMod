@@ -79,14 +79,20 @@ namespace CSLMusicMod
 
         public String GetMusicFromMood(AudioManager.ListenerInfo info)
         {
-            if (EnableSkyMusic && CSLMusicModSettings.HeightDependentMusic && !String.IsNullOrEmpty(SkyMusic) && GetListenerHeight(info) > 1400f)
+            if (EnableSkyMusic 
+                && CSLMusicModSettings.HeightDependentMusic 
+                && !String.IsNullOrEmpty(SkyMusic) 
+                && GetListenerHeight(info) > CSLMusicModSettings.HeightDependentMusic_HeightThreshold)
             {
                 return SkyMusic;
             }
 
             int finalHappiness = (int)Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_finalHappiness;
 
-            if ( EnableBadMusic && CSLMusicModSettings.MoodDependentMusic && !String.IsNullOrEmpty(BadMusic) && finalHappiness < 40)
+            if ( EnableBadMusic 
+                && CSLMusicModSettings.MoodDependentMusic 
+                && !String.IsNullOrEmpty(BadMusic) 
+                && finalHappiness < CSLMusicModSettings.MoodDependentMusic_MoodThreshold)
             {
                 return BadMusic;
             }

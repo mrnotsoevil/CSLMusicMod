@@ -64,6 +64,7 @@ namespace CSLMusicMod
 
         private bool _switchMusic_Requested;
         private CSLCustomMusicEntry _switchMusic_Requested_Music;
+        private bool _switchMusic_Requested_useChirpy;
         /**
          * Keep track of the last max. position
          * If the stream restarts, switch the music
@@ -79,17 +80,19 @@ namespace CSLMusicMod
         {
             _firstTimeSwitched = false;
             _switchMusic_Requested = false;
+            _switchMusic_Requested_useChirpy = false;
         }
 
-        public void RequestSwitchMusic()
+        public void RequestSwitchMusic(bool chirp)
         {
-            RequestSwitchMusic(null);
+            RequestSwitchMusic(null, chirp);
         }
 
-        public void RequestSwitchMusic(CSLCustomMusicEntry entry)
+        public void RequestSwitchMusic(CSLCustomMusicEntry entry, bool chirp)
         {
             _switchMusic_Requested = true;
             _switchMusic_Requested_Music = entry;
+            _switchMusic_Requested_useChirpy = chirp;
         }
 
         public void PlayAudio(AudioManager.ListenerInfo listenerInfo)
@@ -129,7 +132,7 @@ namespace CSLMusicMod
                 _switchMusic_Requested = false;
 
                 //Yay chirp
-                if (_currentMusic != _cur)
+                if (_currentMusic != _cur && _switchMusic_Requested_useChirpy)
                     MusicUI.ChirpNowPlaying(_currentMusic);
             }
 
@@ -188,7 +191,7 @@ namespace CSLMusicMod
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " has restarted"); 
                     SwitchMusic(info);
                 }
-                else if (pos >= CurrentMusicStream.Length - 65536 * 2)
+                else if (pos >= CurrentMusicStream.Length - CSLMusicModSettings.MusicStreamSwitchTime)
                 {
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " is ending"); 
                     SwitchMusic(info);

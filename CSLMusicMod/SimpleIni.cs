@@ -18,6 +18,8 @@ namespace CSLMusicMod
     {
         public const String GROUP_NO_GROUP = "Default";
 
+        public bool FoundNonExistingKeys { get; private set; }
+
         public String Filename { get; private set; }
 
         public List<string> Groups
@@ -56,6 +58,8 @@ namespace CSLMusicMod
                 }
             }
 
+            FoundNonExistingKeys = true;
+
             return defaultvalue;
         }
 
@@ -71,6 +75,14 @@ namespace CSLMusicMod
         {
             int res;
             if (int.TryParse(Get(group, key, defaultvalue.ToString()), out res))
+                return res;
+            return defaultvalue;
+        }
+
+        public float GetAsFloat(String group, String key, float defaultvalue)
+        {
+            float res;
+            if (float.TryParse(Get(group, key, defaultvalue.ToString()), out res))
                 return res;
             return defaultvalue;
         }
@@ -110,6 +122,7 @@ namespace CSLMusicMod
         public void Load()
         {
             _data.Clear();
+            FoundNonExistingKeys = false;
 
             try
             {

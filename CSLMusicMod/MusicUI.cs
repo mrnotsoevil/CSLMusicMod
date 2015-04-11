@@ -49,7 +49,7 @@ namespace CSLMusicMod
                 {
                     _key_NextTrack_IsDown = false;
 
-                    AudioWatcher.RequestSwitchMusic();
+                    AudioWatcher.RequestSwitchMusic(true);
                 }
             }
 
@@ -90,6 +90,24 @@ namespace CSLMusicMod
             if (CSLMusicModSettings.EnableChirper)
             {
                 MessageManager.instance.QueueMessage(CSLMusicChirperMessage.CreateWelcomeMessage());
+            }
+        }
+
+        public static void ChirpConverterError()
+        {
+            if (CSLMusicModSettings.EnableChirper)
+            {
+                MessageBase msg = CSLMusicChirperMessage.CreateConverterErrorMessage();
+
+                if (msg != null)
+                {
+                    Debug.Log("[CSLMusic][Chirpy] Sending conversion error report");
+                    MessageManager.instance.QueueMessage(msg);
+                }
+                else
+                {
+                    Debug.Log("[CSLMusic][Chirpy] No conversion error reported");
+                }
             }
         }
     }

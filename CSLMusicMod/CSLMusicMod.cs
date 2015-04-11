@@ -57,6 +57,7 @@ namespace CSLMusicMod
             _ui = _gameObject.AddComponent<MusicUI>();
 
             MusicUI.ChirpWelcome();
+            MusicUI.ChirpConverterError();
         }
 
         public override void OnLevelUnloading()
@@ -129,6 +130,10 @@ namespace CSLMusicMod
             catch (InvalidDataException ex)
             {
                 Debug.LogError("... ERROR: Could not read file! " + ex.Message);
+
+                //Add to list
+                CSLMusicModSettings.Info_NonConvertedFiles.Add(srcoggfile);
+
                 return;
             }
 

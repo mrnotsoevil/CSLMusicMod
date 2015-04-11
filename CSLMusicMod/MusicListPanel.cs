@@ -135,7 +135,7 @@ namespace CSLMusicMod
                 {
                     if (value >= 0 && CSLMusicModSettings.MusicEntries.m_size > value)
                     {
-                        AudioWatcher.RequestSwitchMusic(CSLMusicModSettings.MusicEntries[value]);
+                        AudioWatcher.RequestSwitchMusic(CSLMusicModSettings.MusicEntries[value], false);
                     }
                 }
             };
