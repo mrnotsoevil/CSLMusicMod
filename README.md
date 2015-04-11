@@ -110,6 +110,10 @@ This is usually caused by too large ID3 tags. NVorbis (http://nvorbis.codeplex.c
 
 Try to remove ID3 tags by using Audacity or programs like EasyTag.
 
+###The music is distorted
+Try to convert the *.ogg files with following settings: 44100Hz, Stereo (2 channels)
+It could be that NVorbis will keep the sample rate and the channels while converting to *.raw. C:S expects 44100Hz with 2 channels.
+
 ###My game is loading too long
 This happens because \*.ogg files have to be converted to \*.raw files. This only happens once, so get a cup of tea and wait until it's finished :)
 
