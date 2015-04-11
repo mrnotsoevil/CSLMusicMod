@@ -4,6 +4,8 @@
 
 With CSL Music Mod you can add custom music to Cities: Skylines.
 
+Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=422934383
+
 ##Features
 - Plays your music randomly
 - You can enable or disable tracks
