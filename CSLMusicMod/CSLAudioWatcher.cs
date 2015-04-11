@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Reflection;
 using ColossalFramework;
 using System.IO;
+using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
@@ -75,6 +76,9 @@ namespace CSLMusicMod
         private CSLCustomMusicEntry _previousMusic;
         private CSLCustomMusicEntry _currentMusic;
         private String _currentMusic_File;
+
+        //Contains already played tracks (by random selection)
+        private HashSet<CSLCustomMusicEntry> _already_Played_Music = new HashSet<CSLCustomMusicEntry>();
 
         public CSLAudioWatcher()
         {
@@ -278,14 +282,33 @@ namespace CSLMusicMod
                 return null;
             }
 
+            //If the set of already played music contains as much files as entries, reset
+            if (_already_Played_Music.Count >= entries.m_size)
+            {
+                _already_Played_Music.Clear();
+                Debug.Log("[CSLMusic][GetNextRandomMusic] Resetting already played music list #internal");
+            }
+
             //Fetch a random music file until it is not matching with the previous one
             CSLCustomMusicEntry music;
+
+            //Iterations fallback
+            int iters = 0;
 
             do
             {
                 music = entries[RANDOM.Next(entries.m_size)];
+
+                //If too many iterations, cancel
+                if(++iters >= 5000)
+                {
+                    Debug.Log("[CSLMusic][GetNextRandomMusic] Too many iterations. Canceling to prevent deadlock");                   
+                    break;
+                }
             }
-            while(entries.m_size > 1 && music == _previousMusic);
+            while(entries.m_size > 1 && (music == _previousMusic || _already_Played_Music.Contains(music)));
+
+            _already_Played_Music.Add(music);
 
             return music;
         }

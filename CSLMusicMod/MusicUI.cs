@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using ColossalFramework.UI;
+using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
@@ -9,6 +10,8 @@ namespace CSLMusicMod
         private bool _key_NextTrack_IsDown = false;
         private bool _key_MusicSettings_IsDown = false;
         private MusicListPanel _current_Settings_Panel;
+
+        private static CSLMusicChirperMessage _last_Music_Switch_Message;
 
         private CSLAudioWatcher AudioWatcher
         {
@@ -38,6 +41,14 @@ namespace CSLMusicMod
 
         public void Update()
         {
+            //While setting key bindings, do nothing
+            if (UIKeyBindingButton.CurrentListeningButton != null)
+            {
+                _key_MusicSettings_IsDown = false;
+                _key_NextTrack_IsDown = false;
+                return;
+            }
+
             //Next track
             if (CSLMusicModSettings.Key_NextTrack != KeyCode.None)
             {
@@ -51,6 +62,8 @@ namespace CSLMusicMod
 
                     AudioWatcher.RequestSwitchMusic(true);
                 }
+
+               
             }
 
             //Settings panel
@@ -77,11 +90,52 @@ namespace CSLMusicMod
             MonoBehaviour.Destroy(_current_Settings_Panel);
         }
 
+        /**
+         * Dequeue a chrip using reflection
+         * */
+        public static void DequeueChirp(MessageBase msg)
+        {
+            //I don't trust it (o .o ) ( o. o) ( ^.^ )
+            try
+            {
+                if(MessageManager.instance.m_properties != null)
+                {
+                    Queue<MessageBase> q = ReflectionHelper.GetPrivateField<Queue<MessageBase>>(MessageManager.instance, "m_messageQueue");
+
+                    //Inplace requeuing
+                    int c = q.Count;
+                    for(int i = 0; i < c; i++)
+                    {
+                        MessageBase m = q.Dequeue();
+
+                        if(m != msg)
+                        {
+                            q.Enqueue(m);
+                        }
+                    }
+                }
+            }
+            catch(Exception)
+            {
+            }
+        }
+
         public static void ChirpNowPlaying(CSLCustomMusicEntry music)
         {
             if (CSLMusicModSettings.EnableChirper)
             {
-                MessageManager.instance.QueueMessage(CSLMusicChirperMessage.CreateNowPlayingMessage(music));
+                CSLMusicChirperMessage msg = CSLMusicChirperMessage.CreateNowPlayingMessage(music);
+
+                MessageManager.instance.QueueMessage(msg);
+
+                //Remove old message
+                if (_last_Music_Switch_Message != null)
+                {
+                    DequeueChirp(_last_Music_Switch_Message);
+                }
+
+                _last_Music_Switch_Message = msg;
+
             }
         }
 
