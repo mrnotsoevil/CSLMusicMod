@@ -100,6 +100,9 @@ __Note: You must provide a music file for 'normal'/'good' condition. You cannot 
 
 ##Troubleshooting
 
+###There are no configuration files or folders
+The mod will create them while loading the map.
+
 ###Some \*.ogg files won't convert
 This is usually caused by too large ID3 tags. NVorbis (http://nvorbis.codeplex.com/), which is used for decoding \*.ogg files cannot handle too large tags.
 
