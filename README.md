@@ -129,10 +129,17 @@ if (Mathf.Abs((float)(length - length2)) < 1024f)
 }
 ```
 
+##FAQ
+
+###How does mood/height based music work?
+It's working like in the vanilla game. If you are above 1400 height, the 'sky' music will play. If the general happiness is below 40, the 'bad' mood music will play.
+
 ##Planned features
 
 - ~~Add ingame settings panel~~
 - Add ingame music list reload
+- More settings and tweaks
+- Extend the mood based music
 
 ##Development stuff
 
