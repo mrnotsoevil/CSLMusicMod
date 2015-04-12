@@ -55,7 +55,7 @@ namespace CSLMusicMod
             _settingsPanel.isVisible = false;
             _settingsPanel.AudioWatcher = AudioWatcher;
             _settingsPanel.width = this.width;
-            _settingsPanel.height = 370;
+            _settingsPanel.height = 402;
             _settingsPanel.relativePosition = new Vector3(relativePosition.x, relativePosition.y - _settingsPanel.height - 5);
 
             //Add a button for settings
@@ -191,6 +191,11 @@ namespace CSLMusicMod
             panel.eventItemMouseUp += delegate(UIComponent component, int value)
             {
                 _resort_CurrentItem = null;
+
+                if(_resort_resorted)
+                {
+                    CSLMusicModSettings.SaveMusicFileSettings();
+                }
             };
             panel.eventItemMouseHover += delegate(UIComponent component, int value)
             {

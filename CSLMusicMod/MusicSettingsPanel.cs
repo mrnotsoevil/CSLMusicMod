@@ -14,6 +14,7 @@ namespace CSLMusicMod
         private UICheckButton _enable_Bad;
         private UICheckButton _enable_Chirpy;
         private UICheckButton _enable_MusicWhileLoading;
+        private UICheckButton _enable_Playlist_random;
         private UIKeyBindingButton _nextTrackBinding;
         private UIKeyBindingButton _openPanelBinding;
         //+Feature: Adjust music volume
@@ -56,21 +57,23 @@ namespace CSLMusicMod
             }
 
             //Add checkbuttons and more          
-            mkLabel("Music selection", 10, 50 + 5);
-            _enable_Sky = mkCheckBox("Height dependent music", 30, 50 + 34);
-            _enable_Bad = mkCheckBox("Mood dependent music", 30, 50 + 34 * 2);
-            mkLabel("Tweaks", 10, 50 + 34 * 3 + 5);
-            _enable_Chirpy = mkCheckBox("Use Chirpy", 30, 50 + 34 * 4);
-            _enable_MusicWhileLoading = mkCheckBox("Music while loading", 30, 50 + 34 * 5);
+            mkLabel("Select music by", 10, 50 + 5);
+            _enable_Sky = mkCheckBox("Height", 30 + 120 + 10, 50 + 34, 120);
+            _enable_Bad = mkCheckBox("Mood", 30, 50 + 34, 120);
+            mkLabel("Playlist", 10, 50 + 34 * 2 + 5);
+            _enable_Playlist_random = mkCheckBox("Play tracks randomly", 30, 50 + 34 * 3);
+            mkLabel("Tweaks", 10, 50 + 34 * 4 + 5);
+            _enable_Chirpy = mkCheckBox("Use Chirpy", 30, 50 + 34 * 5);
+            _enable_MusicWhileLoading = mkCheckBox("Music while loading", 30, 50 + 34 * 6);
 
             //Key bindings
-            mkLabel("Key bindings", 10, 50 + 34 * 6 + 5);
+            mkLabel("Key bindings", 10, 50 + 34 * 7 + 5);
 
-            mkLabel("Next track", 30, 50 + 34 * 7 + 5);
-            _nextTrackBinding = mkKeyBindButton(150, 50 + 34 * 7, width - 150 - 100);
+            mkLabel("Next track", 30, 50 + 34 * 8 + 5);
+            _nextTrackBinding = mkKeyBindButton(150, 50 + 34 * 8, width - 150 - 100);
 
-            mkLabel("Key bindings", 30, 50 + 34 * 8 + 5);
-            _openPanelBinding = mkKeyBindButton(150, 50 + 34 * 8, width - 150 - 100);
+            mkLabel("Key bindings", 30, 50 + 34 * 9 + 5);
+            _openPanelBinding = mkKeyBindButton(150, 50 + 34 * 9, width - 150 - 100);
 
 
             //Add tooltips
@@ -78,6 +81,7 @@ namespace CSLMusicMod
             _enable_Bad.tooltip = "Change music depending on your popularity";
             _enable_Chirpy.tooltip = "Great leader Chirpy will tell you which music is playing";
             _enable_MusicWhileLoading.tooltip = "Play menu music while loading. Useful if music stutters while loading";
+            _enable_Playlist_random.tooltip = "Select tracks to play randomly";
 
             _initialized = true;
 
@@ -95,6 +99,14 @@ namespace CSLMusicMod
                 if (CSLMusicModSettings.MoodDependentMusic != state)
                 {
                     CSLMusicModSettings.MoodDependentMusic = state;
+                    CSLMusicModSettings.SaveModSettings();
+                }
+            };
+            _enable_Playlist_random.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
+            {
+                if (CSLMusicModSettings.RandomTrackSelection != state)
+                {
+                    CSLMusicModSettings.RandomTrackSelection = state;
                     CSLMusicModSettings.SaveModSettings();
                 }
             };
@@ -130,6 +142,7 @@ namespace CSLMusicMod
                     CSLMusicModSettings.SaveModSettings();
                 }
             };
+       
             _MusicVolumeSlider.eventValueChanged += delegate(UIComponent component, float value)
             {
                 //I use x100 because it failed with 0..1?
@@ -154,6 +167,19 @@ namespace CSLMusicMod
             label.verticalAlignment = UIVerticalAlignment.Middle;
 
             return label;
+        }
+
+        private UICheckButton mkCheckBox(String text, int x, int y, int width)
+        {
+            var button = AddUIComponent<UICheckButton>();
+            button.relativePosition = new Vector3(x, y);
+            button.text = text;
+            button.width = width;
+            button.height = 32;
+            button.normalBgSprite = "SubcategoriesPanel";
+
+            button.isVisible = true;
+            return button;
         }
 
         private UICheckButton mkCheckBox(String text, int x, int y)
@@ -221,6 +247,7 @@ namespace CSLMusicMod
             {
                 _enable_Sky.isChecked = CSLMusicModSettings.HeightDependentMusic;
                 _enable_Bad.isChecked = CSLMusicModSettings.MoodDependentMusic;
+                _enable_Playlist_random.isChecked = CSLMusicModSettings.RandomTrackSelection;
                 _enable_Chirpy.isChecked = CSLMusicModSettings.EnableChirper;
                 _enable_MusicWhileLoading.isChecked = CSLMusicModSettings.MusicWhileLoading;
                 _nextTrackBinding.AssignedKey = CSLMusicModSettings.Key_NextTrack;

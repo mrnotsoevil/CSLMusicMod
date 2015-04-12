@@ -284,10 +284,15 @@ namespace CSLMusicMod
                 Debug.Log("[CSLMusic][GetNextRandomMusic] Resetting already played music list #internal");
             }
 
+            CSLCustomMusicEntry newentry;
+
             if (CSLMusicModSettings.RandomTrackSelection)
-                return GetNextRandomMusic(entries);
+                newentry = GetNextRandomMusic(entries);
             else
-                return GetNextMusicFromList(entries);
+                newentry = GetNextMusicFromList(entries);
+
+            _already_Played_Music.Add(newentry);
+            return newentry;
         }
 
         private CSLCustomMusicEntry GetNextMusicFromList(List<CSLCustomMusicEntry> entries)
@@ -340,8 +345,6 @@ namespace CSLMusicMod
                 }
             }
             while(entries.Count > 1 && (music == _previousMusic || _already_Played_Music.Contains(music)));
-
-            _already_Played_Music.Add(music);
 
             return music;
         }

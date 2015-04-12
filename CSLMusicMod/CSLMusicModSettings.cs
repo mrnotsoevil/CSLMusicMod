@@ -428,7 +428,9 @@ namespace CSLMusicMod
 
             //If there are non exisiting keys in the settings file, add them by saving the settings
             if (SettingsFile.FoundNonExistingKeys)
+            {
                 SaveModSettings();
+            }
         }
 
         private static void CreateMusicFolder()
