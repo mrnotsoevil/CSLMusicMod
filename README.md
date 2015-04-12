@@ -24,6 +24,7 @@ With CSL Music Mod you can add custom music to Cities: Skylines.
 - Added chirp if \*.ogg file could not be converted
 - Improved Chirper: Only chirp the current song after you switched tracks fast
 - Added more settings for configuration file: Height for 'sky' music changeable, mood for 'bad mood' changeable
+- Bugfix: Cannot rename objects (houses, persons, ...) because panel pops up
 
 ##Adding music files
 The mod gets its music files from _CSLMusicMod_Music_ folder (location depends by platform, you can find the folder where many other mods are storing their data).
