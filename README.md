@@ -20,6 +20,11 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 
 ##Changelog
 
+###Update 2
+- Added setting for non random playback
+- Added resorting of music list (drag items to resort them)
+- Some UI changes
+
 ###Update 1
 - Added keybindings to settings panel
 - Added volume slider to settings panel
