@@ -16,6 +16,10 @@ namespace CSLMusicMod
 
         public CSLAudioWatcher AudioWatcher { get; set; }
 
+        private CSLCustomMusicEntry _resort_CurrentItem;
+        private int _resort_currentPivotIndex;
+        private bool _resort_resorted;
+
         public MusicListPanel()
         {
         }
@@ -56,10 +60,14 @@ namespace CSLMusicMod
 
             //Add a button for settings
             _openSettings = AddUIComponent<UIButton>();
-            _openSettings.width = 120;
-            _openSettings.text = "Settings";
+            _openSettings.width = 40;
+            //_openSettings.text = "Settings";
+            _openSettings.normalFgSprite = "Options";
+            _openSettings.focusedFgSprite = "Options";
+            _openSettings.pressedFgSprite = "OptionsFocused";
+            _openSettings.hoveredFgSprite = "OptionsFocused";
             _openSettings.height = 40;
-            _openSettings.relativePosition = new Vector3(width - 120 - 1, 1);
+            _openSettings.relativePosition = new Vector3(width - _openSettings.width - 1, 1);
             _openSettings.normalBgSprite = "SubcategoriesPanel";
             _openSettings.hoveredColor = new Color32(128, 128, 128, 255);
             _openSettings.isVisible = true;
@@ -133,7 +141,7 @@ namespace CSLMusicMod
             panel.itemHover = "SubcategoriesPanel";
             panel.itemHeight = 32;
             panel.itemPadding = new RectOffset(0, 0, 4, 4);
-            panel.tooltip = "Click on an item to play the song. Double click to enable/disable it";
+            panel.tooltip = "Click on an item to play the song.\nDouble click to enable/disable it.\nDrag to resort the list.";
          
             panel.Show();
 
@@ -143,7 +151,8 @@ namespace CSLMusicMod
             {
                 if (AudioWatcher != null)
                 {
-                    if (value >= 0 && CSLMusicModSettings.MusicEntries.m_size > value)
+                    //+ Only if not resorted, switch to track
+                    if (!_resort_resorted && value >= 0 && CSLMusicModSettings.MusicEntries.Count > value)
                     {
                         AudioWatcher.RequestSwitchMusic(CSLMusicModSettings.MusicEntries[value], false);
                     }
@@ -151,25 +160,70 @@ namespace CSLMusicMod
             };
             panel.eventItemDoubleClicked += delegate(UIComponent component, int value)
             {
-                if (value >= 0 && CSLMusicModSettings.MusicEntries.m_size > value)
+                if (value >= 0 && CSLMusicModSettings.MusicEntries.Count > value)
                 {
+                    //Store old entry
+                    CSLCustomMusicEntry current = AudioWatcher.CurrentMusicEntry;
+
                     CSLCustomMusicEntry entry = CSLMusicModSettings.MusicEntries[value];
                     entry.Enable = !entry.Enable;
 
-                    float scroll = _musicList.scrollPosition;
+                    UpdateMusicListPreserveScroll();
 
-                    UpdateMusicList();
+                    //Restore the current entry
+                    AudioWatcher.RequestSwitchMusic(current, false);
+                }
+            };
 
-                    //Restore the scroll position
-                    try
+            //Add feature to resort the music list
+            panel.eventItemMouseDown += delegate(UIComponent component, int value)
+            {
+                if (AudioWatcher != null)
+                {
+                    if (value >= 0 && CSLMusicModSettings.MusicEntries.Count > value)
                     {
-                        _musicList.scrollPosition = scroll;
-                    }
-                    catch (Exception)
-                    {
+                        _resort_CurrentItem = CSLMusicModSettings.MusicEntries[value];
+                        _resort_currentPivotIndex = value;
+                        _resort_resorted = false;
                     }
                 }
             };
+            panel.eventItemMouseUp += delegate(UIComponent component, int value)
+            {
+                _resort_CurrentItem = null;
+            };
+            panel.eventItemMouseHover += delegate(UIComponent component, int value)
+            {
+                if (value >= 0 && CSLMusicModSettings.MusicEntries.Count > value)
+                {
+                    if (_resort_CurrentItem != null && value != _resort_currentPivotIndex)
+                    {
+                        CSLMusicModSettings.MusicEntries.Remove(_resort_CurrentItem);
+                        CSLMusicModSettings.MusicEntries.Insert(value, _resort_CurrentItem);
+                        _resort_currentPivotIndex = value;
+
+                        UpdateMusicListPreserveScroll();
+
+                        _resort_resorted = true;
+                    }
+                }
+            };
+        }
+
+        private void UpdateMusicListPreserveScroll()
+        {
+            float scroll = _musicList.scrollPosition;
+
+            UpdateMusicList();
+
+            //Restore the scroll position
+            try
+            {
+                _musicList.scrollPosition = scroll;
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void UpdateMusicList()

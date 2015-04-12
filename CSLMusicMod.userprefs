@@ -1,12 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/MusicListPanel.cs">
-    <Files>
-      <File FileName="CSLMusicMod/CSLMusicMod.cs" Line="80" Column="25" />
-      <File FileName="CSLMusicMod/MusicSettingsPanel.cs" Line="29" Column="39" />
-      <File FileName="CSLMusicMod/CSLAudioWatcher.cs" Line="123" Column="14" />
-      <File FileName="CSLMusicMod/MusicListPanel.cs" Line="126" Column="34" />
-    </Files>
+  <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ClassPad">
         <State expanded="True">

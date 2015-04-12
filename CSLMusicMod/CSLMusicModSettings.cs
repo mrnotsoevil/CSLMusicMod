@@ -18,23 +18,29 @@ namespace CSLMusicMod
         public static KeyCode Key_NextTrack = KeyCode.N;
         public static KeyCode Key_Settings = KeyCode.M;
         public static bool EnableChirper = true;
-        public static FastList<CSLCustomMusicEntry> MusicEntries = new FastList<CSLCustomMusicEntry>();
+        public static List<CSLCustomMusicEntry> MusicEntries = new List<CSLCustomMusicEntry>();
         //Additional settings
         public static int MusicStreamSwitchTime = 154350;
         //65536*2 // 65536*3
         public static int MoodDependentMusic_MoodThreshold = 40;
         public static float HeightDependentMusic_HeightThreshold = 1400f;
 
+        //Update 2 Settings
+        /**
+         * If enabled, switch to a random track
+         * */
+        public static bool RandomTrackSelection = true;
+
         /**
          * Contains all *.ogg files which could not be converted
          * */
         public static FastList<String> Info_NonConvertedFiles = new FastList<string>();
 
-        public static FastList<CSLCustomMusicEntry> EnabledMusicEntries
+        public static List<CSLCustomMusicEntry> EnabledMusicEntries
         {
             get
             {
-                FastList<CSLCustomMusicEntry> entries = new FastList<CSLCustomMusicEntry>();
+                List<CSLCustomMusicEntry> entries = new List<CSLCustomMusicEntry>();
 
                 foreach (CSLCustomMusicEntry entry in MusicEntries)
                 {
@@ -377,6 +383,8 @@ namespace CSLMusicMod
 
             SettingsFile.Set("Chirper", "EnableChirper", EnableChirper);
 
+            SettingsFile.Set("Playlist", "RandomTrackSelection", RandomTrackSelection);
+
             //Save Keybindings
             SettingsFile.Set("Keys", "NextTrack", Key_NextTrack);
             SettingsFile.Set("Keys", "ShowSettings", Key_Settings);
@@ -411,6 +419,8 @@ namespace CSLMusicMod
                 MoodDependentMusic_MoodThreshold = 0;
 
             EnableChirper = SettingsFile.GetAsBool("Chirper", "EnableChirper", true);
+
+            RandomTrackSelection = SettingsFile.GetAsBool("Playlist", "RandomTrackSelection", true);
 
             //Load keybindings
             Key_NextTrack = SettingsFile.GetAsKeyCode("Keys", "NextTrack", KeyCode.N);

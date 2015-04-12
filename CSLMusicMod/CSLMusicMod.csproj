@@ -98,5 +98,6 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="NVorbis\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>
