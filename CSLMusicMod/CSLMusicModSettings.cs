@@ -19,6 +19,16 @@ namespace CSLMusicMod
         public static KeyCode Key_Settings = KeyCode.M;
         public static bool EnableChirper = true;
         public static FastList<CSLCustomMusicEntry> MusicEntries = new FastList<CSLCustomMusicEntry>();
+        //Additional settings
+        public static int MusicStreamSwitchTime = 154350;
+        //65536*2 // 65536*3
+        public static int MoodDependentMusic_MoodThreshold = 40;
+        public static float HeightDependentMusic_HeightThreshold = 1400f;
+
+        /**
+         * Contains all *.ogg files which could not be converted
+         * */
+        public static FastList<String> Info_NonConvertedFiles = new FastList<string>();
 
         public static FastList<CSLCustomMusicEntry> EnabledMusicEntries
         {
@@ -46,6 +56,8 @@ namespace CSLMusicMod
         public static IEnumerator ConvertCustomMusic()
         {
             Debug.Log("[CSLMusic] Converting custom music files ...");
+
+            Info_NonConvertedFiles.Clear();
 
             //Get other music
             foreach (String file in Directory.GetFiles("CSLMusicMod_Music"))
@@ -360,6 +372,8 @@ namespace CSLMusicMod
             SettingsFile.Set("Music Library", "AutoAddMusicTypesForCustomMusic", AutoAddMusicTypesForCustomMusic);
 
             SettingsFile.Set("Tweaks", "MusicWhileLoading", MusicWhileLoading);
+            SettingsFile.Set("Tweaks", "HeightDependentMusic_HeightThreshold", HeightDependentMusic_HeightThreshold);
+            SettingsFile.Set("Tweaks", "MoodDependentMusic_MoodThreshold", MoodDependentMusic_MoodThreshold);
 
             SettingsFile.Set("Chirper", "EnableChirper", EnableChirper);
 
@@ -387,12 +401,24 @@ namespace CSLMusicMod
             AutoAddMusicTypesForCustomMusic = SettingsFile.GetAsBool("Music Library", "AutoAddMusicTypesForCustomMusic", true);
 
             MusicWhileLoading = SettingsFile.GetAsBool("Tweaks", "MusicWhileLoading", true);
+            HeightDependentMusic_HeightThreshold = SettingsFile.GetAsFloat("Tweaks", "HeightDependentMusic_HeightThreshold", 1400f);
+            MoodDependentMusic_MoodThreshold = SettingsFile.GetAsInt("Tweaks", "MoodDependentMusic_MoodThreshold", 40);
+
+            //Check values if they are legal
+            if (HeightDependentMusic_HeightThreshold < 0)
+                HeightDependentMusic_HeightThreshold = 0;
+            if (MoodDependentMusic_MoodThreshold < 0)
+                MoodDependentMusic_MoodThreshold = 0;
 
             EnableChirper = SettingsFile.GetAsBool("Chirper", "EnableChirper", true);
 
             //Load keybindings
             Key_NextTrack = SettingsFile.GetAsKeyCode("Keys", "NextTrack", KeyCode.N);
             Key_Settings = SettingsFile.GetAsKeyCode("Keys", "ShowSettings", KeyCode.M);
+
+            //If there are non exisiting keys in the settings file, add them by saving the settings
+            if (SettingsFile.FoundNonExistingKeys)
+                SaveModSettings();
         }
 
         private static void CreateMusicFolder()

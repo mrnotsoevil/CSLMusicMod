@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Reflection;
 using ColossalFramework;
 using System.IO;
+using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
@@ -64,6 +65,7 @@ namespace CSLMusicMod
 
         private bool _switchMusic_Requested;
         private CSLCustomMusicEntry _switchMusic_Requested_Music;
+        private bool _switchMusic_Requested_useChirpy;
         /**
          * Keep track of the last max. position
          * If the stream restarts, switch the music
@@ -75,21 +77,26 @@ namespace CSLMusicMod
         private CSLCustomMusicEntry _currentMusic;
         private String _currentMusic_File;
 
+        //Contains already played tracks (by random selection)
+        private HashSet<CSLCustomMusicEntry> _already_Played_Music = new HashSet<CSLCustomMusicEntry>();
+
         public CSLAudioWatcher()
         {
             _firstTimeSwitched = false;
             _switchMusic_Requested = false;
+            _switchMusic_Requested_useChirpy = false;
         }
 
-        public void RequestSwitchMusic()
+        public void RequestSwitchMusic(bool chirp)
         {
-            RequestSwitchMusic(null);
+            RequestSwitchMusic(null, chirp);
         }
 
-        public void RequestSwitchMusic(CSLCustomMusicEntry entry)
+        public void RequestSwitchMusic(CSLCustomMusicEntry entry, bool chirp)
         {
             _switchMusic_Requested = true;
             _switchMusic_Requested_Music = entry;
+            _switchMusic_Requested_useChirpy = chirp;
         }
 
         public void PlayAudio(AudioManager.ListenerInfo listenerInfo)
@@ -129,7 +136,7 @@ namespace CSLMusicMod
                 _switchMusic_Requested = false;
 
                 //Yay chirp
-                if (_currentMusic != _cur)
+                if (_currentMusic != _cur && _switchMusic_Requested_useChirpy)
                     MusicUI.ChirpNowPlaying(_currentMusic);
             }
 
@@ -188,7 +195,7 @@ namespace CSLMusicMod
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " has restarted"); 
                     SwitchMusic(info);
                 }
-                else if (pos >= CurrentMusicStream.Length - 65536 * 2)
+                else if (pos >= CurrentMusicStream.Length - CSLMusicModSettings.MusicStreamSwitchTime)
                 {
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " is ending"); 
                     SwitchMusic(info);
@@ -275,14 +282,33 @@ namespace CSLMusicMod
                 return null;
             }
 
+            //If the set of already played music contains as much files as entries, reset
+            if (_already_Played_Music.Count >= entries.m_size)
+            {
+                _already_Played_Music.Clear();
+                Debug.Log("[CSLMusic][GetNextRandomMusic] Resetting already played music list #internal");
+            }
+
             //Fetch a random music file until it is not matching with the previous one
             CSLCustomMusicEntry music;
+
+            //Iterations fallback
+            int iters = 0;
 
             do
             {
                 music = entries[RANDOM.Next(entries.m_size)];
+
+                //If too many iterations, cancel
+                if(++iters >= 5000)
+                {
+                    Debug.Log("[CSLMusic][GetNextRandomMusic] Too many iterations. Canceling to prevent deadlock");                   
+                    break;
+                }
             }
-            while(entries.m_size > 1 && music == _previousMusic);
+            while(entries.m_size > 1 && (music == _previousMusic || _already_Played_Music.Contains(music)));
+
+            _already_Played_Music.Add(music);
 
             return music;
         }

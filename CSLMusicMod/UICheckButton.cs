@@ -9,7 +9,7 @@ namespace CSLMusicMod
         private bool _checked;
 
         public delegate void CheckStateHandler(UICheckButton sender, bool state);
-        public event CheckStateHandler checkStateChanged;
+        public event CheckStateHandler eventCheckStateChanged;
 
         public bool isChecked
         {
@@ -21,8 +21,8 @@ namespace CSLMusicMod
             {
                 _checked = value;
 
-                if (checkStateChanged != null)
-                    checkStateChanged(this, value);
+                if (eventCheckStateChanged != null)
+                    eventCheckStateChanged(this, value);
             }
         }
 

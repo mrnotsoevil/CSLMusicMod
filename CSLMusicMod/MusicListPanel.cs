@@ -51,7 +51,7 @@ namespace CSLMusicMod
             _settingsPanel.isVisible = false;
             _settingsPanel.AudioWatcher = AudioWatcher;
             _settingsPanel.width = this.width;
-            _settingsPanel.height = 300;
+            _settingsPanel.height = 370;
             _settingsPanel.relativePosition = new Vector3(relativePosition.x, relativePosition.y - _settingsPanel.height - 5);
 
             //Add a button for settings
@@ -69,9 +69,10 @@ namespace CSLMusicMod
             };
 
             //Add ability to close with esc
+            //Notice the other function to react to Esc in Update()
             eventKeyDown += delegate(UIComponent component, UIKeyEventParameter eventParam)
             {
-                if (!eventParam.used && eventParam.keycode == KeyCode.Escape)
+                if (isVisible && !eventParam.used && eventParam.keycode == KeyCode.Escape)
                 {
                     eventParam.Use();
 
@@ -81,6 +82,7 @@ namespace CSLMusicMod
 
             _settingsPanel.eventGotFocus += delegate(UIComponent component, UIFocusEventParameter eventParam)
             {
+                //Add switch for Key binding buttons
                 this.Focus();
             };
         }
@@ -109,6 +111,14 @@ namespace CSLMusicMod
                 {
                     _currentMusic.text = "Now playing: -";
                 }
+
+                //Add the ultimate killing handler to react to "Esc"
+                //Why? Because this seems not to work always
+                //Why keep the event? Because this correctly intercepts the ui behaviour
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    isVisible = false;
+                }
             }
         }
 
@@ -135,7 +145,7 @@ namespace CSLMusicMod
                 {
                     if (value >= 0 && CSLMusicModSettings.MusicEntries.m_size > value)
                     {
-                        AudioWatcher.RequestSwitchMusic(CSLMusicModSettings.MusicEntries[value]);
+                        AudioWatcher.RequestSwitchMusic(CSLMusicModSettings.MusicEntries[value], false);
                     }
                 }
             };
@@ -146,7 +156,18 @@ namespace CSLMusicMod
                     CSLCustomMusicEntry entry = CSLMusicModSettings.MusicEntries[value];
                     entry.Enable = !entry.Enable;
 
+                    float scroll = _musicList.scrollPosition;
+
                     UpdateMusicList();
+
+                    //Restore the scroll position
+                    try
+                    {
+                        _musicList.scrollPosition = scroll;
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             };
         }

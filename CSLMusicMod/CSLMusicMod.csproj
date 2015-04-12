@@ -51,6 +51,7 @@
       <HintPath>..\..\..\.local\share\Steam\SteamApps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="NVorbis\Ogg\OggPacket.cs" />
     <Compile Include="NVorbis\Ogg\OggPacketReader.cs" />
     <Compile Include="NVorbis\Ogg\OggPageFlags.cs" />
+    <Compile Include="UIKeyBindingButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

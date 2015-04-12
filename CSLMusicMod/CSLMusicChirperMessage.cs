@@ -8,7 +8,8 @@ namespace CSLMusicMod
         public enum MusicMessageType
         {
             NowPlaying,
-            Welcome
+            Welcome,
+            ConvertError
         }
 
         private MusicMessageType _type;
@@ -30,7 +31,7 @@ namespace CSLMusicMod
             return MessageManager.instance.GetRandomResidentID();
         }
 
-       public override string GetText()
+        public override string GetText()
         {
             switch (_type)
             {
@@ -38,13 +39,35 @@ namespace CSLMusicMod
                     return String.Format("Now playing {0} #music{1}", _parameters);
                 case MusicMessageType.Welcome:
                     return String.Format("Music mod is now #online. " +
-                                         "Use [{0}] key for #switching to the next track. Press [{1}] key for #more.",
+                        "Use [{0}] key for #switching to the next track. Press [{1}] key for #settings and #track_list.",
                                          CSLMusicModSettings.Key_NextTrack.ToString(),
                                          CSLMusicModSettings.Key_Settings.ToString());
+                case MusicMessageType.ConvertError:
+                    return String.Format("Could not convert {0} #music #sad", _parameters);
             }
 
             return "#crazy";
         }
+
+        /*public override bool IsSimilarMessage(MessageBase other)
+        {
+            if (other is CSLMusicChirperMessage)
+            {
+                CSLMusicChirperMessage _other = other as CSLMusicChirperMessage;
+
+                //double check ftw
+                if (_other != null)
+                {
+                    return _other._type == _type;
+                }
+
+                return base.IsSimilarMessage(other);
+            }
+            else
+            {
+                return base.IsSimilarMessage(other);
+            }
+        }*/
 
         public static CSLMusicChirperMessage CreateWelcomeMessage()
         {
@@ -62,6 +85,23 @@ namespace CSLMusicMod
                 hashtags += " #sky";
 
             return new CSLMusicChirperMessage(MusicMessageType.NowPlaying, mainname, hashtags);
+        }
+
+        public static CSLMusicChirperMessage CreateConverterErrorMessage()
+        {
+            if (CSLMusicModSettings.Info_NonConvertedFiles.m_size == 0)
+                return null;
+
+            String p = "";
+
+            foreach (String file in CSLMusicModSettings.Info_NonConvertedFiles)
+            {
+                p += Path.GetFileName(file) + ", ";
+            }
+
+            p = p.Trim(' ', ',');
+
+            return new CSLMusicChirperMessage(MusicMessageType.ConvertError, p);
         }
     }
 }
