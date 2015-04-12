@@ -7,14 +7,18 @@ With CSL Music Mod you can add custom music to Cities: Skylines.
 Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=422934383
 
 ##Features
-- Plays your music randomly
-- You can enable or disable tracks
-- (For now) very "lightweight" UI to select/disable/enable tracks
-- Support for "Mood" and "Height": Game will switch to other songs when camera is high or your citicens are not very happy
-- Uses chirps to show which track is playing (Only if you select the track manually)
-- ~~Chirps cannot be disabled because Chirpy is not putting a gun to my head~~
-- You can enable or disable Chirpy, "Mood" and "Height" music
-- Automatically puts together matching music files to a track with "Mood"/"Height" if you wish
+- Add custom music to your game
+- Converts *.ogg files to Cities: Skylines music files
+- Play them randomly or in defined order
+- Enable or disable tracks quickly to skip them
+- Easy to use ingame panels (Open them with ingame-configurable hotkeys)
+- Switch to the next track using a hotkey
+- Ingame resorting of tracks (just drag the items in the list)
+- Supports vanilla game mood/height music (e.g. if you zoom out, the music changes)
+- Add mood/height music just by corretly renaming the music file - mod will configure everything automatically
+- Chirpy support - Shows you which track is playing, how to open the panels and music file conversion errors
+- [strike]Chirps cannot be disabled because Chirpy is not putting a gun to my head[/strike]
+- Many features such as automatic music configuration, Chirpy, mood/height music can be easily disabled
 
 ![Yay Chirpy](./Readme_Resources/C:S Music Mod_Chirpy.png)
 
