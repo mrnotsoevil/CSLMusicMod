@@ -42,7 +42,8 @@ namespace CSLMusicMod
         public void Update()
         {
             //While setting key bindings, do nothing
-            if (UIKeyBindingButton.CurrentListeningButton != null)
+            //If colossal ui has focus do nothing
+            if (UIKeyBindingButton.CurrentListeningButton != null || UIView.HasInputFocus())
             {
                 _key_MusicSettings_IsDown = false;
                 _key_NextTrack_IsDown = false;
