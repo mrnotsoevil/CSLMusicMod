@@ -26,6 +26,7 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 - Added chirp if \*.ogg file could not be converted
 - Improved Chirper: Only chirp the current song after you switched tracks fast
 - Added more settings for configuration file: Height for 'sky' music changeable, mood for 'bad mood' changeable
+- Better algorithm to select next random music track (Should prevent too many repeats)
 - Bugfix: Cannot rename objects (houses, persons, ...) because panel pops up
 
 ##Adding music files
