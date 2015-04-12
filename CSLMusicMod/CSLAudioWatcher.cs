@@ -251,9 +251,9 @@ namespace CSLMusicMod
         {
             Debug.Log("[CSLMusic] Switching music ...");
 
-            FastList<CSLCustomMusicEntry> entries = CSLMusicModSettings.EnabledMusicEntries;
+            List<CSLCustomMusicEntry> entries = CSLMusicModSettings.EnabledMusicEntries;
 
-            if (entries.m_size == 0)
+            if (entries.Count == 0)
             {
                 Debug.Log("... cannot do this! There is no available music!");
                 return;
@@ -266,7 +266,7 @@ namespace CSLMusicMod
             }
 
             //Set current music entry
-            _currentMusic = _switchMusic_Requested_Music == null ? GetNextRandomMusic(entries) : _switchMusic_Requested_Music;
+            _currentMusic = _switchMusic_Requested_Music == null ? GetNextMusic(entries) : _switchMusic_Requested_Music;
             _switchMusic_Requested_Music = null; //Reset requested
             _switchMusic_Requested = false;
 
@@ -275,18 +275,56 @@ namespace CSLMusicMod
             Debug.Log("Now always enforcing " + _currentMusic);
         }
 
-        private CSLCustomMusicEntry GetNextRandomMusic(FastList<CSLCustomMusicEntry> entries)
+        private CSLCustomMusicEntry GetNextMusic(List<CSLCustomMusicEntry> entries)
         {
-            if (entries.m_size == 0)
+            //If the set of already played music contains as much files as entries, reset
+            if (_already_Played_Music.Count >= entries.Count)
+            {
+                _already_Played_Music.Clear();
+                Debug.Log("[CSLMusic][GetNextRandomMusic] Resetting already played music list #internal");
+            }
+
+            CSLCustomMusicEntry newentry;
+
+            if (CSLMusicModSettings.RandomTrackSelection)
+                newentry = GetNextRandomMusic(entries);
+            else
+                newentry = GetNextMusicFromList(entries);
+
+            _already_Played_Music.Add(newentry);
+            return newentry;
+        }
+
+        private CSLCustomMusicEntry GetNextMusicFromList(List<CSLCustomMusicEntry> entries)
+        {
+            if (entries.Count == 0)
             {
                 return null;
             }
 
-            //If the set of already played music contains as much files as entries, reset
-            if (_already_Played_Music.Count >= entries.m_size)
+            if (entries.Count == 1)
+                return entries[0];
+
+            //Get current list entry index
+            int index = entries.IndexOf(_currentMusic);
+
+            if (index == -1)
             {
-                _already_Played_Music.Clear();
-                Debug.Log("[CSLMusic][GetNextRandomMusic] Resetting already played music list #internal");
+                return entries[0];
+            }
+
+            index++;
+
+            if (index >= entries.Count)
+                return entries[0];
+            return entries[index];
+        }
+
+        private CSLCustomMusicEntry GetNextRandomMusic(List<CSLCustomMusicEntry> entries)
+        {
+            if (entries.Count == 0)
+            {
+                return null;
             }
 
             //Fetch a random music file until it is not matching with the previous one
@@ -297,7 +335,7 @@ namespace CSLMusicMod
 
             do
             {
-                music = entries[RANDOM.Next(entries.m_size)];
+                music = entries[RANDOM.Next(entries.Count)];
 
                 //If too many iterations, cancel
                 if(++iters >= 5000)
@@ -306,9 +344,7 @@ namespace CSLMusicMod
                     break;
                 }
             }
-            while(entries.m_size > 1 && (music == _previousMusic || _already_Played_Music.Contains(music)));
-
-            _already_Played_Music.Add(music);
+            while(entries.Count > 1 && (music == _previousMusic || _already_Played_Music.Contains(music)));
 
             return music;
         }
