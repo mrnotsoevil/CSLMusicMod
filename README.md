@@ -17,7 +17,7 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 - Supports vanilla game mood/height music (e.g. if you zoom out, the music changes)
 - Add mood/height music just by corretly renaming the music file - mod will configure everything automatically
 - Chirpy support - Shows you which track is playing, how to open the panels and music file conversion errors
-- [strike]Chirps cannot be disabled because Chirpy is not putting a gun to my head[/strike]
+- ~~Chirps cannot be disabled because Chirpy is not putting a gun to my head~~
 - Many features such as automatic music configuration, Chirpy, mood/height music can be easily disabled
 
 ![Yay Chirpy](./Readme_Resources/C:S Music Mod_Chirpy.png)
