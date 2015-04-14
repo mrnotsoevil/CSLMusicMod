@@ -165,10 +165,28 @@ Yes.
 Use an audio conversion software or website. Here is a list of free and open source audio conversion software:
 
 - http://soundconverter.org Soundconverter (Linux)
-- http://audacity.sourceforge.net Audacity (All platforms, only good if you want to convert a few files)
+- http://audacity.sourceforge.net Audacity (All platforms, ¹)
 - http://www.freac.org free:ac (All platforms)
 - http://winlame.sourceforge.net/ WinLAME (Windows; suggested by eharper256)
 - Suggest me some and I'll add it to the list
+
+###Using Audacity to convert
+You can create *.ogg files or *.raw files using Audacity.
+
+All thanks to BrianHanifin for telling me how to convert multiple files easily.
+
+- Open Audacity
+- Drag and drop your audio files into Audacity
+- Click File > Export multiple
+
+- Select Ogg vorbis and export them to the CSLMusicMod_Music folder
+
+OR:
+
+- Or select "uncompressed Files"
+- Click "Options"
+- Header: "RAW (header less)", Codec "Signed 16bit PCM"
+- Export the files to CSLMusicMod_Music folder 
 
 
 ##Planned features
