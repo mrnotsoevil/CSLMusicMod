@@ -194,7 +194,8 @@ OR:
 - ~~Add ingame settings panel~~
 - Add ingame music list reload
 - More settings and tweaks
-- Extend the mood based music
+- Get music from multiple folders
+- Support for music pack mods
 
 ##Development stuff
 
