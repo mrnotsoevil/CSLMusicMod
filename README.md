@@ -161,12 +161,13 @@ It's working like in the vanilla game. If you are above 1400 height, the 'sky' m
 ###Can I delete the \*.ogg files after conversion to \*.raw?
 Yes.
 
-###How to convert to \*.ogg
+###How to convert to \*.ogg?
 Use an audio conversion software or website. Here is a list of free and open source audio conversion software:
 
 - http://soundconverter.org Soundconverter (Linux)
 - http://audacity.sourceforge.net Audacity (All platforms, only good if you want to convert a few files)
 - http://www.freac.org free:ac (All platforms)
+- http://winlame.sourceforge.net/ WinLAME (Windows; suggested by eharper256)
 - Suggest me some and I'll add it to the list
 
 
