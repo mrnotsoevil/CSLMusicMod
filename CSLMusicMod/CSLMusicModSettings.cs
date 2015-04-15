@@ -10,8 +10,12 @@ namespace CSLMusicMod
 {
     public static class CSLMusicModSettings
     {
+        #region Constants
         public static SimpleIni SettingsFile = new SimpleIni("CSLMusicMod_Settings.ini");
         public const String MusicSettingsFileName = "CSLMusicMod_MusicFiles.csv";
+        public const String CustomMusicDefaultFolder = "CSLMusicMod_Music";
+        public const String ConvertedMusicPackMusicFolder = "CSLMusicMod_Musicpacks_Converted";
+        #endregion
         public static bool HeightDependentMusic = true;
         public static bool MoodDependentMusic = true;
         public static bool MusicWhileLoading = true;
@@ -20,12 +24,13 @@ namespace CSLMusicMod
         public static KeyCode Key_Settings = KeyCode.M;
         public static bool EnableChirper = true;
         public static List<CSLCustomMusicEntry> MusicEntries = new List<CSLCustomMusicEntry>();
-        //Additional settings
+        #region Update 1 Settings & Variables
         public static int MusicStreamSwitchTime = 154350;
         //65536*2 // 65536*3
         public static int MoodDependentMusic_MoodThreshold = 40;
         public static float HeightDependentMusic_HeightThreshold = 1400f;
-        //Update 2 Settings
+        #endregion
+        #region Update 2 Settings & Variables
         /**
          * If enabled, switch to a random track
          * */
@@ -34,9 +39,8 @@ namespace CSLMusicMod
          * Contains all *.ogg files which could not be converted
          * */
         public static FastList<String> Info_NonConvertedFiles = new FastList<string>();
-        /**
-         * Update 3 settings
-         * */
+        #endregion
+        #region Update 3 Settings & Variables
         public static List<String> AdditionalCustomMusicFolders = new List<string>();
         public static List<String> ModdedMusicSourceFolders = new List<String>();
 
@@ -46,7 +50,7 @@ namespace CSLMusicMod
             {
                 List<string> folders = new List<string>();
 
-                folders.Add("CSLMusicMod_Music");
+                folders.Add(CustomMusicDefaultFolder);
                 folders.AddRange(AdditionalCustomMusicFolders);
 
                 return folders;
@@ -72,12 +76,12 @@ namespace CSLMusicMod
                 return entries;
             }
         }
-
+        #endregion
         static CSLMusicModSettings()
         {
 
         }
-
+        #region Music conversion
         public static IEnumerator ConvertCustomMusic()
         {
             //Do it here
@@ -104,18 +108,27 @@ namespace CSLMusicMod
                 String srcfile = task.Key;
                 String dstfile = task.Value;               
 
-                if (Path.GetExtension(srcfile) == ".ogg" && !File.Exists(dstfile))
+                if (Path.GetExtension(srcfile) == ".ogg")
                 {
-                    Debug.Log("[CSLMusic] To convert: " + srcfile);
-                    AudioFormatHelper.ConvertOggToRAW(srcfile, dstfile);
+                    if (!File.Exists(dstfile))
+                    {
+                        Debug.Log("[CSLMusic] To convert: " + srcfile + " -> " + dstfile);
+                        AudioFormatHelper.ConvertOggToRAW(srcfile, dstfile);
 
-                    yield return null;
+                        yield return null;
+                    }
+                    else
+                    {
+                        Debug.Log("[CSLMusic] Not converting " + srcfile + " to " + dstfile);
+                    }
                 }
             }
         }
 
         private static void ConvertCustomMusic_AddConversionTasks(String folder, Dictionary<String, String> conversiontasks, bool mod)
         {
+            Debug.Log("[CSLMusic] Conversion looking for files @ " + folder);
+
             if (Directory.Exists(folder))
             { 
                 PluginManager.PluginInfo modification = null;
@@ -127,6 +140,12 @@ namespace CSLMusicMod
                     if (modification == null)
                     {
                         Debug.LogError("[CSLMusic] Cannot add folder " + folder + " as mod! Mod could not be identified");
+                        return;
+                    }
+
+                    if (!modification.isEnabled)
+                    {
+                        //Don't convert if mod is not active
                         return;
                     }
                 }
@@ -163,13 +182,14 @@ namespace CSLMusicMod
                 Debug.LogError("ERROR: " + folder + " is not existing!");
             }
         }
-
+        #endregion
+        #region Helpers
         /**
          * Creates and returns the folder containing the converted files for given mod
          * */
         public static String CreateModConvertedMusicFolder(PluginManager.PluginInfo info)
         {
-            String destinationpath = Path.Combine("CSLMusicMod_Musicpacks_Converted", info.publishedFileID.AsUInt64.ToString());
+            String destinationpath = Path.Combine(ConvertedMusicPackMusicFolder, info.publishedFileID.AsUInt64.ToString());
         
             if (!Directory.Exists(destinationpath))
                 Directory.CreateDirectory(destinationpath);
@@ -184,7 +204,7 @@ namespace CSLMusicMod
          * */
         public static PluginManager.PluginInfo GetSourceModFromFolder(String folder)
         {
-            foreach(PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
+            foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
             {
                 if (folder.StartsWith(info.modPath))
                     return info;
@@ -232,7 +252,8 @@ namespace CSLMusicMod
 
             return null;
         }
-
+        #endregion
+        #region Adding unknown music
         private static bool AddUnknownCustomMusicFiles()
         {
             Debug.Log("[CSLMusic] Fetching unknown custom music files ...");
@@ -262,9 +283,9 @@ namespace CSLMusicMod
 
             List<String> searchfolders = new List<string>();
             searchfolders.AddRange(ModdedMusicSourceFolders);
-            if (Directory.Exists("CSLMusicMod_Musicpacks_Converted"))
+            if (Directory.Exists(ConvertedMusicPackMusicFolder))
             {
-                searchfolders.AddRange(Directory.GetDirectories("CSLMusicMod_Musicpacks_Converted"));
+                searchfolders.AddRange(Directory.GetDirectories(ConvertedMusicPackMusicFolder));
             }
 
             /**
@@ -272,10 +293,28 @@ namespace CSLMusicMod
              * and music from converted
              * */
             foreach (String folder in searchfolders)
-            {               
+            {      
                 if (Directory.Exists(folder))
                 { 
-                    foundsomething |= AddUnknownMusicFiles(folder, CSLCustomMusicEntry.SourceType.Mod);
+                    //Does the plugin exist? Is it active
+                    PluginManager.PluginInfo info = GetSourceModFromId(Path.GetFileName(folder));
+
+                    if (info == null)
+                    {
+                        Debug.LogWarning("[CSLMusic] Unknown mod in folder @ " + folder);
+                        continue;
+                    }
+
+                    if (info.isEnabled)
+                    {
+                        Debug.Log("[CSLMusic] Adding mod conversion files from " + folder);
+                        foundsomething |= AddUnknownMusicFiles(folder, CSLCustomMusicEntry.SourceType.Mod);
+                    }
+                    else
+                    {
+                        Debug.Log("[CSLMusic] Not adding mod conversion files from " + folder + ": Not enabled");
+                        Debug.Log("-> Directory of this mod is " + info.modPath);
+                    }
                 }
                 else
                 {
@@ -433,7 +472,8 @@ namespace CSLMusicMod
 
             return foundsomething;
         }
-
+        #endregion
+        #region Settings Files
         public static void LoadMusicFiles()
         {
             Debug.Log("[CSLMusic] Loading music files from configuration ...");
@@ -518,7 +558,7 @@ namespace CSLMusicMod
             Debug.Log("[CSLMusic] ... done");
 
             //Add unknown music files
-            bool changed = AddUnknownVanillaMusicFiles() | AddUnknownCustomMusicFiles();
+            bool changed = AddUnknownVanillaMusicFiles() | AddUnknownCustomMusicFiles() | AddUnknownMusicPackMusicFiles();
        
             if (changed)
                 SaveMusicFileSettings();
@@ -535,7 +575,7 @@ namespace CSLMusicMod
             
                 foreach (CSLCustomMusicEntry entry in MusicEntries)
                 {
-                    String data = (String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", 
+                    String data = (String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", 
                                                  entry.Enable,
                                                  entry.GoodMusic,
                                                  entry.BadMusic,
@@ -578,7 +618,7 @@ namespace CSLMusicMod
 
             //Update 3: Modpack music folders, additional music folders
             SettingsFile.Set("Music Library", "EnableMusicPacks", EnableMusicPacks);
-            SettingsFile.Set("Music Library", "CustomMusicFolders", String.Join(";", CustomMusicFolders.ToArray()));
+            SettingsFile.Set("Music Library", "CustomMusicFolders", String.Join(";", AdditionalCustomMusicFolders.ToArray()));
 
             SettingsFile.Save();
         }
@@ -620,12 +660,12 @@ namespace CSLMusicMod
             //Load Update 3 settings
             EnableMusicPacks = SettingsFile.GetAsBool("Music library", "EnableMusicPacks", true);
 
-            CustomMusicFolders.Clear();
+            AdditionalCustomMusicFolders.Clear();
             foreach (String folder in SettingsFile.Get("Music library", "CustomMusicFolders", "").Split(';'))
             {
                 if (!String.IsNullOrEmpty(folder) && !CustomMusicFolders.Contains(folder))
                 {
-                    CustomMusicFolders.Add(folder);
+                    AdditionalCustomMusicFolders.Add(folder);
                 }
             }
 
@@ -638,47 +678,21 @@ namespace CSLMusicMod
             //Add music folders from music packs
             AddModpackMusicFolders();
         }
-
-        private static void AddModpackMusicFolders()
-        {
-            ModdedMusicSourceFolders.Clear();
-
-            //If music packs are disabled, just add no folders.
-            if (!EnableMusicPacks)
-                return;
-
-            foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
-            {
-                if (info.isEnabled)
-                {
-                    String path = Path.Combine(info.modPath, "CSLMusicMod_Music");
-
-                    if (Directory.Exists(path))
-                    {
-                        Debug.Log("[CSLMusic] Adding music pack @ " + path);
-
-                        if (!ModdedMusicSourceFolders.Contains(path))
-                        {
-                            ModdedMusicSourceFolders.Add(path);
-                        }
-                    }
-                }
-            }
-        }
-
+        #endregion
+        #region Music Packs
         private static void RemoveUnsubscribedConvertedModpackMusic()
         {
             Debug.Log("[CSLMusic] Removing unsubscribed converted music files ...");
 
             List<String> dirstoremove = new List<string>();
 
-            if(Directory.Exists("CSLMusicMod_Musicpacks_Converted"))
+            if (Directory.Exists(ConvertedMusicPackMusicFolder))
             {
-                dirstoremove.AddRange(Directory.GetDirectories("CSLMusicMod_Musicpacks_Converted"));
+                dirstoremove.AddRange(Directory.GetDirectories(ConvertedMusicPackMusicFolder));
             }
 
             //Look through folders and look if pluginid exists
-            foreach(String folder in dirstoremove.ToArray())
+            foreach (String folder in dirstoremove.ToArray())
             {
                 if (PluginIdExists(Path.GetFileName(folder)))
                 {
@@ -696,7 +710,7 @@ namespace CSLMusicMod
 
         private static bool PluginIdExists(String id)
         {
-            foreach(PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
+            foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
             {
                 if (info.publishedFileID.AsUInt64.ToString() == id)
                     return true;
@@ -705,92 +719,61 @@ namespace CSLMusicMod
             return false;
         }
 
-        /**
-         * EDIT: Obsolete through new system
-         * 
-         * Because modpack music is stored in the same file as "normal" music,
-         * it must be cleaned away if the user deactivates the mod
-         * 
-         * There are no real nice alternatives to this
-         * */
-        /*private static bool RemoveInactiveModpackMusic()
+        private static void AddModpackMusicFolders()
         {
-            Debug.Log("[CSLMusic] Removing inactive mod music files from entry list ...");
+            ModdedMusicSourceFolders.Clear();
 
-            bool changes_made = false;
+            //If music packs are disabled, just add no folders.
+            if (!EnableMusicPacks)
+                return;
 
             foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
             {
-                if (!info.isEnabled)
+                if (info.isEnabled)
                 {
-                    String path = Path.Combine(info.modPath, "CSLMusicMod_Music");
+                    String path = Path.Combine(info.modPath, CustomMusicDefaultFolder);
 
                     if (Directory.Exists(path))
                     {
-                        Debug.Log("... mod: " + info.name);
+                        Debug.Log("[CSLMusic] Adding music pack @ " + path);
 
-                        foreach (String file in Directory.GetFiles(path))
+                        if (!ModdedMusicSourceFolders.Contains(path))
                         {
-                            if (Path.GetExtension(file) == ".raw")
-                            {
-                                changes_made |= CleanMusicListFrom(file);
-                            }
+                            ModdedMusicSourceFolders.Add(path);
                         }
                     }
                 }
             }
-
-            return changes_made;
-        }*/
+        }
 
         /**
-         * Removes file from currently loaded music entries
-         * Must save manually!
+         * 
+         * Gets the mod by the specified id string
+         * Only returns mod with CSLMusicMod_Music folder
+         * 
          * */
-        /*private static bool CleanMusicListFrom(String file)
+        public static PluginManager.PluginInfo GetSourceModFromId(String id)
         {
-            Debug.Log("[CSLMusic] Removing music file: " + file);
-
-            List<CSLCustomMusicEntry> todelete = new List<CSLCustomMusicEntry>();
-
-            bool changes_made = false;
-
-            foreach (CSLCustomMusicEntry entry in MusicEntries)
+            foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
             {
-                if (entry.GoodMusic == file)
+                if (info.publishedFileID.AsUInt64.ToString() == id)
                 {
-                    todelete.Add(entry);
-                    continue;
-                }
-                if (entry.BadMusic == file)
-                {
-                    entry.BadMusic = "";
-                    entry.EnableBadMusic = false;
-                    changes_made = true;
-                }
-                if (entry.SkyMusic == file)
-                {
-                    entry.SkyMusic = "";
-                    entry.EnableSkyMusic = false;
-                    changes_made = true;
+                    if (Directory.Exists(Path.Combine(info.modPath, CustomMusicDefaultFolder)))
+                        return info;
                 }
             }
 
-            foreach (CSLCustomMusicEntry entry in todelete)
-            {
-                MusicEntries.Remove(entry);
-            }
-
-            return changes_made;
-        }*/
-
+            return null;
+        }
+        #endregion
+        #region Folders
         private static void CreateMusicFolder()
         {
             //Create the music folder
-            Directory.CreateDirectory("CSLMusicMod_Music");
+            Directory.CreateDirectory(CustomMusicDefaultFolder);
 
             //Create the readme file into the directory
-            using (StreamWriter w = File.CreateText("CSLMusicMod_Music/README.txt"))
+            using (StreamWriter w = File.CreateText(Path.Combine(CustomMusicDefaultFolder,"README.txt")))
             {
                 w.WriteLine("Cities: Skylines Music Mod");
                 w.WriteLine("--------------------------");
@@ -820,6 +803,7 @@ namespace CSLMusicMod
         {
             CreateMusicFolder();
         }
+        #endregion
     }
 }
 
