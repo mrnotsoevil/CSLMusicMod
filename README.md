@@ -100,8 +100,8 @@ Visit the [wiki](https://github.com/rumangerst/CSLMusicMod/wiki/How-to-convert-a
 - ~~Add ingame settings panel~~
 - Add ingame music list reload
 - More settings and tweaks
-- Get music from multiple folders
-- Support for music pack mods
+- ~~Get music from multiple folders~~
+- ~~Support for music pack mods~~
 
 ##Development stuff
 
