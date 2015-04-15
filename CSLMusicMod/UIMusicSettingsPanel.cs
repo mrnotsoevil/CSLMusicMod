@@ -5,7 +5,7 @@ using ColossalFramework;
 
 namespace CSLMusicMod
 {
-    public class MusicSettingsPanel : UIPanel
+    public class UIMusicSettingsPanel : UIPanel
     {
         public CSLAudioWatcher AudioWatcher { get; set; }
 
@@ -21,7 +21,7 @@ namespace CSLMusicMod
         private SavedFloat _MusicAudioVolume = new SavedFloat(Settings.musicAudioVolume, Settings.gameSettingsFile, DefaultSettings.musicAudioVolume, true);
         private UISlider _MusicVolumeSlider;
 
-        public MusicSettingsPanel()
+        public UIMusicSettingsPanel()
         {
         }
 

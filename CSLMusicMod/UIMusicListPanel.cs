@@ -7,12 +7,12 @@ using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
-    public class MusicListPanel : UIPanel
+    public class UIMusicListPanel : UIPanel
     {     
         UILabel _currentMusic;
         UIListBox _musicList;
         UIButton _openSettings;
-        MusicSettingsPanel _settingsPanel;
+        UIMusicSettingsPanel _settingsPanel;
 
         public CSLAudioWatcher AudioWatcher { get; set; }
 
@@ -20,7 +20,7 @@ namespace CSLMusicMod
         private int _resort_currentPivotIndex;
         private bool _resort_resorted;
 
-        public MusicListPanel()
+        public UIMusicListPanel()
         {
         }
 
@@ -51,7 +51,7 @@ namespace CSLMusicMod
             AddList();
 
             //Add settings panel
-            _settingsPanel = (MusicSettingsPanel)GetUIView().AddUIComponent(typeof(MusicSettingsPanel));
+            _settingsPanel = (UIMusicSettingsPanel)GetUIView().AddUIComponent(typeof(UIMusicSettingsPanel));
             _settingsPanel.isVisible = false;
             _settingsPanel.AudioWatcher = AudioWatcher;
             _settingsPanel.width = this.width;

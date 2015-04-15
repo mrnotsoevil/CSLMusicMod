@@ -65,8 +65,6 @@
     <Compile Include="MusicUI.cs" />
     <Compile Include="CSLMusicChirperMessage.cs" />
     <Compile Include="SimpleIni.cs" />
-    <Compile Include="MusicListPanel.cs" />
-    <Compile Include="MusicSettingsPanel.cs" />
     <Compile Include="UICheckButton.cs" />
     <Compile Include="NVorbis\BufferedReadStream.cs" />
     <Compile Include="NVorbis\DataPacket.cs" />
@@ -95,6 +93,8 @@
     <Compile Include="NVorbis\Ogg\OggPageFlags.cs" />
     <Compile Include="UIKeyBindingButton.cs" />
     <Compile Include="AudioFormatHelper.cs" />
+    <Compile Include="UIMusicListPanel.cs" />
+    <Compile Include="UIMusicSettingsPanel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

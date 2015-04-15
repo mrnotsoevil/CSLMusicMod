@@ -6,6 +6,26 @@ namespace CSLMusicMod
 {
     public class CSLCustomMusicEntry
     {
+        public enum SourceType
+        {
+            /**
+             * Vanilla music
+             * */
+            Vanilla,
+            /**
+             * Custom music from CSLMusicMod_Music folder or additional custom folders
+             * */
+            Custom,
+            /*
+             * Loaded from modification
+             * */
+            Mod,
+            /**
+             * Manually created from configuration file
+             * */
+            Manual
+        }
+
         public String Name
         {
             get;
@@ -60,8 +80,14 @@ namespace CSLMusicMod
             }
         }
 
-        public CSLCustomMusicEntry(bool enable, String name, String good, String bad, bool enable_bad, String sky, bool enable_sky)
+        /**
+         * Source of this music entry
+         * */
+        public SourceType Source { get; private set; }
+
+        public CSLCustomMusicEntry(SourceType source, bool enable, String name, String good, String bad, bool enable_bad, String sky, bool enable_sky)
         {
+            Source = source;
             Name = name;
             _enable = enable;
             GoodMusic = good;
@@ -71,8 +97,8 @@ namespace CSLMusicMod
             _enableSkyMusic = enable_sky;
         }
 
-        public CSLCustomMusicEntry(String name, String good, String bad, String sky) 
-            : this(true, name, good, bad, true, sky, true)
+        public CSLCustomMusicEntry(SourceType source, String name, String good, String bad, String sky) 
+            : this(source, true, name, good, bad, true, sky, true)
         {
            
         }

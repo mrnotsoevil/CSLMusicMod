@@ -9,7 +9,7 @@ namespace CSLMusicMod
     {
         private bool _key_NextTrack_IsDown = false;
         private bool _key_MusicSettings_IsDown = false;
-        private MusicListPanel _current_Settings_Panel;
+        private UIMusicListPanel _current_Settings_Panel;
 
         private static CSLMusicChirperMessage _last_Music_Switch_Message;
 
@@ -34,7 +34,7 @@ namespace CSLMusicMod
         {
             //Create ui
             UIView v = UIView.GetAView();
-            _current_Settings_Panel = (MusicListPanel)v.AddUIComponent(typeof(MusicListPanel));
+            _current_Settings_Panel = (UIMusicListPanel)v.AddUIComponent(typeof(UIMusicListPanel));
             _current_Settings_Panel.AudioWatcher = AudioWatcher;
             _current_Settings_Panel.Hide();
         }
