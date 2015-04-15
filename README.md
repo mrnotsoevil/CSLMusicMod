@@ -89,24 +89,52 @@ You can also configure the mod using *CSLMusicMod_Settings.ini*
 
 ```
 [Music Selection]
-# Enable changing music when you are high enough above your city
+
+# Enable changing music when you are high enough above your city (Accessable from user interface)
 HeightDependentMusic=True
-# Enable changing music when your city is not running well
+
+# Enable changing music when your city is not running well (Accessable from user interface)
 MoodDependentMusic=True
+
 [Tweaks]
-# Enable music while loading. Use this if you have a stuttering problem while loading
+
+# Enable music while loading. Use this if you have a stuttering problem while loading (Accessable from user interface)
 MusicWhileLoading=True
+
+# Set the height needed to switch to 'sky' music
+HeightDependentMusic_HeightThreshold=1400
+
+# Set the happiness threshold for 'bad' music
+MoodDependentMusic_MoodThreshold=40
+
 [Chirper]
-# Enable our beloved leader Chirpy
+
+# Enable our beloved leader Chirpy (Accessable from user interface)
 EnableChirper=True
+
 [Keys]
-# Key for switching track
+
+# Key for switching track (Accessable from user interface)
 NextTrack=N
-# Key for opening the settings/music list
+
+# Key for opening the settings/music list (Accessable from user interface)
 ShowSettings=M
+
 [Music Library]
+
 # Enable automatically determining custom music types using #hashtags
 AutoAddMusicTypesForCustomMusic=True
+
+# If true, the mod will look for other mods, providing a music pack 
+EnableMusicPacks=True
+
+# Add custom music folders here (full path). Separate with ;
+CustomMusicFolders=
+
+[Playlist]
+
+# If enabled, the tracks will be played randomly (Accessable from user interface)
+RandomTrackSelection=True
 ```
 
 ###Music Configuration

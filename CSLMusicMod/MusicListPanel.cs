@@ -145,6 +145,26 @@ namespace CSLMusicMod
          
             panel.Show();
 
+            /**
+             * Not working -.-
+             * */
+            /*var scroller = panel.AddUIComponent<UIScrollbar>();
+            scroller.width = 15;
+            scroller.height = panel.height;
+            scroller.relativePosition = new Vector3(width - 15 - 7.5f, 55);
+
+            {
+                var thumb = scroller.AddUIComponent<UIPanel>();
+                thumb.backgroundSprite = "TextFieldPanel";
+                thumb.color = new Color32(79, 210, 233, 255);
+
+                scroller.thumbObject = thumb;
+                thumb.isVisible = true;
+            }
+
+            panel.scrollbar = scroller;
+            scroller.isVisible = true;*/
+
             UpdateMusicList();
 
             panel.eventItemClicked += delegate(UIComponent component, int value)

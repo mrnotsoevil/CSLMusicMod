@@ -94,6 +94,7 @@
     <Compile Include="NVorbis\Ogg\OggPacketReader.cs" />
     <Compile Include="NVorbis\Ogg\OggPageFlags.cs" />
     <Compile Include="UIKeyBindingButton.cs" />
+    <Compile Include="AudioFormatHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
