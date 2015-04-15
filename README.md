@@ -24,6 +24,10 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 
 ##Changelog
 
+###Update 3
+- Added support for music packs (see [wiki](https://github.com/rumangerst/CSLMusicMod/wiki/Create-a-music-pack) how to create one yourself)
+- Added support for additional music folder paths
+
 ###Update 2
 - Added setting for non random playback
 - Added resorting of music list (drag items to resort them)
@@ -38,38 +42,20 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 - Better algorithm to select next random music track (Should prevent too many repeats)
 - Bugfix: Cannot rename objects (houses, persons, ...) because panel pops up
 
-##Adding music files
+##Adding music from music packs
+Just subscribe a music pack and activate CSL Music Mod and the music pack in the content manager.
+
+If you want to test out this feature, download my little example music pack: http://steamcommunity.com/sharedfiles/filedetails/?id=425299246
+
+##Adding custom music files
 The mod gets its music files from _CSLMusicMod_Music_ folder (location depends by platform, you can find the folder where many other mods are storing their data).
 
 Just put \*.ogg or \*.raw files into that folder and if you start the game, the music will be used.
 
 ![Example of folder with music files](./Readme_Resources/C:S Music Mod_Example_Filenames.png)
 
-###\*.raw files
-You can create \*.raw files manually if you want. Just export raw audio data in an audio editor (e.g. Audacity) with following settings:
-* Signed 16 bit PCM
-* Little Endian byte order
-* 2 Channels (Stereo)
-* Frequency 44100Hz
-
-##Music files for 'bad mood' and 'sky'
-If enabled (see later), the mod can automatically determine the 'type' of a music file, so you don't have to mess with the configuration file.
-
-To determine the type, add #hashtag at the end of the filename (but do not change the extension!).
-
-- \#sky for 'sky'/'hovering above your city' music
-- \#bad for 'bad mood' music
- 
-### Example
-Let **MyMusicFile.ogg** (or \*.raw) be your main music file for 'normal' ('good mood') music.
-
-Rename your other music files like this:
-
-- **MyMusicFile #sky.ogg** or **MyMusicFile#sky.ogg** for sky music
-- **MyMusicFile #bad.ogg** or **MyMusicFile#bad.ogg** for bad mood music
- 
-
-__Note: You must provide a music file for 'normal'/'good' condition. You cannot have songs only for 'bad' and 'sky'__
+Visit the [wiki](https://github.com/rumangerst/CSLMusicMod/wiki/Adding-music) for more information about adding music.
+You also can find here information how to [convert](https://github.com/rumangerst/CSLMusicMod/wiki/How-to-convert-audio-files) your music files.
 
 ##Ingame
 
@@ -83,75 +69,11 @@ If you press [M] key (default setting), the music list opens. If you click on "S
 ![Music list with settings](./Readme_Resources/C:S Music Mod_Settings_List.png)
 
 Everything you set there will be written into the configuration file.
-
-###Configuration file
-You can also configure the mod using *CSLMusicMod_Settings.ini* 
-
-```
-[Music Selection]
-# Enable changing music when you are high enough above your city
-HeightDependentMusic=True
-# Enable changing music when your city is not running well
-MoodDependentMusic=True
-[Tweaks]
-# Enable music while loading. Use this if you have a stuttering problem while loading
-MusicWhileLoading=True
-[Chirper]
-# Enable our beloved leader Chirpy
-EnableChirper=True
-[Keys]
-# Key for switching track
-NextTrack=N
-# Key for opening the settings/music list
-ShowSettings=M
-[Music Library]
-# Enable automatically determining custom music types using #hashtags
-AutoAddMusicTypesForCustomMusic=True
-```
-
-###Music Configuration
-The mod usually does everything automatically. But you can configure your own list of tracks in *CSLMusicMod_MusicFiles.csv*.
-
-This file is a table, you can open in spreadsheet programs like LibreOffice or Excel. Use tabulator/tab as only delimiter.
-
-Each row in the table is a 'music entry', a collection of music files. You can enable or disable an entry (equivalent to enabling/disabling in ingame user interface). Also you can set a music file for each music type (sky, bad mood) and enable or disable this particular song.
-
-Please don't forget that you have to insert \*.raw files into the table. 
-
-__Note: You must provide a music file for 'normal'/'good' condition. You cannot have songs only for 'bad' and 'sky'__
+Visit the [wiki](https://github.com/rumangerst/CSLMusicMod/wiki/Configuration) for more information about configuration using the configuration files. There you also can find how to manually configure the music list.
 
 ##Troubleshooting
 
-###There are no configuration files or folders
-The mod will create them while loading the map.
-
-###Some \*.ogg files won't convert
-This is usually caused by too large ID3 tags. NVorbis (http://nvorbis.codeplex.com/), which is used for decoding \*.ogg files cannot handle too large tags.
-
-Try to remove ID3 tags by using Audacity or programs like EasyTag.
-
-###The music is distorted
-Try to convert the *.ogg files with following settings: 44100Hz, Stereo (2 channels)
-It could be that NVorbis will keep the sample rate and the channels while converting to *.raw. C:S expects 44100Hz with 2 channels.
-
-###My game is loading too long
-This happens because \*.ogg files have to be converted to \*.raw files. This only happens once, so get a cup of tea and wait until it's finished :)
-
-###If I add 'mood' and/or 'sky' music, the music restarts. I want to crossfade the music.
-The songs must have almost the same length.
-
-```
-long length = this.m_previousMusicStream.Length;
-long length2 = this.m_currentMusicStream.Length;
-if (Mathf.Abs((float)(length - length2)) < 1024f)
-{
-    long position = this.m_previousMusicStream.Position;
-    if (position < length2)
-    {
-        this.m_currentMusicStream.Position = position;
-    }
-}
-```
+Please visit the [wiki](https://github.com/rumangerst/CSLMusicMod/wiki/Troubleshooting) for solutions for your problems. You also can comment to the Steam Workshop page and i'll try to help.
 
 ##FAQ
 
@@ -170,23 +92,7 @@ Use an audio conversion software or website. Here is a list of free and open sou
 - http://winlame.sourceforge.net/ WinLAME (Windows; suggested by eharper256)
 - Suggest me some and I'll add it to the list
 
-###Using Audacity to convert
-You can create *.ogg files or *.raw files using Audacity.
-
-All thanks to BrianHanifin for telling me how to convert multiple files easily.
-
-- Open Audacity
-- Drag and drop your audio files into Audacity
-- Click File > Export multiple
-
-- Select Ogg vorbis and export them to the CSLMusicMod_Music folder
-
-OR:
-
-- Or select "uncompressed Files"
-- Click "Options"
-- Header: "RAW (header less)", Codec "Signed 16bit PCM"
-- Export the files to CSLMusicMod_Music folder 
+Visit the [wiki](https://github.com/rumangerst/CSLMusicMod/wiki/How-to-convert-audio-files) for more information about converting your files.
 
 
 ##Planned features
@@ -194,8 +100,8 @@ OR:
 - ~~Add ingame settings panel~~
 - Add ingame music list reload
 - More settings and tweaks
-- Get music from multiple folders
-- Support for music pack mods
+- ~~Get music from multiple folders~~
+- ~~Support for music pack mods~~
 
 ##Development stuff
 
