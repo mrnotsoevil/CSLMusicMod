@@ -24,6 +24,9 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 
 ##Changelog
 
+###Update 3.1
+- Fixed not saving any settings (enabling/disabling/order)
+
 ###Update 3
 - Added support for music packs (see [wiki](https://github.com/rumangerst/CSLMusicMod/wiki/Create-a-music-pack) how to create one yourself)
 - Added support for additional music folder paths
