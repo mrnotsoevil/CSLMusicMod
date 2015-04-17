@@ -33,6 +33,21 @@ namespace CSLMusicMod
 
         }
 
+        private void ensureGameObject()
+        {
+            Debug.Log("Creating injector game object ...");
+
+            if (_gameObject == null)
+            {
+                _gameObject = new GameObject();
+                _gameObject.name = "CSLMusicMod_GO";
+            }
+            if (_injector == null)
+            {
+                _injector = _gameObject.AddComponent<MusicInjector>();       
+            }
+        }
+
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
@@ -43,18 +58,19 @@ namespace CSLMusicMod
             //Load settings 
             CSLMusicModSettings.LoadModSettings();
 
-            Debug.Log("Creating injector game object ...");
-            _gameObject = new GameObject();
-            _gameObject.name = "CSLMusicMod_GO";
-            _injector = _gameObject.AddComponent<MusicInjector>();           
+            ensureGameObject();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
 
+            //ensure it!
+            ensureGameObject();
+
             //Create ui
-            _ui = _gameObject.AddComponent<MusicUI>();
+            if (_ui == null)
+                _ui = _gameObject.AddComponent<MusicUI>();
 
             MusicUI.ChirpWelcome();
             MusicUI.ChirpConverterError();
@@ -68,6 +84,10 @@ namespace CSLMusicMod
                 MonoBehaviour.Destroy(_injector);
             if (_ui != null)
                 MonoBehaviour.Destroy(_ui);
+
+            _gameObject = null;
+            _injector = null;
+            _ui = null;
 
             base.OnLevelUnloading();
         }

@@ -1,10 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/CSLMusicModSettings.cs">
-    <Files>
-      <File FileName="CSLMusicMod/CSLMusicModSettings.cs" Line="547" Column="78" />
-      <File FileName="CSLMusicMod/MusicInjector.cs" Line="72" Column="71" />
-    </Files>
+  <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ClassPad">
         <State expanded="True">

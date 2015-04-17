@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using UnityEngine;
 
 namespace CSLMusicMod
 {
@@ -28,7 +29,18 @@ namespace CSLMusicMod
 
         public override uint GetSenderID()
         {
-            return MessageManager.instance.GetRandomResidentID();
+            //Sometimes throws an error?
+
+            try
+            {
+                return MessageManager.instance.GetRandomResidentID();
+            }
+            catch (Exception)
+            {
+                Debug.LogError("[CSLMusic] Could not get random resident ID for chirp");
+
+                return 0;
+            }
         }
 
         public override string GetText()
@@ -48,7 +60,6 @@ namespace CSLMusicMod
 
             return "#crazy";
         }
-
         /*public override bool IsSimilarMessage(MessageBase other)
         {
             if (other is CSLMusicChirperMessage)
@@ -68,7 +79,6 @@ namespace CSLMusicMod
                 return base.IsSimilarMessage(other);
             }
         }*/
-
         public static CSLMusicChirperMessage CreateWelcomeMessage()
         {
             return new CSLMusicChirperMessage(MusicMessageType.Welcome);

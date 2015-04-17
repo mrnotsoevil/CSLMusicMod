@@ -11,6 +11,7 @@ namespace CSLMusicMod
     public static class CSLMusicModSettings
     {
         #region Constants
+        public const String VersionName = "Update 3.2";
         public static SimpleIni SettingsFile = new SimpleIni("CSLMusicMod_Settings.ini");
         public const String MusicSettingsFileName = "CSLMusicMod_MusicFiles.csv";
         public const String CustomMusicDefaultFolder = "CSLMusicMod_Music";
@@ -639,7 +640,7 @@ namespace CSLMusicMod
         {
             using (StreamWriter w = new StreamWriter(MusicSettingsFileName))
             {
-                w.WriteLine("# Update 3.1");
+                w.WriteLine("# " + VersionName);
                 w.WriteLine("# CSL Music Mod Configuration File");
                 w.WriteLine("# Uncomment or add custom entries here");
                 w.WriteLine("# Enabled (true/false)\t'Good' music\t'Bad' music\tEnable 'Bad' music\t'Sky' music\tEnable 'Sky' music");
