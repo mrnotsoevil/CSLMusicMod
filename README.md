@@ -24,6 +24,10 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 
 ##Changelog
 
+###Update 3.2
+- Fix crash if loading a map ingame (Menu->Load / Quickload) [Reported by 'Bastard from the Skies']
+- Fix crash if Chirper cannot find random residential id
+
 ###Update 3.1
 - Fixed not saving any settings (enabling/disabling/order)
 
