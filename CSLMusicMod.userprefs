@@ -1,6 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/CSLMusicMod.cs">
+    <Files>
+      <File FileName="CSLMusicMod/CSLMusicChirperMessage.cs" Line="20" Column="10" />
+      <File FileName="CSLMusicMod/CSLMusicMod.cs" Line="57" Column="13" />
+      <File FileName="CSLMusicMod/CSLMusicModSettings.cs" Line="633" Column="41" />
+    </Files>
     <Pads>
       <Pad Id="ClassPad">
         <State expanded="True">
