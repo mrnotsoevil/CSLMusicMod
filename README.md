@@ -24,6 +24,13 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 
 ##Changelog
 
+###Update 3.3
+- Bugfix: Sky/Bad music is not enabled
+- Bugfix: Retry assign sky/bad music if destination entry was not found
+- Music list now won't list the full names of the files anymore if not needed (you can disable this)
+- Better music list filename display for 'old' mode (if you disable the new one listed above)
+- Added scrollbar (you can disable this, too)
+
 ###Update 3.2
 - Fix crash if loading a map ingame (Menu->Load / Quickload) [Reported by 'Bastard from the Skies']
 - Fix crash if Chirper cannot find random residential id
