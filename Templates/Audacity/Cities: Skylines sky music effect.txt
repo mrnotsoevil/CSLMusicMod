@@ -1,0 +1,5 @@
+Equalization: FilterLength=4001 CurveName="Bass Cut" InterpolateLin=no interpolationMethod=B-Spline
+Reverb: RoomSize=90.000000 Delay=16.000000 Reverberance=80.000000 HfDamping=80.000000 ToneLow=100.000000 ToneHigh=0.000000 WetGain=0.000000 DryGain=-20.000000 StereoWidth=100.000000 WetOnly=no
+Equalization: FilterLength=4001 CurveName="Bass Boost" InterpolateLin=no interpolationMethod=B-Spline
+Normalize: ApplyGain=yes RemoveDcOffset=yes Level=-1.000000 StereoIndependent=no
+ExportOgg:
