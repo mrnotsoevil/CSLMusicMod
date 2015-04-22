@@ -26,6 +26,7 @@ Steam Workshop Link: http://steamcommunity.com/sharedfiles/filedetails/?id=42293
 
 ###Update 3.3
 - Bugfix: Sky/Bad music is not enabled
+- Bugfix: Retry assign sky/bad music if destination entry was not found
 - Music list now won't list the full names of the files anymore if not needed (you can disable this)
 - Better music list filename display for 'old' mode (if you disable the new one listed above)
 - Added scrollbar (you can disable this, too)
