@@ -11,7 +11,7 @@ namespace CSLMusicMod
     public static class CSLMusicModSettings
     {
         #region Constants
-        public const String VersionName = "Update 3.2";
+        public const String VersionName = "Update 3.3";
         public static SimpleIni SettingsFile = new SimpleIni("CSLMusicMod_Settings.ini");
         public const String MusicSettingsFileName = "CSLMusicMod_MusicFiles.csv";
         public const String CustomMusicDefaultFolder = "CSLMusicMod_Music";
@@ -77,6 +77,14 @@ namespace CSLMusicMod
                 return entries;
             }
         }
+        #endregion
+        #region Update 3.3 Settings
+        /**
+         * If music list should short the names
+         * */
+        public static bool MusicListShortNames = true;
+
+        public static bool MusicListEnableScrollbar = true;
         #endregion
         static CSLMusicModSettings()
         {
@@ -255,7 +263,7 @@ namespace CSLMusicMod
         }
         #endregion
         #region Adding unknown music
-        private static bool AddUnknownCustomMusicFiles()
+        private static bool AddUnknownCustomMusicFiles(ref bool mood_entries_not_found)
         {
             Debug.Log("[CSLMusic] Fetching unknown custom music files ...");
 
@@ -265,7 +273,7 @@ namespace CSLMusicMod
             {               
                 if (Directory.Exists(folder))
                 { 
-                    foundsomething |= AddUnknownMusicFiles(folder);
+                    foundsomething |= AddUnknownMusicFiles(folder, ref mood_entries_not_found);
                 }
                 else
                 {
@@ -276,7 +284,7 @@ namespace CSLMusicMod
             return foundsomething;
         }
 
-        private static bool AddUnknownMusicPackMusicFiles()
+        private static bool AddUnknownMusicPackMusicFiles(ref bool mood_entries_not_found)
         {
             Debug.Log("[CSLMusic] Fetching unknown music pack music files ...");
 
@@ -309,7 +317,7 @@ namespace CSLMusicMod
                     if (info.isEnabled)
                     {
                         Debug.Log("[CSLMusic] Adding mod conversion files from " + folder);
-                        foundsomething |= AddUnknownMusicFiles(folder);
+                        foundsomething |= AddUnknownMusicFiles(folder, ref mood_entries_not_found);
                     }
                     else
                     {
@@ -326,7 +334,7 @@ namespace CSLMusicMod
             return foundsomething;
         }
 
-        private static bool AddUnknownMusicFiles(String folder)
+        private static bool AddUnknownMusicFiles(String folder, ref bool mood_entries_not_found)
         {
             bool foundsomething = false;
 
@@ -376,18 +384,21 @@ namespace CSLMusicMod
                     if (entry == null)
                     {
                         Debug.Log("[CSLMusic] Could not find music entry for " + file + ". Ignoring that file.");
+                        mood_entries_not_found = true;
                         continue;
                     }
 
                     if (file.Contains("#bad"))
                     {
                         entry.BadMusic = file;
+                        entry.EnableBadMusic = true;
                         Debug.Log("Adding as 'Bad' Music file: " + file);
                         foundsomething = true;
                     }
                     else if (file.Contains("#sky"))
                     {
                         entry.SkyMusic = file;
+                        entry.EnableSkyMusic = true;
                         Debug.Log("Adding as 'Sky' Music file: " + file);
                         foundsomething = true;
                     }
@@ -396,12 +407,15 @@ namespace CSLMusicMod
 
             Debug.Log("... done");
 
+
+
             return foundsomething;
         }
 
-        private static bool AddUnknownVanillaMusicFiles()
+        private static bool AddUnknownVanillaMusicFiles(ref bool mood_entries_not_found)
         {
             bool foundsomething = false;
+            mood_entries_not_found = false;
 
             String audioFileLocation = ReflectionHelper.GetPrivateField<String>(
                 Singleton<AudioManager>.instance, "m_audioLocation");
@@ -451,6 +465,7 @@ namespace CSLMusicMod
                         {
                             Debug.Log("'Sky' Music file: " + file);
                             entry.SkyMusic = file;
+                            entry.EnableSkyMusic = true;
 
                             foundsomething = true;
                         }
@@ -458,6 +473,7 @@ namespace CSLMusicMod
                         {
                             Debug.Log("'Bad' Music file: " + file);
                             entry.BadMusic = file;
+                            entry.EnableBadMusic = true;
 
                             foundsomething = true;
                         }
@@ -465,6 +481,7 @@ namespace CSLMusicMod
                     else
                     {
                         Debug.Log("[CSLMusic] Could not add vanilla music: " + entry + ". Music entry not found.");
+                        mood_entries_not_found = true;
                     }
                 }
             }
@@ -630,7 +647,21 @@ namespace CSLMusicMod
             Debug.Log("[CSLMusic] ... done");
 
             //Add unknown music files
-            bool changed = AddUnknownVanillaMusicFiles() | AddUnknownCustomMusicFiles() | AddUnknownMusicPackMusicFiles() | RemoveDeactivatedMusicPackSongs();
+            bool mood_entries_not_found = false;
+            bool changed = AddUnknownVanillaMusicFiles(ref mood_entries_not_found) 
+                | AddUnknownCustomMusicFiles(ref mood_entries_not_found) 
+                | AddUnknownMusicPackMusicFiles(ref mood_entries_not_found) 
+                | RemoveDeactivatedMusicPackSongs();
+
+            //Update 3.3 if something was not assigned - retry now
+            if (mood_entries_not_found)
+            {
+                Debug.Log("[CSLMusic] Reported: Not all items were assigned. Trying to fetch skipped ones, too ...");
+
+                changed |= AddUnknownVanillaMusicFiles(ref mood_entries_not_found)
+                | AddUnknownCustomMusicFiles(ref mood_entries_not_found)
+                | AddUnknownMusicPackMusicFiles(ref mood_entries_not_found);
+            }
        
             if (changed)
                 SaveMusicFileSettings();
@@ -685,6 +716,10 @@ namespace CSLMusicMod
             SettingsFile.Set("Music Library", "EnableMusicPacks", EnableMusicPacks);
             SettingsFile.Set("Music Library", "CustomMusicFolders", String.Join(";", AdditionalCustomMusicFolders.ToArray()));
 
+            //Update 3.3
+            SettingsFile.Set("UI", "MusicListShortNames", MusicListShortNames);
+            SettingsFile.Set("UI", "MusicListEnableScrollbar", MusicListEnableScrollbar);
+
             SettingsFile.Save();
         }
 
@@ -733,6 +768,10 @@ namespace CSLMusicMod
                     AdditionalCustomMusicFolders.Add(folder);
                 }
             }
+
+            //Update 3.3 settings
+            MusicListShortNames = SettingsFile.GetAsBool("UI", "MusicListShortNames", true);
+            MusicListEnableScrollbar = SettingsFile.GetAsBool("UI", "MusicListEnableScrollbar", true);
 
             //If there are non exisiting keys in the settings file, add them by saving the settings
             if (SettingsFile.FoundNonExistingKeys)

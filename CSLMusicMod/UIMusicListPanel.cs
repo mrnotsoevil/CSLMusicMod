@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace CSLMusicMod
 {
     public class UIMusicListPanel : UIPanel
-    {     
+    {
         UILabel _currentMusic;
         UIListBox _musicList;
         UIButton _openSettings;
@@ -134,7 +134,7 @@ namespace CSLMusicMod
         {
             var panel = _musicList = AddUIComponent<UIListBox>();
 
-            panel.width = width - 30;
+            panel.width = width - 34;
             panel.height = 335;
             panel.relativePosition = new Vector3(10, 55);
             panel.textColor = new Color32(150, 150, 150, 255);
@@ -148,22 +148,44 @@ namespace CSLMusicMod
             /**
              * Not working -.-
              * */
-            /*var scroller = panel.AddUIComponent<UIScrollbar>();
-            scroller.width = 15;
-            scroller.height = panel.height;
-            scroller.relativePosition = new Vector3(width - 15 - 7.5f, 55);
 
+            //Update 3.3 scrollbar
+            if (CSLMusicModSettings.MusicListEnableScrollbar)
             {
-                var thumb = scroller.AddUIComponent<UIPanel>();
-                thumb.backgroundSprite = "TextFieldPanel";
-                thumb.color = new Color32(79, 210, 233, 255);
+                var scroller = panel.AddUIComponent<UIScrollbar>();
+                scroller.width = 15;
+                scroller.height = height - 65;
+                scroller.relativePosition = new Vector3(width - 15 - 15f, 0);
+                scroller.orientation = UIOrientation.Vertical;
 
-                scroller.thumbObject = thumb;
-                thumb.isVisible = true;
+                //All credits to https://github.com/justacid/Skylines-ExtendedPublicTransport
+                {
+                    var track = scroller.AddUIComponent<UISlicedSprite>();
+                    track.relativePosition = Vector2.zero;
+                    track.autoSize = true;
+                    track.size = track.parent.size;
+                    track.fillDirection = UIFillDirection.Vertical;
+                    track.spriteName = "ScrollbarTrack";
+                    scroller.trackObject = track;
+
+                    {
+                        UISlicedSprite thumbSprite = track.AddUIComponent<UISlicedSprite> ();
+                        thumbSprite.relativePosition = Vector2.zero;
+                        thumbSprite.fillDirection = UIFillDirection.Vertical;
+                        thumbSprite.autoSize = true;
+                        thumbSprite.width = thumbSprite.parent.width;
+                        thumbSprite.spriteName = "ChirpScrollbarThumb";
+                        thumbSprite.color = new Color32(255, 255, 255, 128);
+                        //thumbSprite.color = new Color32(0, 100, 180, 255);
+
+                        scroller.thumbObject = thumbSprite;
+                    }
+                }
+
+                _musicList.scrollbar = scroller;
+
+                scroller.isVisible = true;
             }
-
-            panel.scrollbar = scroller;
-            scroller.isVisible = true;*/
 
             UpdateMusicList();
 
@@ -212,7 +234,7 @@ namespace CSLMusicMod
             {
                 _resort_CurrentItem = null;
 
-                if(_resort_resorted)
+                if (_resort_resorted)
                 {
                     CSLMusicModSettings.SaveMusicFileSettings();
                 }
@@ -263,13 +285,46 @@ namespace CSLMusicMod
                     annot += "[Disabled]";               
 
                 String music = Path.GetFileNameWithoutExtension(entry.GoodMusic);
+                String extra = "";
 
-                if (!String.IsNullOrEmpty(entry.BadMusic))
-                    music += ", " + Path.GetFileNameWithoutExtension(entry.BadMusic);
-                if (!String.IsNullOrEmpty(entry.SkyMusic))               
-                    music += ", " + Path.GetFileNameWithoutExtension(entry.SkyMusic);
+                if (CSLMusicModSettings.MusicListShortNames)
+                {
+                    //Update 3.3 behaviour
+                    List<String> e = new List<String>();
+                    if (!String.IsNullOrEmpty(entry.BadMusic))
+                    {
+                        if (entry.EnableBadMusic)
+                            e.Add("#bad");
+                    }
+                    if (!String.IsNullOrEmpty(entry.SkyMusic))
+                    {
+                        if (entry.EnableSkyMusic)
+                            e.Add("#sky");
+                    }
 
-                entries.Add(String.Format("{0} {1}", annot, music));
+                    extra = String.Join(" ", e.ToArray());
+                }
+                else
+                {
+                    List<String> e = new List<String>();
+                    if (!String.IsNullOrEmpty(entry.BadMusic))
+                    {
+                        if (entry.EnableBadMusic)
+                            e.Add(Path.GetFileNameWithoutExtension(entry.BadMusic));
+                        else
+                            e.Add(Path.GetFileNameWithoutExtension("[" + entry.BadMusic + "]"));
+                    }
+                    if (!String.IsNullOrEmpty(entry.SkyMusic))
+                    {
+                        if (entry.EnableSkyMusic)
+                            e.Add(Path.GetFileNameWithoutExtension(entry.SkyMusic));
+                        else
+                            e.Add(Path.GetFileNameWithoutExtension("[" + entry.SkyMusic + "]"));
+                    }
+
+                    extra = String.Join(", ", e.ToArray());
+                }
+                entries.Add(String.Format("{0} {1} {2}", annot, music, extra));
             }
 
             _musicList.items = entries.ToArray();

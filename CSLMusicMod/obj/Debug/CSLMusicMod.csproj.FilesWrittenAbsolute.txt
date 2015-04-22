@@ -1,0 +1,4 @@
+/home/ruman/Project/CSLMusicMod/CSLMusicMod/bin/Debug/CSLMusicMod.dll.mdb
+/home/ruman/Project/CSLMusicMod/CSLMusicMod/bin/Debug/CSLMusicMod.dll
+/home/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.dll
+/home/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.dll.mdb
