@@ -2,10 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/CSLMusicModSettings.cs">
     <Files>
-      <File FileName="CSLMusicMod/CSLMusicModSettings.cs" Line="54" Column="54" />
-      <File FileName="CSLMusicMod/CSLCustomMusicEntry.cs" Line="12" Column="12" />
-      <File FileName="CSLMusicMod/UIMusicListPanel.cs" Line="50" Column="50" />
-      <File FileName="CSLMusicMod/UICheckButton.cs" Line="56" Column="56" />
+      <File FileName="CSLMusicMod/CSLMusicModSettings.cs" Line="55" Column="55" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

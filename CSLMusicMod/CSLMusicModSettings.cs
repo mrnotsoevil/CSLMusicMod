@@ -23,7 +23,7 @@ namespace CSLMusicMod
         public static bool AutoAddMusicTypesForCustomMusic = true;
         public static KeyCode Key_NextTrack = KeyCode.N;
         public static KeyCode Key_Settings = KeyCode.M;
-        public static bool EnableChirper = true;
+        public static bool EnableChirper = false; //Disable by default to prevent infection of savegame
         public static List<CSLCustomMusicEntry> MusicEntries = new List<CSLCustomMusicEntry>();
         #region Update 1 Settings & Variables
         public static int MusicStreamSwitchTime = 154350;
@@ -749,7 +749,7 @@ namespace CSLMusicMod
             if (MoodDependentMusic_MoodThreshold < 0)
                 MoodDependentMusic_MoodThreshold = 0;
 
-            EnableChirper = SettingsFile.GetAsBool("Chirper", "EnableChirper", true);
+            EnableChirper = SettingsFile.GetAsBool("Chirper", "EnableChirper", false); //Default to false
 
             RandomTrackSelection = SettingsFile.GetAsBool("Playlist", "RandomTrackSelection", true);
 
