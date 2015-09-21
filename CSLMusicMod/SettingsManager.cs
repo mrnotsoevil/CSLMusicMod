@@ -1,0 +1,150 @@
+﻿using System;
+using UnityEngine;
+using System.Collections.Generic;
+using System.IO;
+
+namespace CSLMusicMod
+{
+	public class SettingsManager : MonoBehaviour
+	{
+		private SimpleIni SettingsFile = new SimpleIni("CSLMusicMod_Settings.ini");
+		public Options ModOptions = new Options ();
+
+		public SettingsManager ()
+		{
+		}
+
+		public void Awake()
+		{
+			DontDestroyOnLoad(this);
+		}
+
+		public void SaveModSettings()
+		{
+			Debug.Log("[CSLMusic] Saving settings ...");
+
+			SettingsFile.Set("Music Selection", "HeightDependentMusic", ModOptions.HeightDependentMusic);
+			SettingsFile.Set("Music Selection", "MoodDependentMusic", ModOptions.MoodDependentMusic);
+
+			SettingsFile.Set("Music Library", "AutoAddMusicTypesForCustomMusic", ModOptions.AutoAddMusicTypesForCustomMusic);
+
+			SettingsFile.Set("Tweaks", "MusicWhileLoading", ModOptions.MusicWhileLoading);
+			SettingsFile.Set("Tweaks", "HeightDependentMusic_HeightThreshold", ModOptions.HeightDependentMusic_HeightThreshold);
+			SettingsFile.Set("Tweaks", "MoodDependentMusic_MoodThreshold", ModOptions.MoodDependentMusic_MoodThreshold);
+
+			SettingsFile.Set("Chirper", "EnableChirper", ModOptions.EnableChirper);
+
+			SettingsFile.Set("Playlist", "RandomTrackSelection", ModOptions.RandomTrackSelection);
+
+			//Save Keybindings
+			SettingsFile.Set("Keys", "NextTrack", ModOptions.Key_NextTrack);
+			SettingsFile.Set("Keys", "ShowSettings", ModOptions.Key_Settings);
+
+			//Update 3: Modpack music folders, additional music folders
+			SettingsFile.Set("Music Library", "EnableMusicPacks", ModOptions.EnableMusicPacks);
+			SettingsFile.Set("Music Library", "CustomMusicFolders", String.Join(";", ModOptions.AdditionalCustomMusicFolders.ToArray()));
+
+			//Update 3.3
+			SettingsFile.Set("UI", "MusicListShortNames", ModOptions.MusicListShortNames);
+			SettingsFile.Set("UI", "MusicListEnableScrollbar", ModOptions.MusicListEnableScrollbar);
+
+			SettingsFile.Save();
+		}
+
+		public void LoadModSettings()
+		{
+			Debug.Log("[CSLMusic] Loading settings ...");
+
+			if (!File.Exists(SettingsFile.Filename))
+			{
+				SaveModSettings();
+			}
+
+			SettingsFile.Load();
+
+			var DefaultModOptions = new Options ();
+
+			ModOptions.HeightDependentMusic = SettingsFile.GetAsBool("Music Selection", "HeightDependentMusic", DefaultModOptions.HeightDependentMusic);
+			ModOptions.MoodDependentMusic = SettingsFile.GetAsBool("Music Selection", "MoodDependentMusic", DefaultModOptions.MoodDependentMusic);
+
+			ModOptions.AutoAddMusicTypesForCustomMusic = SettingsFile.GetAsBool("Music Library", "AutoAddMusicTypesForCustomMusic", DefaultModOptions.AutoAddMusicTypesForCustomMusic);
+
+			ModOptions.MusicWhileLoading = SettingsFile.GetAsBool("Tweaks", "MusicWhileLoading", DefaultModOptions.MusicWhileLoading);
+			ModOptions.HeightDependentMusic_HeightThreshold = SettingsFile.GetAsFloat("Tweaks", "HeightDependentMusic_HeightThreshold", DefaultModOptions.HeightDependentMusic_HeightThreshold);
+			ModOptions.MoodDependentMusic_MoodThreshold = SettingsFile.GetAsInt("Tweaks", "MoodDependentMusic_MoodThreshold", DefaultModOptions.MoodDependentMusic_MoodThreshold);
+
+			//Check values if they are legal
+			if (ModOptions.HeightDependentMusic_HeightThreshold < 0)
+				ModOptions.HeightDependentMusic_HeightThreshold = DefaultModOptions.HeightDependentMusic_HeightThreshold;
+			if (ModOptions.MoodDependentMusic_MoodThreshold < 0)
+				ModOptions.MoodDependentMusic_MoodThreshold = DefaultModOptions.MoodDependentMusic_MoodThreshold;
+
+			ModOptions.EnableChirper = SettingsFile.GetAsBool("Chirper", "EnableChirper", DefaultModOptions.EnableChirper); //Default to false
+
+			ModOptions.RandomTrackSelection = SettingsFile.GetAsBool("Playlist", "RandomTrackSelection", DefaultModOptions.RandomTrackSelection);
+
+			//Load keybindings
+			ModOptions.Key_NextTrack = SettingsFile.GetAsKeyCode("Keys", "NextTrack", DefaultModOptions.Key_NextTrack);
+			ModOptions.Key_Settings = SettingsFile.GetAsKeyCode("Keys", "ShowSettings", DefaultModOptions.Key_Settings);
+
+			//Load Update 3 settings
+			ModOptions.EnableMusicPacks = SettingsFile.GetAsBool("Music library", "EnableMusicPacks", DefaultModOptions.EnableMusicPacks);
+
+			ModOptions.AdditionalCustomMusicFolders.Clear();
+			foreach (String folder in SettingsFile.Get("Music library", "CustomMusicFolders", "").Split(';'))
+			{
+				if (!String.IsNullOrEmpty(folder) && !ModOptions.CustomMusicFolders.Contains(folder))
+				{
+					ModOptions.AdditionalCustomMusicFolders.Add(folder);
+				}
+			}
+
+			//Update 3.3 settings
+			ModOptions.MusicListShortNames = SettingsFile.GetAsBool("UI", "MusicListShortNames", true);
+			ModOptions.MusicListEnableScrollbar = SettingsFile.GetAsBool("UI", "MusicListEnableScrollbar", true);
+
+			//If there are non exisiting keys in the settings file, add them by saving the settings
+			if (SettingsFile.FoundNonExistingKeys)
+			{
+				SaveModSettings();
+			}
+
+			//Add music folders from music packs
+			AddModpackMusicFolders();
+		}
+
+		public struct Options
+		{
+			public bool HeightDependentMusic = true;
+			public bool MoodDependentMusic = true;
+			public bool MusicWhileLoading = true;
+			public bool AutoAddMusicTypesForCustomMusic = true;
+			public KeyCode Key_NextTrack = KeyCode.N;
+			public KeyCode Key_Settings = KeyCode.M;
+			public bool EnableChirper = false;
+			public bool EnableMusicPacks = true;
+			public int MusicStreamSwitchTime = 154350; //65536*2 // 65536*3
+			public int MoodDependentMusic_MoodThreshold = 40;
+			public float HeightDependentMusic_HeightThreshold = 1400f;
+			public bool RandomTrackSelection = true;
+			public bool MusicListShortNames = true;
+			public bool MusicListEnableScrollbar = true;
+			public List<String> AdditionalCustomMusicFolders = new List<string>();
+			public List<String> ModdedMusicSourceFolders = new List<String>();
+
+			public List<String> CustomMusicFolders
+			{
+				get
+				{
+					List<string> folders = new List<string>();
+
+					folders.Add(MusicManager.CustomMusicDefaultFolder);
+					folders.AddRange(AdditionalCustomMusicFolders);
+
+					return folders;
+				}
+			}
+		}
+	}
+}
+

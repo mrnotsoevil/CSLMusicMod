@@ -8,6 +8,8 @@ namespace CSLMusicMod
 {
     public class CSLMusicMod : LoadingExtensionBase, IUserMod
     {
+		public const String VersionName = "Update 3.3";
+
         public string Name
         {
             get

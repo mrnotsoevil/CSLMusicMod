@@ -91,6 +91,10 @@
     <Compile Include="AudioFormatHelper.cs" />
     <Compile Include="UIMusicListPanel.cs" />
     <Compile Include="UIMusicSettingsPanel.cs" />
+    <Compile Include="ModHelper.cs" />
+    <Compile Include="SettingsManager.cs" />
+    <Compile Include="ConversionManager.cs" />
+    <Compile Include="MusicManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
