@@ -55,7 +55,7 @@ namespace CSLMusicMod
             }
         }
 
-        public CSLCustomMusicEntry CurrentMusicEntry
+        public MusicEntry CurrentMusicEntry
         {
             get
             {
@@ -103,7 +103,7 @@ namespace CSLMusicMod
         private GameObject _gameObject;
 
         //private bool _switchMusic_Requested;
-        private CSLCustomMusicEntry _switchMusic_Requested_Music;
+        private MusicEntry _switchMusic_Requested_Music;
         //private bool _switchMusic_Requested_useChirpy;
         /**
          * Keep track of the last max. position
@@ -112,12 +112,12 @@ namespace CSLMusicMod
         private Stream _stream;
         private long _streamLastKnownMaxPosition;
         private bool _firstTimeSwitched;
-        private CSLCustomMusicEntry _previousMusic;
-        private CSLCustomMusicEntry _currentMusic;
+        private MusicEntry _previousMusic;
+        private MusicEntry _currentMusic;
         private String _currentMusic_File;
 
         //Contains already played tracks (by random selection)
-        private HashSet<CSLCustomMusicEntry> _already_Played_Music = new HashSet<CSLCustomMusicEntry>();
+        private HashSet<MusicEntry> _already_Played_Music = new HashSet<MusicEntry>();
 
         public CSLAudioWatcher()
         {
@@ -131,7 +131,7 @@ namespace CSLMusicMod
             RequestSwitchMusic(null, chirp);
         }
 
-        public void RequestSwitchMusic(CSLCustomMusicEntry entry, bool chirp)
+        public void RequestSwitchMusic(MusicEntry entry, bool chirp)
         {
             //_switchMusic_Requested = true;
             _switchMusic_Requested_Music = entry;
@@ -254,15 +254,16 @@ namespace CSLMusicMod
 
             //Determine the actual music file
 
-            String musicFile = _currentMusic.GetMusicFromMood(info);
+            String musicFile = _currentMusic.GetMatchingMusic(info);
 
-            if (musicFile != null) //Should not happen - but to be sure test it
+            if (musicFile != null)
             {
                 SwitchMusicToFile(musicFile);
             }
             else
             {
-                Debug.Log("[CSLMusic] GetMusicFromMood returned NULL? WTF");
+                //The music file does not contain anything interesting, so switch to the next music
+                RequestSwitchMusic(false);
             }
         }
 
@@ -290,7 +291,7 @@ namespace CSLMusicMod
         {
             Debug.Log("[CSLMusic] Switching music ...");
 
-			List<CSLCustomMusicEntry> entries = MusicManager.EnabledMusicEntries;
+            List<MusicEntry> entries = MusicManager.EnabledMusicEntries;
 
             if (entries.Count == 0)
             {
@@ -314,7 +315,7 @@ namespace CSLMusicMod
             Debug.Log("Now always enforcing " + _currentMusic);
         }
 
-        private CSLCustomMusicEntry GetNextMusic(List<CSLCustomMusicEntry> entries)
+        private MusicEntry GetNextMusic(List<MusicEntry> entries)
         {
             //If the set of already played music contains as much files as entries, reset
             if (_already_Played_Music.Count >= entries.Count)
@@ -323,7 +324,7 @@ namespace CSLMusicMod
                 Debug.Log("[CSLMusic][GetNextRandomMusic] Resetting already played music list #internal");
             }
 
-            CSLCustomMusicEntry newentry;
+            MusicEntry newentry;
 
 			if (ModOptions.RandomTrackSelection)
                 newentry = GetNextRandomMusic(entries);
@@ -334,7 +335,7 @@ namespace CSLMusicMod
             return newentry;
         }
 
-        private CSLCustomMusicEntry GetNextMusicFromList(List<CSLCustomMusicEntry> entries)
+        private MusicEntry GetNextMusicFromList(List<MusicEntry> entries)
         {
             if (entries.Count == 0)
             {
@@ -359,7 +360,7 @@ namespace CSLMusicMod
             return entries[index];
         }
 
-        private CSLCustomMusicEntry GetNextRandomMusic(List<CSLCustomMusicEntry> entries)
+        private MusicEntry GetNextRandomMusic(List<MusicEntry> entries)
         {
             if (entries.Count == 0)
             {
@@ -367,7 +368,7 @@ namespace CSLMusicMod
             }
 
             //Fetch a random music file until it is not matching with the previous one
-            CSLCustomMusicEntry music;
+            MusicEntry music;
 
             //Iterations fallback
             int iters = 0;

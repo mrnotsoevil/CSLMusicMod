@@ -79,34 +79,7 @@ namespace CSLMusicMod
                 //CSLMusicModSettings.Info_NonConvertedFiles.Add(srcoggfile);
 
                 return;
-            }
-
-            /**
-             * Unity3D are you capable of something?!
-             * 
-             * Problem: Only creates the first  ~2min of output - AudioClip won't load more wtf!?
-             * */
-            /*WWW wtf = new WWW("file://" + srcoggfile);
-
-            while (!wtf.isDone)
-            {
-            }
-
-            AudioClip clip = wtf.GetAudioClip(false, false);
-
-            while (!wtf.isDone)
-            {
-            }
-
-            clip.LoadAudioData();
-
-            while (clip.loadState == AudioDataLoadState.Loading || clip.loadState == AudioDataLoadState.Unloaded)
-            {
-            }
-
-            Debug.Log("WWW done. Saving now");
-
-            SaveWav.Save(dstrawfile, clip);*/
+            }          
 
             Debug.Log("... done.");
         }

@@ -7,540 +7,443 @@ using ColossalFramework;
 
 namespace CSLMusicMod
 {
-	public class MusicManager : MonoBehaviour
-	{
-		public const String CustomMusicDefaultFolder = "CSLMusicMod_Music";
-		public const String MusicSettingsFileName = "CSLMusicMod_MusicFiles.csv";
+    public class MusicManager : MonoBehaviour
+    {
+        public const String CustomMusicDefaultFolder = "CSLMusicMod_Music";
+        public const String MusicSettingsFileName = "CSLMusicMod_MusicFiles.csv";
 
-		public SettingsManager.Options ModOptions
-		{
-			get
-			{
-				return gameObject.GetComponent<SettingsManager> ().ModOptions;
-			}
-		}
+        public SettingsManager.Options ModOptions
+        {
+            get
+            {
+                return gameObject.GetComponent<SettingsManager>().ModOptions;
+            }
+        }
 
-		public List<CSLCustomMusicEntry> MusicEntries = new List<CSLCustomMusicEntry>();
-		public List<CSLCustomMusicEntry> EnabledMusicEntries
-		{
-			get
-			{
-				List<CSLCustomMusicEntry> entries = new List<CSLCustomMusicEntry>();
+        public List<MusicEntry> MusicEntries = new List<MusicEntry>();
 
-				foreach (CSLCustomMusicEntry entry in MusicEntries)
-				{
-					if (entry.Enable)
-					{
-						entries.Add(entry);
-					}
-				}
+        public List<MusicEntry> EnabledMusicEntries
+        {
+            get
+            {
+                List<MusicEntry> entries = new List<MusicEntry>();
 
-				return entries;
-			}
-		}
+                foreach (MusicEntry entry in MusicEntries)
+                {
+                    if (entry.Enable)
+                    {
+                        entries.Add(entry);
+                    }
+                }
 
-		public MusicManager()
-		{
-		}
+                return entries;
+            }
+        }
 
-		private bool AddUnknownCustomMusicFiles(ref bool mood_entries_not_found)
-		{
-			Debug.Log("[CSLMusic] Fetching unknown custom music files ...");
+        public List<MusicEntry.MusicEntryTag> MusicTagTypes = new List<MusicEntry.MusicEntryTag>();
 
-			bool foundsomething = false;
+        public MusicManager()
+        {
+            InitializeTags();
+        }
 
-			foreach (String folder in ModOptions.CustomMusicFolders)
-			{               
-				if (Directory.Exists(folder))
-				{ 
-					foundsomething |= AddUnknownMusicFiles(folder, ref mood_entries_not_found);
-				}
-				else
-				{
-					Debug.LogError("ERROR: " + folder + " is not existing!");
-				}
-			}
+        /**
+         * Add the tag types
+         * */
+        private void InitializeTags()
+        {
+            MusicTagTypes.Add(new TagVanillaSky());
+            MusicTagTypes.Add(new TagVanillaMood());
 
-			return foundsomething;
-		}
+            //Sort them
+            MusicTagTypes.Sort();
+        }
 
-		private bool AddUnknownMusicPackMusicFiles(ref bool mood_entries_not_found)
-		{
-			Debug.Log("[CSLMusic] Fetching unknown music pack music files ...");
+        private bool AddUnknownCustomMusicFiles(ref bool mood_entries_not_found)
+        {
+            Debug.Log("[CSLMusic] Fetching unknown custom music files ...");
 
-			bool foundsomething = false;
+            bool foundsomething = false;
 
-			List<String> searchfolders = new List<string>();
-			searchfolders.AddRange(ModOptions.ModdedMusicSourceFolders);
-			if (Directory.Exists(ConversionManager.ConvertedMusicPackMusicFolder))
-			{
-				searchfolders.AddRange(Directory.GetDirectories(ConversionManager.ConvertedMusicPackMusicFolder));               
-			}
+            foreach (String folder in ModOptions.CustomMusicFolders)
+            {               
+                if (Directory.Exists(folder))
+                { 
+                    foundsomething |= AddUnknownMusicFiles(folder, ref mood_entries_not_found);
+                }
+                else
+                {
+                    Debug.LogError("ERROR: " + folder + " is not existing!");
+                }
+            }
 
-			/**
+            return foundsomething;
+        }
+
+        private bool AddUnknownMusicPackMusicFiles(ref bool mood_entries_not_found)
+        {
+            Debug.Log("[CSLMusic] Fetching unknown music pack music files ...");
+
+            bool foundsomething = false;
+
+            List<String> searchfolders = new List<string>();
+            searchfolders.AddRange(ModOptions.ModdedMusicSourceFolders);
+            if (Directory.Exists(ConversionManager.ConvertedMusicPackMusicFolder))
+            {
+                searchfolders.AddRange(Directory.GetDirectories(ConversionManager.ConvertedMusicPackMusicFolder));               
+            }
+
+            /**
              * Add *.raw music from mod folders if somebody really wants to upload raw files
              * and music from converted
              * */
-			foreach (String folder in searchfolders)
-			{      
-				if (Directory.Exists(folder))
-				{ 
-					//Does the plugin exist? Is it active
-					PluginManager.PluginInfo info = ModHelper.GetSourceModFromId(Path.GetFileName(folder));
+            foreach (String folder in searchfolders)
+            {      
+                if (Directory.Exists(folder))
+                { 
+                    //Does the plugin exist? Is it active
+                    PluginManager.PluginInfo info = ModHelper.GetSourceModFromId(Path.GetFileName(folder));
 
-					if (info == null)
-					{
-						Debug.LogWarning("[CSLMusic] Unknown mod in folder @ " + folder);
-						continue;
-					}
+                    if (info == null)
+                    {
+                        Debug.LogWarning("[CSLMusic] Unknown mod in folder @ " + folder);
+                        continue;
+                    }
 
-					if (info.isEnabled)
-					{
-						Debug.Log("[CSLMusic] Adding mod conversion files from " + folder);
-						foundsomething |= AddUnknownMusicFiles(folder, ref mood_entries_not_found);
-					}
-					else
-					{
-						Debug.Log("[CSLMusic] Not adding mod conversion files from " + folder + ": Not enabled");
-						Debug.Log("-> Directory of this mod is " + info.modPath);
-					}
-				}
-				else
-				{
-					Debug.LogError("ERROR: " + folder + " is not existing!");
-				}
-			}
+                    if (info.isEnabled)
+                    {
+                        Debug.Log("[CSLMusic] Adding mod conversion files from " + folder);
+                        foundsomething |= AddUnknownMusicFiles(folder, ref mood_entries_not_found);
+                    }
+                    else
+                    {
+                        Debug.Log("[CSLMusic] Not adding mod conversion files from " + folder + ": Not enabled");
+                        Debug.Log("-> Directory of this mod is " + info.modPath);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("ERROR: " + folder + " is not existing!");
+                }
+            }
 
-			return foundsomething;
-		}
+            return foundsomething;
+        }
 
-		private bool AddUnknownMusicFiles(String folder, ref bool mood_entries_not_found)
-		{
-			bool foundsomething = false;
+        private bool AddUnknownMusicFiles(String folder, ref bool mood_entries_not_found)
+        {
+            bool foundsomething = false;
 
-			/**
+            /**
              * 
              * Note: Must convert before running!
              * 
+             * update 4: added option to directly play ogg vorbis
+             * 
              * */
 
-			Debug.Log("[CSLMusic] Fetching unknown music files from " + folder + " ...");
+            Debug.Log("[CSLMusic] Fetching unknown music files from " + folder + " ...");
 
-			//Get other music
-			foreach (String file in Directory.GetFiles(folder))
-			{              
-				if (Path.GetExtension(file) != ".raw")
-					continue;
-				if (MusicFileKnown(file))
-					continue;
-				if (ModOptions.AutoAddMusicTypesForCustomMusic)
-				{
-					if (file.Contains("#bad") || file.Contains("#sky"))
-						continue;
-				}
+            foreach (String file in Directory.GetFiles(folder))
+            {
+                if (!ModOptions.PlayWithoutConvert && Path.GetExtension(file) != ".raw")
+                    continue;
+                if (Path.GetExtension(file) != ".raw" && Path.GetExtension(file) != ".ogg")
+                    continue;
+                if (MusicFileKnown(file))
+                    continue;
 
-				CSLCustomMusicEntry entry = new CSLCustomMusicEntry(gameObject, GetCustomMusicBaseName(file), file, "", "");
+                String baseName = GetCustomMusicBaseName(file);
 
-				Debug.Log("Adding as 'Good' Music file: " + file);              
-				MusicEntries.Add(entry);
+                // If necessary create the entry
+                MusicEntry entry = GetEntryByName(baseName);
 
-				foundsomething = true;
-			}
+                if (entry == null)
+                {
+                    entry = new MusicEntry(true, gameObject, baseName);
+                    MusicEntries.Add(entry);
 
-			//Find bad/sky music if enabled
-			if (ModOptions.AutoAddMusicTypesForCustomMusic)
-			{
-				//Add remaining music
-				foreach (String file in Directory.GetFiles(folder))
-				{ 
-					if (Path.GetExtension(file) != ".raw")
-						continue;
-					if (MusicFileKnown(file))
-						continue;
+                    foundsomething = true;
+                }
 
-					String baseName = GetCustomMusicBaseName(file);
-					CSLCustomMusicEntry entry = GetEntryByName(baseName);
+                entry.AddSong(file);
+            }
 
-					if (entry == null)
-					{
-						Debug.Log("[CSLMusic] Could not find music entry for " + file + ". Ignoring that file.");
-						mood_entries_not_found = true;
-						continue;
-					}
+            Debug.Log("... done");
 
-					if (file.Contains("#bad"))
-					{
-						entry.BadMusic = file;
-						entry.EnableBadMusic = true;
-						Debug.Log("Adding as 'Bad' Music file: " + file);
-						foundsomething = true;
-					}
-					else if (file.Contains("#sky"))
-					{
-						entry.SkyMusic = file;
-						entry.EnableSkyMusic = true;
-						Debug.Log("Adding as 'Sky' Music file: " + file);
-						foundsomething = true;
-					}
-				}
-			}
+            return foundsomething;
+        }
 
-			Debug.Log("... done");
+        private bool AddUnknownVanillaMusicFiles(ref bool mood_entries_not_found)
+        {
+            bool foundsomething = false;
+            mood_entries_not_found = false;
+
+            String audioFileLocation = ReflectionHelper.GetPrivateField<String>(
+                                  Singleton<AudioManager>.instance, "m_audioLocation");
+
+            Debug.Log("[CSLMusic] Fetching unknown vanilla music files ...");
+
+            //Get good music
+            foreach (String file in Directory.GetFiles(audioFileLocation))
+            { 
+                if (Path.GetExtension(file) != ".raw") //Vanilla music is always *.raw
+                    continue;
+                if (MusicFileKnown(file))
+                    continue;
+
+                String baseName = GetVanillaMusicBaseName(file);
+
+                MusicEntry entry = GetEntryByName(baseName);
+
+                if (entry == null)
+                {
+                    entry = new MusicEntry(true, gameObject, GetVanillaMusicBaseName(file));
+                    MusicEntries.Add(entry);
+                }
+
+                //Add the vanilla music according to the vanilla annotation
+                if (file.EndsWith("b"))
+                    entry.AddSong(file, "bad");
+                else if (file.EndsWith("s"))
+                    entry.AddSong(file, "sky");
+                else
+                    entry.AddSong(file, "");
+
+                foundsomething = true;
+            }
+
+            Debug.Log("... done");
+
+            return foundsomething;
+        }
+
+        private bool RemoveDeactivatedMusicPackSongs()
+        {
+            Debug.Log("[CSLMusic] Removing deactivated modded files ...");
+
+            //Let a list of all to-be-removed
+            bool changed_sth = false;
 
 
+            foreach (MusicEntry entry in MusicEntries)
+            {
+                List<String> to_remove = new List<string>();
 
-			return foundsomething;
-		}
+                foreach (String song in entry.SongTags.Keys)
+                {
+                    if (MusicFileBelongsToInactiveMod(song))
+                    {
+                        to_remove.Add(song);
+                    }
+                }
 
-		private bool AddUnknownVanillaMusicFiles(ref bool mood_entries_not_found)
-		{
-			bool foundsomething = false;
-			mood_entries_not_found = false;
+                //Remove the unwanted songs
+                foreach (String song in to_remove)
+                {
+                    entry.RemoveSong(song);
+                    changed_sth = true;
+                }
 
-			String audioFileLocation = ReflectionHelper.GetPrivateField<String>(
-				Singleton<AudioManager>.instance, "m_audioLocation");
+            }
 
-			Debug.Log("[CSLMusic] Fetching unknown vanilla music files ...");
+            //Remove all empty entries
+            changed_sth |= MusicEntries.RemoveAll((e) => e.Empty) != 0;           
 
-			//Get good music
-			foreach (String file in Directory.GetFiles(audioFileLocation))
-			{ 
-				if (Path.GetExtension(file) != ".raw")
-					continue;
-				if (MusicFileKnown(file))
-					continue;
+            return changed_sth;
+        }
 
-				String baseName = Path.GetFileNameWithoutExtension(file);
+        private bool MusicFileBelongsToInactiveMod(String file)
+        {
+            if (file.StartsWith(ConversionManager.ConvertedMusicPackMusicFolder))
+            {
+                String modid = Path.GetFileName(Path.GetDirectoryName(file));
 
-				if (!baseName.EndsWith("s") && !baseName.EndsWith("b"))
-				{
-					Debug.Log("'Good' Music file: " + file);
+                PluginManager.PluginInfo info = ModHelper.GetSourceModFromId(modid);
 
-					CSLCustomMusicEntry entry = new CSLCustomMusicEntry(
-                        gameObject,GetVanillaMusicBaseName(file), file, "", "");                   
-					MusicEntries.Add(entry);
+                if (info != null)
+                {
+                    return !info.isEnabled;
+                }
+            }
+            else
+            {
+                PluginManager.PluginInfo info = ModHelper.GetSourceModFromFolder(file);
 
-					foundsomething = true;
-				}
-			}
+                if (info != null)
+                {
+                    return !info.isEnabled;
+                }
+            }
 
-			//Get other music
-			foreach (String file in Directory.GetFiles(audioFileLocation))
-			{ 
-				if (Path.GetExtension(file) != ".raw")
-					continue;
-				if (MusicFileKnown(file))
-					continue;
+            return false;
+        }
 
-				String baseName = Path.GetFileNameWithoutExtension(file);
-				String mainName = GetVanillaMusicBaseName(file);
+        public void LoadMusicFiles()
+        {
+            Debug.Log("[CSLMusic] Loading music files from configuration ...");
 
-				if (baseName.EndsWith("s") || baseName.EndsWith("b"))
-				{
-					CSLCustomMusicEntry entry = GetEntryByName(mainName);
+            //Clear data
+            MusicEntries.Clear();
 
-					if (entry != null)
-					{
-						if (baseName.EndsWith("s"))
-						{
-							Debug.Log("'Sky' Music file: " + file);
-							entry.SkyMusic = file;
-							entry.EnableSkyMusic = true;
+            //Go through the settings file and insert all music from there
+            if (File.Exists(MusicSettingsFileName))
+            {
+                using (StreamReader w = new StreamReader(MusicSettingsFileName))
+                {
+                    String line;
 
-							foundsomething = true;
-						}
-						else if (baseName.EndsWith("b"))
-						{
-							Debug.Log("'Bad' Music file: " + file);
-							entry.BadMusic = file;
-							entry.EnableBadMusic = true;
+                    while ((line = w.ReadLine()) != null)
+                    {
+                        //# are comments
+                        if (line.StartsWith("#"))
+                        {
+                            continue;
+                        }
 
-							foundsomething = true;
-						}
-					}
-					else
-					{
-						Debug.Log("[CSLMusic] Could not add vanilla music: " + entry + ". Music entry not found.");
-						mood_entries_not_found = true;
-					}
-				}
-			}
+                        String[] cell = line.Trim().Split('\t');
 
-			Debug.Log("... done");
-
-			return foundsomething;
-		}
-
-		private bool RemoveDeactivatedMusicPackSongs()
-		{
-			Debug.Log("[CSLMusic] Removing deactivated modded files ...");
-
-			//Let a list of all to-be-removed
-			bool changed_sth = false;
-			List<String> unwanted = new List<string>();
-
-			foreach (CSLCustomMusicEntry entry in MusicEntries)
-			{
-				if (MusicFileBelongsToInactiveMod(entry.GoodMusic))
-					unwanted.Add(entry.GoodMusic);
-				if (MusicFileBelongsToInactiveMod(entry.BadMusic))
-					unwanted.Add(entry.BadMusic);
-				if (MusicFileBelongsToInactiveMod(entry.SkyMusic))
-					unwanted.Add(entry.SkyMusic);
-			}
-
-			//Clean them away
-			List<CSLCustomMusicEntry> toremove = new List<CSLCustomMusicEntry>();
-			foreach (String uw in unwanted)
-			{
-				Debug.Log("[CSLMusic] ... " + uw);
-
-				foreach (CSLCustomMusicEntry entry in MusicEntries)
-				{
-					if (entry.GoodMusic == uw)
-					{
-						toremove.Add(entry);
-						continue;
-					}
-
-					if (entry.BadMusic == uw)
-					{
-						entry.BadMusic = "";
-						entry.EnableBadMusic = false;
-						changed_sth = true;
-					}
-					if (entry.SkyMusic == uw)
-					{
-						changed_sth = true;
-						entry.SkyMusic = "";
-						entry.EnableSkyMusic = false;
-					}
-				}
-			}
-
-			foreach (CSLCustomMusicEntry tr in toremove)
-			{
-				MusicEntries.Remove(tr);
-				changed_sth = true;
-			}
-
-			return changed_sth;
-		}
-
-		private bool MusicFileBelongsToInactiveMod(String file)
-		{
-			if (file.StartsWith(ConversionManager.ConvertedMusicPackMusicFolder))
-			{
-				String modid = Path.GetFileName(Path.GetDirectoryName(file));
-
-				PluginManager.PluginInfo info = ModHelper.GetSourceModFromId(modid);
-
-				if (info != null)
-				{
-					return !info.isEnabled;
-				}
-			}
-			else
-			{
-				PluginManager.PluginInfo info = ModHelper.GetSourceModFromFolder(file);
-
-				if (info != null)
-				{
-					return !info.isEnabled;
-				}
-			}
-
-			return false;
-		}
-
-		public void LoadMusicFiles()
-		{
-			Debug.Log("[CSLMusic] Loading music files from configuration ...");
-
-			//Clear data
-			MusicEntries.Clear();
-
-			//Go through the settings file and insert all music from there
-			if (File.Exists(MusicSettingsFileName))
-			{
-				using (StreamReader w = new StreamReader(MusicSettingsFileName))
-				{
-					String line;
-
-					while ((line = w.ReadLine()) != null)
-					{
-						//# are comments
-						if (line.StartsWith("#"))
-						{
-							continue;
-						}
-
-						String[] cell = line.Trim().Split('\t');
-
-						/**
+                        /**
                          * 
                          * File format:
                          * 
-                         * AUTO/MANUAL ENABLED GOOD BAD BAD_ENABLED SKY SKY_ENABLED
+                         * BASENAME ENABLED
                          * 
                          * */
 
-						if (cell.Length == 6)
-						{
-							bool enabled = cell[0].ToLower() == "true";
-							String good = cell[1];
-							String bad = cell[2];
-							bool bad_enable = cell[3].ToLower() == "true";
-							String sky = cell[4];
-							bool sky_enable = cell[5].ToLower() == "true";
+                        if (cell.Length == 2)
+                        {
+                            String baseName = cell[0];
+                            bool enabled = Boolean.Parse(cell[0].ToLower());
 
-							if (!File.Exists(good))
-							{
-								Debug.Log("... Cannot find 'good' music " + good + ". Skipping whole entry!");
-								continue;
-							}
+                            if(GetEntryByName(baseName) != null)
+                                MusicEntries.Add(new MusicEntry(enabled, gameObject, baseName));
+                        }                       
+                    }
+                }
+            }
 
-							if (!File.Exists(bad))
-							{
-								Debug.Log("... Cannot find 'bad' music " + bad + ". Ignoring this file.");
-								bad = "";
-								bad_enable = false;
-							}
+            Debug.Log("[CSLMusic] ... done");
 
-							if (!File.Exists(sky))
-							{
-								Debug.Log("... Cannot find 'sky' music " + sky + ". Ignoring this file.");
-								sky = "";
-								sky_enable = false;
-							}
+            //Add unknown music files
+            bool mood_entries_not_found = false;
+            bool changed = AddUnknownVanillaMusicFiles(ref mood_entries_not_found)
+                  | AddUnknownCustomMusicFiles(ref mood_entries_not_found)
+                  | AddUnknownMusicPackMusicFiles(ref mood_entries_not_found)
+                  | RemoveDeactivatedMusicPackSongs();
 
-							String name = Path.GetFileNameWithoutExtension(good);                           
+            //Update 3.3 if something was not assigned - retry now
+            if (mood_entries_not_found)
+            {
+                Debug.Log("[CSLMusic] Reported: Not all items were assigned. Trying to fetch skipped ones, too ...");
 
-							//Create the entry
-                            MusicEntries.Add(new CSLCustomMusicEntry(gameObject,enabled, name, good, bad, bad_enable, sky, sky_enable));
-						}                       
-					}
-				}
-			}
+                changed |= AddUnknownVanillaMusicFiles(ref mood_entries_not_found)
+                | AddUnknownCustomMusicFiles(ref mood_entries_not_found)
+                | AddUnknownMusicPackMusicFiles(ref mood_entries_not_found);
+            }
 
-			Debug.Log("[CSLMusic] ... done");
+            if (changed)
+                SaveMusicFileSettings();
+        }
 
-			//Add unknown music files
-			bool mood_entries_not_found = false;
-			bool changed = AddUnknownVanillaMusicFiles(ref mood_entries_not_found) 
-				| AddUnknownCustomMusicFiles(ref mood_entries_not_found) 
-				| AddUnknownMusicPackMusicFiles(ref mood_entries_not_found) 
-				| RemoveDeactivatedMusicPackSongs();
+        public void SaveMusicFileSettings()
+        {
+            using (StreamWriter w = new StreamWriter(MusicSettingsFileName))
+            {
+                w.WriteLine("# " + CSLMusicMod.VersionName);
+                w.WriteLine("# CSL Music Mod Configuration File");
+                w.WriteLine("# Uncomment or add custom entries here");
+                w.WriteLine("# Base name\tEnabled (true/false)");
 
-			//Update 3.3 if something was not assigned - retry now
-			if (mood_entries_not_found)
-			{
-				Debug.Log("[CSLMusic] Reported: Not all items were assigned. Trying to fetch skipped ones, too ...");
+                foreach (MusicEntry entry in MusicEntries)
+                {
+                    String data = (String.Format("{0}\t{1}", 
+                        entry.BaseName,
+                        entry.Enable));
 
-				changed |= AddUnknownVanillaMusicFiles(ref mood_entries_not_found)
-					| AddUnknownCustomMusicFiles(ref mood_entries_not_found)
-					| AddUnknownMusicPackMusicFiles(ref mood_entries_not_found);
-			}
+                    w.WriteLine(data);
+                }
+            }
+        }
 
-			if (changed)
-				SaveMusicFileSettings();
-		}
+        public void CreateMusicFolder()
+        {
+            //Create the music folder
+            Directory.CreateDirectory(CustomMusicDefaultFolder);
 
-		public void SaveMusicFileSettings()
-		{
-			using (StreamWriter w = new StreamWriter(MusicSettingsFileName))
-			{
-				w.WriteLine("# " + CSLMusicMod.VersionName);
-				w.WriteLine("# CSL Music Mod Configuration File");
-				w.WriteLine("# Uncomment or add custom entries here");
-				w.WriteLine("# Enabled (true/false)\t'Good' music\t'Bad' music\tEnable 'Bad' music\t'Sky' music\tEnable 'Sky' music");
+            //Create the readme file into the directory
+            using (StreamWriter w = File.CreateText(Path.Combine(CustomMusicDefaultFolder, "README.txt")))
+            {
+                w.WriteLine("Cities: Skylines Music Mod");
+                w.WriteLine("--------------------------");
+                w.WriteLine();
+                w.WriteLine("Supported Formats:");
+                w.WriteLine("*.raw Format");
+                w.WriteLine("*.ogg Vorbis");
+                w.WriteLine();
+                w.WriteLine("--- RAW Format");
+                w.WriteLine("Convert your audio file to:");
+                w.WriteLine("Signed 16 bit PCM");
+                w.WriteLine("Little Endian byte order");
+                w.WriteLine("2 Channels (Stereo)");
+                w.WriteLine("Frequency 44100Hz");
+                w.WriteLine();
+                w.WriteLine("--- Ogg Vorbis");
+                w.WriteLine("The mod will convert the files into *.raw audio files.");
+                w.WriteLine("NVorbis (https://nvorbis.codeplex.com) is used for converting");
+                w.WriteLine("the audio files. If NVorbis could not convert your file,");
+                w.WriteLine("check for extremly large ID3 tags (e.g. Cover images).");
+                w.WriteLine("NVorbis usually fails if ID3 tags are too large.");
 
-				foreach (CSLCustomMusicEntry entry in MusicEntries)
-				{
-					String data = (String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", 
-						entry.Enable,
-						entry.GoodMusic,
-						entry.BadMusic,
-						entry.EnableBadMusic,
-						entry.SkyMusic,
-						entry.EnableSkyMusic));
+            }
+        }
 
-					w.WriteLine(data);
-				}
-			}
-		}
+        private bool MusicFileKnown(String filename)
+        {
+            foreach (MusicEntry entry in MusicEntries)
+            {              
+                if (entry.Contains(filename))
+                    return true;
+            }
 
-		public void CreateMusicFolder()
-		{
-			//Create the music folder
-			Directory.CreateDirectory(CustomMusicDefaultFolder);
+            return false;
+        }
 
-			//Create the readme file into the directory
-			using (StreamWriter w = File.CreateText(Path.Combine(CustomMusicDefaultFolder,"README.txt")))
-			{
-				w.WriteLine("Cities: Skylines Music Mod");
-				w.WriteLine("--------------------------");
-				w.WriteLine();
-				w.WriteLine("Supported Formats:");
-				w.WriteLine("*.raw Format");
-				w.WriteLine("*.ogg Vorbis");
-				w.WriteLine();
-				w.WriteLine("--- RAW Format");
-				w.WriteLine("Convert your audio file to:");
-				w.WriteLine("Signed 16 bit PCM");
-				w.WriteLine("Little Endian byte order");
-				w.WriteLine("2 Channels (Stereo)");
-				w.WriteLine("Frequency 44100Hz");
-				w.WriteLine();
-				w.WriteLine("--- Ogg Vorbis");
-				w.WriteLine("The mod will convert the files into *.raw audio files.");
-				w.WriteLine("NVorbis (https://nvorbis.codeplex.com) is used for converting");
-				w.WriteLine("the audio files. If NVorbis could not convert your file,");
-				w.WriteLine("check for extremly large ID3 tags (e.g. Cover images).");
-				w.WriteLine("NVorbis usually fails if ID3 tags are too large.");
+        /**
+         * The filename is structured <Basename><Tag1><Tag2> ...
+         * 
+         * return <Basename>
+         * */
+        private String GetCustomMusicBaseName(String filename)
+        {			
+            return Path.GetFileNameWithoutExtension(filename).Split('#')[0].Trim();
+        }
 
-			}
-		}
+        /**
+         * Returns the basename for vanilla C:S music files
+         * */
+        private String GetVanillaMusicBaseName(String filename)
+        {
+            filename = Path.GetFileNameWithoutExtension(filename);
 
-		private bool MusicFileKnown(String filename)
-		{
-			foreach (CSLCustomMusicEntry entry in MusicEntries)
-			{              
-				if (entry.Contains(filename))
-					return true;
-			}
+            if (filename.EndsWith("s"))
+                return filename.Substring(0, filename.Length - 1);
+            if (filename.EndsWith("b"))
+                return filename.Substring(0, filename.Length - 1);
 
-			return false;
-		}
+            return filename;
+        }
 
-		private String GetCustomMusicBaseName(String filename)
-		{
-			//Get filename without extension without #bad #sky
-			return Path.GetFileNameWithoutExtension(filename).Replace("#bad", "").Replace("#sky", "").Trim();
-		}
+        public MusicEntry GetEntryByName(String name)
+        {
+            foreach (MusicEntry entry in MusicEntries)
+            {
+                if (entry.BaseName == name)
+                    return entry;
+            }
 
-		private String GetVanillaMusicBaseName(String filename)
-		{
-			filename = Path.GetFileNameWithoutExtension(filename);
-
-			if (filename.EndsWith("s"))
-				return filename.Substring(0, filename.Length - 1);
-			if (filename.EndsWith("b"))
-				return filename.Substring(0, filename.Length - 1);
-
-			return filename;
-		}
-
-		public CSLCustomMusicEntry GetEntryByName(String name)
-		{
-			foreach (CSLCustomMusicEntry entry in MusicEntries)
-			{
-				if (entry.Name == name)
-					return entry;
-			}
-
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 }
 

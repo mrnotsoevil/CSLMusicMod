@@ -8,7 +8,7 @@ namespace CSLMusicMod
 {
     public class CSLMusicMod : LoadingExtensionBase, IUserMod
     {
-		public const String VersionName = "Update 3.3";
+		public const String VersionName = "Update 4";
 
         public string Name
         {
@@ -29,6 +29,7 @@ namespace CSLMusicMod
         private GameObject _gameObject;
         private MusicInjector _injector;
         private MusicUI _ui;
+        private SettingsUI _settingsui;
 		private MusicManager _music;
 		private ConversionManager _conversion;
 		private SettingsManager _settings;
@@ -76,6 +77,14 @@ namespace CSLMusicMod
 
 			// Load the settings
 			_gameObject.GetComponent<SettingsManager> ().LoadModSettings ();
+        }
+
+        public void OnSettingsUI(UIHelperBase helper)
+        {
+            if (_settingsui == null)
+                _settingsui = _gameObject.AddComponent<SettingsUI>();
+
+            _settingsui.InitializeSettingsUI(helper);
         }
 
         public override void OnLevelLoaded(LoadMode mode)

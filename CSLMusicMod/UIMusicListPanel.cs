@@ -16,7 +16,7 @@ namespace CSLMusicMod
 
         public CSLAudioWatcher AudioWatcher { get; set; }
 
-        private CSLCustomMusicEntry _resort_CurrentItem;
+        private MusicEntry _resort_CurrentItem;
         private int _resort_currentPivotIndex;
         private bool _resort_resorted;
 
@@ -205,9 +205,9 @@ namespace CSLMusicMod
                     if (value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
                 {
                     //Store old entry
-                    CSLCustomMusicEntry current = AudioWatcher.CurrentMusicEntry;
+                        MusicEntry current = AudioWatcher.CurrentMusicEntry;
 
-                        CSLCustomMusicEntry entry = gameObject.GetComponent<MusicManager>().MusicEntries[value];
+                        MusicEntry entry = gameObject.GetComponent<MusicManager>().MusicEntries[value];
                     entry.Enable = !entry.Enable;
 
                     UpdateMusicListPreserveScroll();
@@ -277,17 +277,17 @@ namespace CSLMusicMod
         {
             List<String> entries = new List<string>();
 
-            foreach (CSLCustomMusicEntry entry in gameObject.GetComponent<MusicManager>().MusicEntries)
+            foreach (MusicEntry entry in gameObject.GetComponent<MusicManager>().MusicEntries)
             {
                 String annot = "";
 
                 if (!entry.Enable)
                     annot += "[Disabled]";               
 
-                String music = Path.GetFileNameWithoutExtension(entry.GoodMusic);
+                String music = Path.GetFileNameWithoutExtension(entry.BaseName);
                 String extra = "";
 
-                if (gameObject.GetComponent<SettingsManager>().ModOptions.MusicListShortNames)
+                /*if (gameObject.GetComponent<SettingsManager>().ModOptions.MusicListShortNames)
                 {
                     //Update 3.3 behaviour
                     List<String> e = new List<String>();
@@ -323,7 +323,7 @@ namespace CSLMusicMod
                     }
 
                     extra = String.Join(", ", e.ToArray());
-                }
+                }*/
                 entries.Add(String.Format("{0} {1} {2}", annot, music, extra));
             }
 

@@ -27,7 +27,7 @@ namespace CSLMusicMod
 			SettingsFile.Set("Music Selection", "HeightDependentMusic", ModOptions.HeightDependentMusic);
 			SettingsFile.Set("Music Selection", "MoodDependentMusic", ModOptions.MoodDependentMusic);
 
-			SettingsFile.Set("Music Library", "AutoAddMusicTypesForCustomMusic", ModOptions.AutoAddMusicTypesForCustomMusic);
+			//SettingsFile.Set("Music Library", "AutoAddMusicTypesForCustomMusic", ModOptions.AutoAddMusicTypesForCustomMusic);
 
 			SettingsFile.Set("Tweaks", "MusicWhileLoading", ModOptions.MusicWhileLoading);
 			SettingsFile.Set("Tweaks", "HeightDependentMusic_HeightThreshold", ModOptions.HeightDependentMusic_HeightThreshold);
@@ -46,8 +46,11 @@ namespace CSLMusicMod
 			SettingsFile.Set("Music Library", "CustomMusicFolders", String.Join(";", ModOptions.AdditionalCustomMusicFolders.ToArray()));
 
 			//Update 3.3
-			SettingsFile.Set("UI", "MusicListShortNames", ModOptions.MusicListShortNames);
+			//SettingsFile.Set("UI", "MusicListShortNames", ModOptions.MusicListShortNames);
 			//SettingsFile.Set("UI", "MusicListEnableScrollbar", ModOptions.MusicListEnableScrollbar);
+
+            //Update 4 settings
+            SettingsFile.Set("Technical", "PlayWithoutConvert", ModOptions.PlayWithoutConvert);
 
 			SettingsFile.Save();
 		}
@@ -68,7 +71,7 @@ namespace CSLMusicMod
 			ModOptions.HeightDependentMusic = SettingsFile.GetAsBool("Music Selection", "HeightDependentMusic", DefaultModOptions.HeightDependentMusic);
 			ModOptions.MoodDependentMusic = SettingsFile.GetAsBool("Music Selection", "MoodDependentMusic", DefaultModOptions.MoodDependentMusic);
 
-			ModOptions.AutoAddMusicTypesForCustomMusic = SettingsFile.GetAsBool("Music Library", "AutoAddMusicTypesForCustomMusic", DefaultModOptions.AutoAddMusicTypesForCustomMusic);
+			//ModOptions.AutoAddMusicTypesForCustomMusic = SettingsFile.GetAsBool("Music Library", "AutoAddMusicTypesForCustomMusic", DefaultModOptions.AutoAddMusicTypesForCustomMusic);
 
 			ModOptions.MusicWhileLoading = SettingsFile.GetAsBool("Tweaks", "MusicWhileLoading", DefaultModOptions.MusicWhileLoading);
 			ModOptions.HeightDependentMusic_HeightThreshold = SettingsFile.GetAsFloat("Tweaks", "HeightDependentMusic_HeightThreshold", DefaultModOptions.HeightDependentMusic_HeightThreshold);
@@ -101,8 +104,11 @@ namespace CSLMusicMod
 			}
 
 			//Update 3.3 settings
-			ModOptions.MusicListShortNames = SettingsFile.GetAsBool("UI", "MusicListShortNames", true);
+			//ModOptions.MusicListShortNames = SettingsFile.GetAsBool("UI", "MusicListShortNames", true);
 			//ModOptions.MusicListEnableScrollbar = SettingsFile.GetAsBool("UI", "MusicListEnableScrollbar", true);
+
+            //Update 4 settings
+            ModOptions.PlayWithoutConvert = SettingsFile.GetAsBool("Technical", "PlayWithoutConvert", true);
 
 			//If there are non exisiting keys in the settings file, add them by saving the settings
 			if (SettingsFile.FoundNonExistingKeys)
@@ -145,20 +151,18 @@ namespace CSLMusicMod
 		{
 			public bool HeightDependentMusic = true;
 			public bool MoodDependentMusic = true;
-			public bool MusicWhileLoading = true;
-			public bool AutoAddMusicTypesForCustomMusic = true;
+			public bool MusicWhileLoading = true;			
 			public KeyCode Key_NextTrack = KeyCode.N;
-			public KeyCode Key_Settings = KeyCode.M;
-			//public bool EnableChirper = false;
+			public KeyCode Key_Settings = KeyCode.M;			
 			public bool EnableMusicPacks = true;
 			public int MusicStreamSwitchTime = 154350; //65536*2 // 65536*3
 			public int MoodDependentMusic_MoodThreshold = 40;
 			public float HeightDependentMusic_HeightThreshold = 1400f;
 			public bool RandomTrackSelection = true;
-			public bool MusicListShortNames = true;
-			//public bool MusicListEnableScrollbar = true;
 			public List<String> AdditionalCustomMusicFolders = new List<string>();
 			public List<String> ModdedMusicSourceFolders = new List<String>();
+
+            public bool PlayWithoutConvert = true;
 
 			public List<String> CustomMusicFolders
 			{

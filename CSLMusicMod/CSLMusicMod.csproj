@@ -48,6 +48,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,7 +56,6 @@
     <Compile Include="MusicInjector.cs" />
     <Compile Include="CSLAudioWatcher.cs" />
     <Compile Include="ReflectionHelper.cs" />
-    <Compile Include="CSLCustomMusicEntry.cs" />
     <Compile Include="SaveWav.cs" />
     <Compile Include="MusicUI.cs" />
     <Compile Include="CSLMusicChirperMessage.cs" />
@@ -94,10 +94,15 @@
     <Compile Include="SettingsManager.cs" />
     <Compile Include="ConversionManager.cs" />
     <Compile Include="MusicManager.cs" />
+    <Compile Include="MusicEntry.cs" />
+    <Compile Include="MusicEntryTags\TagVanillaSky.cs" />
+    <Compile Include="MusicEntryTags\TagVanillaMood.cs" />
+    <Compile Include="SettingsUI.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="NVorbis\" />
     <Folder Include="Resources\" />
+    <Folder Include="MusicEntryTags\" />
   </ItemGroup>
 </Project>

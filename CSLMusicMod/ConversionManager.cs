@@ -34,39 +34,47 @@ namespace CSLMusicMod
 		{
 			Debug.Log("[CSLMusic] Converting custom and music pack music ...");
 
-			//Collect all to convert
-			Dictionary<String, String> conversiontasks = new Dictionary<string, string>();
+            if (ModOptions.PlayWithoutConvert)
+            {
+                Debug.Log("[CSLMusic] Converter disabled. CSLMusicMod will play ogg stream directly.");
+            }
+            else
+            {
 
-			foreach (String folder in ModOptions.CustomMusicFolders)
-			{
-				ConvertCustomMusic_AddConversionTasks(folder, conversiontasks, false);
-			}
-			foreach (String folder in ModOptions.ModdedMusicSourceFolders)
-			{
-				ConvertCustomMusic_AddConversionTasks(folder, conversiontasks, true);
-			}
+                //Collect all to convert
+                Dictionary<String, String> conversiontasks = new Dictionary<string, string>();
 
-			//Convert
-			foreach (KeyValuePair<String,String> task in conversiontasks)
-			{
-				String srcfile = task.Key;
-				String dstfile = task.Value;               
+                foreach (String folder in ModOptions.CustomMusicFolders)
+                {
+                    ConvertCustomMusic_AddConversionTasks(folder, conversiontasks, false);
+                }
+                foreach (String folder in ModOptions.ModdedMusicSourceFolders)
+                {
+                    ConvertCustomMusic_AddConversionTasks(folder, conversiontasks, true);
+                }
 
-				if (Path.GetExtension(srcfile) == ".ogg")
-				{
-					if (!File.Exists(dstfile))
-					{
-						Debug.Log("[CSLMusic] To convert: " + srcfile + " -> " + dstfile);
-						AudioFormatHelper.ConvertOggToRAW(srcfile, dstfile);
+                //Convert
+                foreach (KeyValuePair<String,String> task in conversiontasks)
+                {
+                    String srcfile = task.Key;
+                    String dstfile = task.Value;               
 
-						yield return null;
-					}
-					else
-					{
-						Debug.Log("[CSLMusic] Not converting " + srcfile + " to " + dstfile);
-					}
-				}
-			}
+                    if (Path.GetExtension(srcfile) == ".ogg")
+                    {
+                        if (!File.Exists(dstfile))
+                        {
+                            Debug.Log("[CSLMusic] To convert: " + srcfile + " -> " + dstfile);
+                            AudioFormatHelper.ConvertOggToRAW(srcfile, dstfile);
+
+                            yield return null;
+                        }
+                        else
+                        {
+                            Debug.Log("[CSLMusic] Not converting " + srcfile + " to " + dstfile);
+                        }
+                    }
+                }
+            }
 
 			//Set/unset
 			RemoveUnsubscribedConvertedModpackMusic();
