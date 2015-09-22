@@ -12,7 +12,7 @@ namespace CSLMusicMod
         private bool _initialized;
         private UICheckButton _enable_Sky;
         private UICheckButton _enable_Bad;
-        private UICheckButton _enable_Chirpy;
+        //private UICheckButton _enable_Chirpy;
         private UICheckButton _enable_MusicWhileLoading;
         private UICheckButton _enable_Playlist_random;
         private UIKeyBindingButton _nextTrackBinding;
@@ -20,6 +20,14 @@ namespace CSLMusicMod
         //+Feature: Adjust music volume
         private SavedFloat _MusicAudioVolume = new SavedFloat(Settings.musicAudioVolume, Settings.gameSettingsFile, DefaultSettings.musicAudioVolume, true);
         private UISlider _MusicVolumeSlider;
+
+        private SettingsManager SettingsManager
+        {
+            get
+            {
+                return gameObject.GetComponent<SettingsManager>();
+            }
+        }
 
         public UIMusicSettingsPanel()
         {
@@ -63,7 +71,7 @@ namespace CSLMusicMod
             mkLabel("Playlist", 10, 50 + 34 * 2 + 5);
             _enable_Playlist_random = mkCheckBox("Play tracks randomly", 30, 50 + 34 * 3);
             mkLabel("Tweaks", 10, 50 + 34 * 4 + 5);
-            _enable_Chirpy = mkCheckBox("Use Chirpy", 30, 50 + 34 * 5);
+            //_enable_Chirpy = mkCheckBox("Use Chirpy", 30, 50 + 34 * 5);
             _enable_MusicWhileLoading = mkCheckBox("Music while loading", 30, 50 + 34 * 6);
 
             //Key bindings
@@ -79,7 +87,7 @@ namespace CSLMusicMod
             //Add tooltips
             _enable_Sky.tooltip = "Change music if you float high enough above your city";
             _enable_Bad.tooltip = "Change music depending on your popularity";
-            _enable_Chirpy.tooltip = "Great leader Chirpy will tell you which music is playing";
+            //_enable_Chirpy.tooltip = "Great leader Chirpy will tell you which music is playing";
             _enable_MusicWhileLoading.tooltip = "Play menu music while loading. Useful if music stutters while loading";
             _enable_Playlist_random.tooltip = "Select tracks to play randomly";
 
@@ -88,58 +96,58 @@ namespace CSLMusicMod
             //Add events
             _enable_Sky.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
             {
-                if (CSLMusicModSettings.HeightDependentMusic != state)
+                if (SettingsManager.ModOptions.HeightDependentMusic != state)
                 {
-                    CSLMusicModSettings.HeightDependentMusic = state;
-                    CSLMusicModSettings.SaveModSettings();
+                    SettingsManager.ModOptions.HeightDependentMusic = state;
+                    SettingsManager.SaveModSettings();
                 }
             };
             _enable_Bad.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
             {
-                if (CSLMusicModSettings.MoodDependentMusic != state)
+                if (SettingsManager.ModOptions.MoodDependentMusic != state)
                 {
-                    CSLMusicModSettings.MoodDependentMusic = state;
-                    CSLMusicModSettings.SaveModSettings();
+                    SettingsManager.ModOptions.MoodDependentMusic = state;
+                    SettingsManager.SaveModSettings();
                 }
             };
             _enable_Playlist_random.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
             {
-                if (CSLMusicModSettings.RandomTrackSelection != state)
+                if (SettingsManager.ModOptions.RandomTrackSelection != state)
                 {
-                    CSLMusicModSettings.RandomTrackSelection = state;
-                    CSLMusicModSettings.SaveModSettings();
+                    SettingsManager.ModOptions.RandomTrackSelection = state;
+                    SettingsManager.SaveModSettings();
                 }
             };
-            _enable_Chirpy.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
+            /*_enable_Chirpy.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
             {
                 if (CSLMusicModSettings.EnableChirper != state)
                 {
                     CSLMusicModSettings.EnableChirper = state;
                     CSLMusicModSettings.SaveModSettings();
                 }
-            };
+            };*/
             _enable_MusicWhileLoading.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
             {
-                if (CSLMusicModSettings.MusicWhileLoading != state)
+                if (SettingsManager.ModOptions.MusicWhileLoading != state)
                 {
-                    CSLMusicModSettings.MusicWhileLoading = state;
-                    CSLMusicModSettings.SaveModSettings();
+                    SettingsManager.ModOptions.MusicWhileLoading = state;
+                    SettingsManager.SaveModSettings();
                 }
             };
             _nextTrackBinding.eventAssignedKeyChanged += delegate(UIKeyBindingButton sender, KeyCode assignedKey)
             {
-                if (CSLMusicModSettings.Key_NextTrack != assignedKey)
+                if (SettingsManager.ModOptions.Key_NextTrack != assignedKey)
                 {
-                    CSLMusicModSettings.Key_NextTrack = assignedKey;
-                    CSLMusicModSettings.SaveModSettings();
+                    SettingsManager.ModOptions.Key_NextTrack = assignedKey;
+                    SettingsManager.SaveModSettings();
                 }
             };
             _openPanelBinding.eventAssignedKeyChanged += delegate(UIKeyBindingButton sender, KeyCode assignedKey)
             {
-                if (CSLMusicModSettings.Key_Settings != assignedKey)
+                if (SettingsManager.ModOptions.Key_Settings != assignedKey)
                 {
-                    CSLMusicModSettings.Key_Settings = assignedKey;
-                    CSLMusicModSettings.SaveModSettings();
+                    SettingsManager.ModOptions.Key_Settings = assignedKey;
+                    SettingsManager.SaveModSettings();
                 }
             };
        
@@ -245,13 +253,13 @@ namespace CSLMusicMod
         {
             if (_initialized)
             {
-                _enable_Sky.isChecked = CSLMusicModSettings.HeightDependentMusic;
-                _enable_Bad.isChecked = CSLMusicModSettings.MoodDependentMusic;
-                _enable_Playlist_random.isChecked = CSLMusicModSettings.RandomTrackSelection;
-                _enable_Chirpy.isChecked = CSLMusicModSettings.EnableChirper;
-                _enable_MusicWhileLoading.isChecked = CSLMusicModSettings.MusicWhileLoading;
-                _nextTrackBinding.AssignedKey = CSLMusicModSettings.Key_NextTrack;
-                _openPanelBinding.AssignedKey = CSLMusicModSettings.Key_Settings;
+                _enable_Sky.isChecked = SettingsManager.ModOptions.HeightDependentMusic;
+                _enable_Bad.isChecked = SettingsManager.ModOptions.MoodDependentMusic;
+                _enable_Playlist_random.isChecked = SettingsManager.ModOptions.RandomTrackSelection;
+                //_enable_Chirpy.isChecked = SettingsManager.ModOptions.EnableChirper;
+                _enable_MusicWhileLoading.isChecked = SettingsManager.ModOptions.MusicWhileLoading;
+                _nextTrackBinding.AssignedKey = SettingsManager.ModOptions.Key_NextTrack;
+                _openPanelBinding.AssignedKey = SettingsManager.ModOptions.Key_Settings;
                 _MusicVolumeSlider.value = _MusicAudioVolume.value * 100f; //I use x100 because it failed with 0..1?
 
                 //Debug.Log("********** vol:" + _MusicAudioVolume.value);

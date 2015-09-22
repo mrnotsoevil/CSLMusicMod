@@ -150,7 +150,7 @@ namespace CSLMusicMod
              * */
 
             //Update 3.3 scrollbar
-            if (CSLMusicModSettings.MusicListEnableScrollbar)
+            //if (CSLMusicModSettings.MusicListEnableScrollbar)
             {
                 var scroller = panel.AddUIComponent<UIScrollbar>();
                 scroller.width = 15;
@@ -194,20 +194,20 @@ namespace CSLMusicMod
                 if (AudioWatcher != null)
                 {
                     //+ Only if not resorted, switch to track
-                    if (!_resort_resorted && value >= 0 && CSLMusicModSettings.MusicEntries.Count > value)
+                        if (!_resort_resorted && value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
                     {
-                        AudioWatcher.RequestSwitchMusic(CSLMusicModSettings.MusicEntries[value], false);
+                            AudioWatcher.RequestSwitchMusic(gameObject.GetComponent<MusicManager>().MusicEntries[value], false);
                     }
                 }
             };
             panel.eventItemDoubleClicked += delegate(UIComponent component, int value)
             {
-                if (value >= 0 && CSLMusicModSettings.MusicEntries.Count > value)
+                    if (value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
                 {
                     //Store old entry
                     CSLCustomMusicEntry current = AudioWatcher.CurrentMusicEntry;
 
-                    CSLCustomMusicEntry entry = CSLMusicModSettings.MusicEntries[value];
+                        CSLCustomMusicEntry entry = gameObject.GetComponent<MusicManager>().MusicEntries[value];
                     entry.Enable = !entry.Enable;
 
                     UpdateMusicListPreserveScroll();
@@ -222,9 +222,9 @@ namespace CSLMusicMod
             {
                 if (AudioWatcher != null)
                 {
-                    if (value >= 0 && CSLMusicModSettings.MusicEntries.Count > value)
+                        if (value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
                     {
-                        _resort_CurrentItem = CSLMusicModSettings.MusicEntries[value];
+                            _resort_CurrentItem = gameObject.GetComponent<MusicManager>().MusicEntries[value];
                         _resort_currentPivotIndex = value;
                         _resort_resorted = false;
                     }
@@ -236,17 +236,17 @@ namespace CSLMusicMod
 
                 if (_resort_resorted)
                 {
-                    CSLMusicModSettings.SaveMusicFileSettings();
+                        gameObject.GetComponent<MusicManager>().SaveMusicFileSettings();
                 }
             };
             panel.eventItemMouseHover += delegate(UIComponent component, int value)
             {
-                if (value >= 0 && CSLMusicModSettings.MusicEntries.Count > value)
+                    if (value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
                 {
                     if (_resort_CurrentItem != null && value != _resort_currentPivotIndex)
                     {
-                        CSLMusicModSettings.MusicEntries.Remove(_resort_CurrentItem);
-                        CSLMusicModSettings.MusicEntries.Insert(value, _resort_CurrentItem);
+                            gameObject.GetComponent<MusicManager>().MusicEntries.Remove(_resort_CurrentItem);
+                            gameObject.GetComponent<MusicManager>().MusicEntries.Insert(value, _resort_CurrentItem);
                         _resort_currentPivotIndex = value;
 
                         UpdateMusicListPreserveScroll();
@@ -277,7 +277,7 @@ namespace CSLMusicMod
         {
             List<String> entries = new List<string>();
 
-            foreach (CSLCustomMusicEntry entry in CSLMusicModSettings.MusicEntries)
+            foreach (CSLCustomMusicEntry entry in gameObject.GetComponent<MusicManager>().MusicEntries)
             {
                 String annot = "";
 
@@ -287,7 +287,7 @@ namespace CSLMusicMod
                 String music = Path.GetFileNameWithoutExtension(entry.GoodMusic);
                 String extra = "";
 
-                if (CSLMusicModSettings.MusicListShortNames)
+                if (gameObject.GetComponent<SettingsManager>().ModOptions.MusicListShortNames)
                 {
                     //Update 3.3 behaviour
                     List<String> e = new List<String>();

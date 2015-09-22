@@ -29,38 +29,53 @@ namespace CSLMusicMod
         private GameObject _gameObject;
         private MusicInjector _injector;
         private MusicUI _ui;
+		private MusicManager _music;
+		private ConversionManager _conversion;
+		private SettingsManager _settings;
 
         public CSLMusicMod()
         {
 
         }
 
-        private void ensureGameObject()
-        {
-            Debug.Log("Creating injector game object ...");
+		private void ensureInjector()
+		{
+			Debug.Log("Creating injector game object ...");
 
-            if (_gameObject == null)
-            {
-                _gameObject = new GameObject();
-                _gameObject.name = "CSLMusicMod_GO";
-            }
-            if (_injector == null)
-            {
-                _injector = _gameObject.AddComponent<MusicInjector>();       
-            }
-        }
+			if (_gameObject == null)
+			{
+				_gameObject = new GameObject();
+				_gameObject.name = "CSLMusicMod_GO";
+			}           
+
+			if (_injector == null) {
+				_injector = _gameObject.AddComponent<MusicInjector> ();       
+			}
+		}
 
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
+          
+			ensureInjector();
 
-            //Create folders if not available
-            CSLMusicModSettings.CreateFolders();
+			// Create settings
+			if (_settings == null)
+				_settings = _gameObject.AddComponent<SettingsManager> ();
 
-            //Load settings 
-            CSLMusicModSettings.LoadModSettings();
+			// Create the music list
+			if (_music == null)
+				_music = _gameObject.AddComponent<MusicManager> ();
 
-            ensureGameObject();
+			// Create the converter
+			if (_conversion == null)
+				_conversion = _gameObject.AddComponent<ConversionManager> ();
+
+			// Create folders
+			_gameObject.GetComponent<MusicManager>().CreateMusicFolder();
+
+			// Load the settings
+			_gameObject.GetComponent<SettingsManager> ().LoadModSettings ();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -68,14 +83,11 @@ namespace CSLMusicMod
             base.OnLevelLoaded(mode);
 
             //ensure it!
-            ensureGameObject();
+			ensureInjector();
 
             //Create ui
             if (_ui == null)
                 _ui = _gameObject.AddComponent<MusicUI>();
-
-            MusicUI.ChirpWelcome();
-            MusicUI.ChirpConverterError();
         }
 
         public override void OnLevelUnloading()

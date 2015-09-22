@@ -43,7 +43,7 @@ namespace CSLMusicMod
 		{
 		}
 
-		private static bool AddUnknownCustomMusicFiles(ref bool mood_entries_not_found)
+		private bool AddUnknownCustomMusicFiles(ref bool mood_entries_not_found)
 		{
 			Debug.Log("[CSLMusic] Fetching unknown custom music files ...");
 
@@ -64,7 +64,7 @@ namespace CSLMusicMod
 			return foundsomething;
 		}
 
-		private static bool AddUnknownMusicPackMusicFiles(ref bool mood_entries_not_found)
+		private bool AddUnknownMusicPackMusicFiles(ref bool mood_entries_not_found)
 		{
 			Debug.Log("[CSLMusic] Fetching unknown music pack music files ...");
 
@@ -114,7 +114,7 @@ namespace CSLMusicMod
 			return foundsomething;
 		}
 
-		private static bool AddUnknownMusicFiles(String folder, ref bool mood_entries_not_found)
+		private bool AddUnknownMusicFiles(String folder, ref bool mood_entries_not_found)
 		{
 			bool foundsomething = false;
 
@@ -139,7 +139,7 @@ namespace CSLMusicMod
 						continue;
 				}
 
-				CSLCustomMusicEntry entry = new CSLCustomMusicEntry(GetCustomMusicBaseName(file), file, "", "");
+				CSLCustomMusicEntry entry = new CSLCustomMusicEntry(gameObject, GetCustomMusicBaseName(file), file, "", "");
 
 				Debug.Log("Adding as 'Good' Music file: " + file);              
 				MusicEntries.Add(entry);
@@ -192,7 +192,7 @@ namespace CSLMusicMod
 			return foundsomething;
 		}
 
-		private static bool AddUnknownVanillaMusicFiles(ref bool mood_entries_not_found)
+		private bool AddUnknownVanillaMusicFiles(ref bool mood_entries_not_found)
 		{
 			bool foundsomething = false;
 			mood_entries_not_found = false;
@@ -217,7 +217,7 @@ namespace CSLMusicMod
 					Debug.Log("'Good' Music file: " + file);
 
 					CSLCustomMusicEntry entry = new CSLCustomMusicEntry(
-						GetVanillaMusicBaseName(file), file, "", "");                   
+                        gameObject,GetVanillaMusicBaseName(file), file, "", "");                   
 					MusicEntries.Add(entry);
 
 					foundsomething = true;
@@ -271,7 +271,7 @@ namespace CSLMusicMod
 			return foundsomething;
 		}
 
-		private static bool RemoveDeactivatedMusicPackSongs()
+		private bool RemoveDeactivatedMusicPackSongs()
 		{
 			Debug.Log("[CSLMusic] Removing deactivated modded files ...");
 
@@ -327,7 +327,7 @@ namespace CSLMusicMod
 			return changed_sth;
 		}
 
-		private static bool MusicFileBelongsToInactiveMod(String file)
+		private bool MusicFileBelongsToInactiveMod(String file)
 		{
 			if (file.StartsWith(ConversionManager.ConvertedMusicPackMusicFolder))
 			{
@@ -353,7 +353,7 @@ namespace CSLMusicMod
 			return false;
 		}
 
-		public static void LoadMusicFiles()
+		public void LoadMusicFiles()
 		{
 			Debug.Log("[CSLMusic] Loading music files from configuration ...");
 
@@ -417,7 +417,7 @@ namespace CSLMusicMod
 							String name = Path.GetFileNameWithoutExtension(good);                           
 
 							//Create the entry
-							MusicEntries.Add(new CSLCustomMusicEntry(enabled, name, good, bad, bad_enable, sky, sky_enable));
+                            MusicEntries.Add(new CSLCustomMusicEntry(gameObject,enabled, name, good, bad, bad_enable, sky, sky_enable));
 						}                       
 					}
 				}
@@ -446,7 +446,7 @@ namespace CSLMusicMod
 				SaveMusicFileSettings();
 		}
 
-		public static void SaveMusicFileSettings()
+		public void SaveMusicFileSettings()
 		{
 			using (StreamWriter w = new StreamWriter(MusicSettingsFileName))
 			{
@@ -470,7 +470,7 @@ namespace CSLMusicMod
 			}
 		}
 
-		private static void CreateMusicFolder()
+		public void CreateMusicFolder()
 		{
 			//Create the music folder
 			Directory.CreateDirectory(CustomMusicDefaultFolder);
@@ -502,7 +502,7 @@ namespace CSLMusicMod
 			}
 		}
 
-		private static bool MusicFileKnown(String filename)
+		private bool MusicFileKnown(String filename)
 		{
 			foreach (CSLCustomMusicEntry entry in MusicEntries)
 			{              
@@ -513,13 +513,13 @@ namespace CSLMusicMod
 			return false;
 		}
 
-		private static String GetCustomMusicBaseName(String filename)
+		private String GetCustomMusicBaseName(String filename)
 		{
 			//Get filename without extension without #bad #sky
 			return Path.GetFileNameWithoutExtension(filename).Replace("#bad", "").Replace("#sky", "").Trim();
 		}
 
-		private static String GetVanillaMusicBaseName(String filename)
+		private String GetVanillaMusicBaseName(String filename)
 		{
 			filename = Path.GetFileNameWithoutExtension(filename);
 
@@ -531,7 +531,7 @@ namespace CSLMusicMod
 			return filename;
 		}
 
-		public static CSLCustomMusicEntry GetEntryByName(String name)
+		public CSLCustomMusicEntry GetEntryByName(String name)
 		{
 			foreach (CSLCustomMusicEntry entry in MusicEntries)
 			{

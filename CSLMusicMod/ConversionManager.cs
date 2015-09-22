@@ -10,7 +10,7 @@ namespace CSLMusicMod
 	public class ConversionManager : MonoBehaviour
 	{
 		public const String ConvertedMusicPackMusicFolder = "CSLMusicMod_Musicpacks_Converted";
-		private List<String> Info_NonConvertedFiles = new List<string>();
+        //public static List<String> Info_NonConvertedFiles = new List<string>();
 
 		public SettingsManager.Options ModOptions
 		{
@@ -33,7 +33,6 @@ namespace CSLMusicMod
 		public IEnumerator ConvertCustomMusic()
 		{
 			Debug.Log("[CSLMusic] Converting custom and music pack music ...");
-			Info_NonConvertedFiles.Clear();
 
 			//Collect all to convert
 			Dictionary<String, String> conversiontasks = new Dictionary<string, string>();
@@ -131,7 +130,7 @@ namespace CSLMusicMod
 			}
 		}
 
-		private static void RemoveUnsubscribedConvertedModpackMusic()
+		private void RemoveUnsubscribedConvertedModpackMusic()
 		{
 			Debug.Log("[CSLMusic] Removing unsubscribed converted music files ...");
 
@@ -165,7 +164,7 @@ namespace CSLMusicMod
 		/**
          * Creates and returns the folder containing the converted files for given mod
          * */
-		public static String CreateModConvertedMusicFolder(PluginManager.PluginInfo info)
+		public String CreateModConvertedMusicFolder(PluginManager.PluginInfo info)
 		{
 			String destinationpath = Path.Combine(ConvertedMusicPackMusicFolder, info.publishedFileID.AsUInt64.ToString());
 

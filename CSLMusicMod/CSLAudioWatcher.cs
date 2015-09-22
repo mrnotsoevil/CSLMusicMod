@@ -63,9 +63,48 @@ namespace CSLMusicMod
             }
         }
 
-        private bool _switchMusic_Requested;
+		public SettingsManager.Options ModOptions
+		{
+			get
+			{
+                return _gameObject.GetComponent<SettingsManager>().ModOptions;			
+			}
+		}
+
+		public SettingsManager SettingsManager
+		{
+			get
+			{
+                return _gameObject.GetComponent<SettingsManager>();
+			}
+		}
+
+		public MusicManager MusicManager
+		{
+			get
+			{
+                return _gameObject.GetComponent<MusicManager>();
+			}
+		}
+
+        public GameObject GameObject
+        {
+            get
+            {
+                return _gameObject;
+            }
+            set
+            {
+                _gameObject = value;
+            }
+        }
+
+		
+        private GameObject _gameObject;
+
+        //private bool _switchMusic_Requested;
         private CSLCustomMusicEntry _switchMusic_Requested_Music;
-        private bool _switchMusic_Requested_useChirpy;
+        //private bool _switchMusic_Requested_useChirpy;
         /**
          * Keep track of the last max. position
          * If the stream restarts, switch the music
@@ -83,8 +122,8 @@ namespace CSLMusicMod
         public CSLAudioWatcher()
         {
             _firstTimeSwitched = false;
-            _switchMusic_Requested = false;
-            _switchMusic_Requested_useChirpy = false;
+            //_switchMusic_Requested = false;
+            //_switchMusic_Requested_useChirpy = false;
         }
 
         public void RequestSwitchMusic(bool chirp)
@@ -94,9 +133,9 @@ namespace CSLMusicMod
 
         public void RequestSwitchMusic(CSLCustomMusicEntry entry, bool chirp)
         {
-            _switchMusic_Requested = true;
+            //_switchMusic_Requested = true;
             _switchMusic_Requested_Music = entry;
-            _switchMusic_Requested_useChirpy = chirp;
+            //_switchMusic_Requested_useChirpy = chirp;
         }
 
         public void PlayAudio(AudioManager.ListenerInfo listenerInfo)
@@ -105,7 +144,7 @@ namespace CSLMusicMod
             if (!Singleton<LoadingManager>.instance.m_loadingComplete)
             {
                 //May be annoying (stuttering while loading), so it can be disabled
-                if (!CSLMusicModSettings.MusicWhileLoading)
+				if (!ModOptions.MusicWhileLoading)
                 {
                     SwitchMusicToFile(null);
                 }
@@ -122,11 +161,11 @@ namespace CSLMusicMod
                 _firstTimeSwitched = true;
 
                 //Yay chirp
-                MusicUI.ChirpNowPlaying(_currentMusic);
+                //GameObject.GetComponent<MusicUI>().ChirpNowPlaying(_currentMusic);
             }
 
             //If user requests switch
-            if (_switchMusic_Requested)
+            /*if (_switchMusic_Requested)
             {
                 CSLCustomMusicEntry _cur = _currentMusic;
 
@@ -136,9 +175,9 @@ namespace CSLMusicMod
                 _switchMusic_Requested = false;
 
                 //Yay chirp
-                if (_currentMusic != _cur && _switchMusic_Requested_useChirpy)
-                    MusicUI.ChirpNowPlaying(_currentMusic);
-            }
+                //if (_currentMusic != _cur && _switchMusic_Requested_useChirpy)
+                //    GameObject.GetComponent<MusicUI>().ChirpNowPlaying(_currentMusic);
+            }*/
 
             /**
                  * CSL usually changes the music by mood and camera height.
@@ -195,7 +234,7 @@ namespace CSLMusicMod
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " has restarted"); 
                     SwitchMusic(info);
                 }
-                else if (pos >= CurrentMusicStream.Length - CSLMusicModSettings.MusicStreamSwitchTime)
+                else if (pos >= CurrentMusicStream.Length - ModOptions.MusicStreamSwitchTime)
                 {
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " is ending"); 
                     SwitchMusic(info);
@@ -251,7 +290,7 @@ namespace CSLMusicMod
         {
             Debug.Log("[CSLMusic] Switching music ...");
 
-            List<CSLCustomMusicEntry> entries = CSLMusicModSettings.EnabledMusicEntries;
+			List<CSLCustomMusicEntry> entries = MusicManager.EnabledMusicEntries;
 
             if (entries.Count == 0)
             {
@@ -268,7 +307,7 @@ namespace CSLMusicMod
             //Set current music entry
             _currentMusic = _switchMusic_Requested_Music == null ? GetNextMusic(entries) : _switchMusic_Requested_Music;
             _switchMusic_Requested_Music = null; //Reset requested
-            _switchMusic_Requested = false;
+            //_switchMusic_Requested = false;
 
             UpdateMusic(info);
 
@@ -286,7 +325,7 @@ namespace CSLMusicMod
 
             CSLCustomMusicEntry newentry;
 
-            if (CSLMusicModSettings.RandomTrackSelection)
+			if (ModOptions.RandomTrackSelection)
                 newentry = GetNextRandomMusic(entries);
             else
                 newentry = GetNextMusicFromList(entries);

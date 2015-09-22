@@ -34,7 +34,7 @@ namespace CSLMusicMod
                             Debug.LogError("[CSLMusic] Error: Input file " + srcoggfile + " must have 2 channels and 44100Hz sample rate!");
                         
                             //Add to list
-                            CSLMusicModSettings.Info_NonConvertedFiles.Add(srcoggfile);
+                            //ConversionManager.Info_NonConvertedFiles.Add(srcoggfile);
                             return;
                         }
 
@@ -76,7 +76,7 @@ namespace CSLMusicMod
                 Debug.LogError("... ERROR: Could not read file! " + ex.Message);
 
                 //Add to list
-                CSLMusicModSettings.Info_NonConvertedFiles.Add(srcoggfile);
+                //CSLMusicModSettings.Info_NonConvertedFiles.Add(srcoggfile);
 
                 return;
             }

@@ -54,7 +54,6 @@
     <Compile Include="CSLMusicMod.cs" />
     <Compile Include="MusicInjector.cs" />
     <Compile Include="CSLAudioWatcher.cs" />
-    <Compile Include="CSLMusicModSettings.cs" />
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="CSLCustomMusicEntry.cs" />
     <Compile Include="SaveWav.cs" />

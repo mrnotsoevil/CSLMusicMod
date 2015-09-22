@@ -6,6 +6,8 @@ namespace CSLMusicMod
 {
     public class CSLCustomMusicEntry
     {
+        private GameObject _gameObject;
+
         public String Name
         {
             get;
@@ -23,7 +25,7 @@ namespace CSLMusicMod
             set
             {
                 _enable = value;
-                CSLMusicModSettings.SaveMusicFileSettings();
+                _gameObject.GetComponent<MusicManager>().SaveMusicFileSettings();
             }
         }
 
@@ -42,7 +44,7 @@ namespace CSLMusicMod
             set
             {
                 _enableBadMusic = value;
-                CSLMusicModSettings.SaveMusicFileSettings();
+                _gameObject.GetComponent<MusicManager>().SaveMusicFileSettings();
             }
         }
 
@@ -59,7 +61,15 @@ namespace CSLMusicMod
             set
             {
                 _enableSkyMusic = value;
-                CSLMusicModSettings.SaveMusicFileSettings();
+                _gameObject.GetComponent<MusicManager>().SaveMusicFileSettings();
+            }
+        }
+
+        private SettingsManager.Options ModOptions
+        {
+            get
+            {
+                return _gameObject.GetComponent<SettingsManager>().ModOptions;
             }
         }
 
@@ -67,8 +77,9 @@ namespace CSLMusicMod
          * Source of this music entry
          * */    
 
-        public CSLCustomMusicEntry(bool enable, String name, String good, String bad, bool enable_bad, String sky, bool enable_sky)
+        public CSLCustomMusicEntry(GameObject gameObject, bool enable, String name, String good, String bad, bool enable_bad, String sky, bool enable_sky)
         {
+            _gameObject = gameObject;
             Name = name;
             _enable = enable;
             GoodMusic = good;
@@ -78,8 +89,8 @@ namespace CSLMusicMod
             _enableSkyMusic = enable_sky;
         }
 
-        public CSLCustomMusicEntry(String name, String good, String bad, String sky) 
-            : this(true, name, good, bad, true, sky, true)
+        public CSLCustomMusicEntry(GameObject gameObject, String name, String good, String bad, String sky) 
+            : this(gameObject, true, name, good, bad, true, sky, true)
         {
            
         }
@@ -87,9 +98,9 @@ namespace CSLMusicMod
         public String GetMusicFromMood(AudioManager.ListenerInfo info)
         {
             if (EnableSkyMusic 
-                && CSLMusicModSettings.HeightDependentMusic 
+                && ModOptions.HeightDependentMusic 
                 && !String.IsNullOrEmpty(SkyMusic) 
-                && GetListenerHeight(info) > CSLMusicModSettings.HeightDependentMusic_HeightThreshold)
+                && GetListenerHeight(info) > ModOptions.HeightDependentMusic_HeightThreshold)
             {
                 return SkyMusic;
             }
@@ -97,9 +108,9 @@ namespace CSLMusicMod
             int finalHappiness = (int)Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_finalHappiness;
 
             if (EnableBadMusic 
-                && CSLMusicModSettings.MoodDependentMusic 
+                && ModOptions.MoodDependentMusic 
                 && !String.IsNullOrEmpty(BadMusic) 
-                && finalHappiness < CSLMusicModSettings.MoodDependentMusic_MoodThreshold)
+                && finalHappiness < ModOptions.MoodDependentMusic_MoodThreshold)
             {
                 return BadMusic;
             }

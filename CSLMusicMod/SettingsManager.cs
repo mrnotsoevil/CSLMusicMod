@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using ColossalFramework.Plugins;
 
 namespace CSLMusicMod
 {
@@ -32,7 +33,7 @@ namespace CSLMusicMod
 			SettingsFile.Set("Tweaks", "HeightDependentMusic_HeightThreshold", ModOptions.HeightDependentMusic_HeightThreshold);
 			SettingsFile.Set("Tweaks", "MoodDependentMusic_MoodThreshold", ModOptions.MoodDependentMusic_MoodThreshold);
 
-			SettingsFile.Set("Chirper", "EnableChirper", ModOptions.EnableChirper);
+			//SettingsFile.Set("Chirper", "EnableChirper", ModOptions.EnableChirper);
 
 			SettingsFile.Set("Playlist", "RandomTrackSelection", ModOptions.RandomTrackSelection);
 
@@ -46,7 +47,7 @@ namespace CSLMusicMod
 
 			//Update 3.3
 			SettingsFile.Set("UI", "MusicListShortNames", ModOptions.MusicListShortNames);
-			SettingsFile.Set("UI", "MusicListEnableScrollbar", ModOptions.MusicListEnableScrollbar);
+			//SettingsFile.Set("UI", "MusicListEnableScrollbar", ModOptions.MusicListEnableScrollbar);
 
 			SettingsFile.Save();
 		}
@@ -79,7 +80,7 @@ namespace CSLMusicMod
 			if (ModOptions.MoodDependentMusic_MoodThreshold < 0)
 				ModOptions.MoodDependentMusic_MoodThreshold = DefaultModOptions.MoodDependentMusic_MoodThreshold;
 
-			ModOptions.EnableChirper = SettingsFile.GetAsBool("Chirper", "EnableChirper", DefaultModOptions.EnableChirper); //Default to false
+			//ModOptions.EnableChirper = SettingsFile.GetAsBool("Chirper", "EnableChirper", DefaultModOptions.EnableChirper); //Default to false
 
 			ModOptions.RandomTrackSelection = SettingsFile.GetAsBool("Playlist", "RandomTrackSelection", DefaultModOptions.RandomTrackSelection);
 
@@ -101,7 +102,7 @@ namespace CSLMusicMod
 
 			//Update 3.3 settings
 			ModOptions.MusicListShortNames = SettingsFile.GetAsBool("UI", "MusicListShortNames", true);
-			ModOptions.MusicListEnableScrollbar = SettingsFile.GetAsBool("UI", "MusicListEnableScrollbar", true);
+			//ModOptions.MusicListEnableScrollbar = SettingsFile.GetAsBool("UI", "MusicListEnableScrollbar", true);
 
 			//If there are non exisiting keys in the settings file, add them by saving the settings
 			if (SettingsFile.FoundNonExistingKeys)
@@ -113,7 +114,34 @@ namespace CSLMusicMod
 			AddModpackMusicFolders();
 		}
 
-		public struct Options
+        private void AddModpackMusicFolders()
+        {
+            ModOptions.ModdedMusicSourceFolders.Clear();
+
+            //If music packs are disabled, just add no folders.
+            if (!ModOptions.EnableMusicPacks)
+                return;
+
+            foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
+            {
+                if (info.isEnabled)
+                {
+                    String path = Path.Combine(info.modPath, MusicManager.CustomMusicDefaultFolder);
+
+                    if (Directory.Exists(path))
+                    {
+                        Debug.Log("[CSLMusic] Adding music pack @ " + path);
+
+                        if (!ModOptions.ModdedMusicSourceFolders.Contains(path))
+                        {
+                            ModOptions.ModdedMusicSourceFolders.Add(path);
+                        }
+                    }
+                }
+            }
+        }
+
+		public class Options
 		{
 			public bool HeightDependentMusic = true;
 			public bool MoodDependentMusic = true;
@@ -121,14 +149,14 @@ namespace CSLMusicMod
 			public bool AutoAddMusicTypesForCustomMusic = true;
 			public KeyCode Key_NextTrack = KeyCode.N;
 			public KeyCode Key_Settings = KeyCode.M;
-			public bool EnableChirper = false;
+			//public bool EnableChirper = false;
 			public bool EnableMusicPacks = true;
 			public int MusicStreamSwitchTime = 154350; //65536*2 // 65536*3
 			public int MoodDependentMusic_MoodThreshold = 40;
 			public float HeightDependentMusic_HeightThreshold = 1400f;
 			public bool RandomTrackSelection = true;
 			public bool MusicListShortNames = true;
-			public bool MusicListEnableScrollbar = true;
+			//public bool MusicListEnableScrollbar = true;
 			public List<String> AdditionalCustomMusicFolders = new List<string>();
 			public List<String> ModdedMusicSourceFolders = new List<String>();
 
