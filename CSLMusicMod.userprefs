@@ -1,8 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/MusicEntry.cs">
     <Files>
-      <File FileName="CSLMusicMod/CSLAudioWatcher.cs" Line="1" Column="1" />
+      <File FileName="CSLMusicMod/AudioFormatHelper.cs" Line="53" Column="53" />
+      <File FileName="CSLMusicMod/NVorbis/VorbisReader.cs" Line="41" Column="41" />
+      <File FileName="CSLMusicMod/NVorbis/VorbisStreamDecoder.cs" Line="1" Column="1" />
+      <File FileName="CSLMusicMod/NVorbis/IVorbisStreamStatus.cs" Line="1" Column="1" />
+      <File FileName="CSLMusicMod/MusicManager.cs" Line="10" Column="10" />
+      <File FileName="CSLMusicMod/MusicInjector.cs" Line="1" Column="1" />
+      <File FileName="CSLMusicMod/MusicEntry.cs" Line="37" Column="37" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

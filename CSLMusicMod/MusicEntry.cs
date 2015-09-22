@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 
 namespace CSLMusicMod
 {
@@ -60,9 +61,16 @@ namespace CSLMusicMod
          * */
         public void AddSong(String filename)
         {
-           
+           // Split tags from filename
+            string[] cell = Path.GetFileNameWithoutExtension(filename).Split('#');
+            string[] tags = new string[cell.Length - 1];
 
-           
+            for (int i = 1; i < cell.Length; i++)
+            {
+                tags[i - 1] = cell[i];
+            }
+
+            AddSong(filename, tags);
         }
 
         /**
@@ -71,8 +79,37 @@ namespace CSLMusicMod
         public void AddSong(String filename, params String[] tags)
         {
             // Is the basename correct?
+            String baseName = Path.GetFileNameWithoutExtension(filename).Split('#')[0];
+
+            if (baseName != BaseName)
+            {
+                Debug.Log("[CSLMusicMod] Not adding " + filename + " to " + BaseName + ": BaseName does not match!");
+                return;
+            }
 
             //Add into dictionaries
+            List<String> taglist = new List<string>(tags);
+
+            SongTags.Add(filename, taglist);
+
+            // Switch for "default tag"
+            if (taglist.Count == 0)
+            {
+                if (!TagSongs.ContainsKey(""))
+                    TagSongs.Add("", new List<string>());
+
+                TagSongs[""].Add(filename);
+            }
+            else
+            {
+                foreach (String tag in tags)
+                {
+                    if (!TagSongs.ContainsKey(tag))
+                        TagSongs.Add(tag, new List<string>());
+
+                    TagSongs[tag].Add(filename);
+                }
+            }
 
             //Sort all songs
             foreach (var songs in TagSongs.Values)
@@ -83,6 +120,18 @@ namespace CSLMusicMod
 
         public void RemoveSong(String filename)
         {
+            SongTags.Remove(filename);
+
+            foreach (var list in TagSongs.Values)
+            {
+                list.Remove(filename);
+            }
+
+            //Sort all songs
+            foreach (var songs in TagSongs.Values)
+            {
+                songs.Sort((s1, s2) => SongTags[s1].Count.CompareTo(SongTags[s2].Count));
+            }
         }
 
       
