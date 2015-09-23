@@ -70,7 +70,7 @@ namespace CSLMusicMod
             _enable_Bad = mkCheckBox("Mood", 30, 50 + 34, 120);
             mkLabel("Playlist", 10, 50 + 34 * 2 + 5);
             _enable_Playlist_random = mkCheckBox("Play tracks randomly", 30, 50 + 34 * 3);
-            mkLabel("Tweaks", 10, 50 + 34 * 4 + 5);
+            //mkLabel("Tweaks", 10, 50 + 34 * 4 + 5);
             //_enable_Chirpy = mkCheckBox("Use Chirpy", 30, 50 + 34 * 5);
             //_enable_MusicWhileLoading = mkCheckBox("Music while loading", 30, 50 + 34 * 6);
 

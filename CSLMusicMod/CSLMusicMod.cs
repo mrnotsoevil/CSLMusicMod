@@ -8,13 +8,13 @@ namespace CSLMusicMod
 {
     public class CSLMusicMod : LoadingExtensionBase, IUserMod
     {
-		public const String VersionName = "Update 4";
+        public const String VersionName = "Update 4";
 
         public string Name
         {
             get
             {
-                return "Music Mod";
+                return "CSL Music Mod";
             }
         }
 
@@ -30,57 +30,64 @@ namespace CSLMusicMod
         private MusicInjector _injector;
         private MusicUI _ui;
         private SettingsUI _settingsui;
-		private MusicManager _music;
-		private ConversionManager _conversion;
-		private SettingsManager _settings;
+        private MusicManager _music;
+        private ConversionManager _conversion;
+        private SettingsManager _settings;
 
         public CSLMusicMod()
         {
 
         }
 
-		private void ensureInjector()
-		{
-			Debug.Log("Creating injector game object ...");
+        private void ensureComponents()
+        {
+            Debug.Log("Creating injector game object ...");
 
-			if (_gameObject == null)
-			{
-				_gameObject = new GameObject();
-				_gameObject.name = "CSLMusicMod_GO";
-			}           
+            if (_gameObject == null)
+            {
+                _gameObject = new GameObject();
+                _gameObject.name = "CSLMusicMod_GO";
+            }           
 
-			if (_injector == null) {
-				_injector = _gameObject.AddComponent<MusicInjector> ();       
-			}
-		}
+            if (_injector == null)
+            {
+                _injector = _gameObject.AddComponent<MusicInjector>();       
+            }
+
+            // Create settings
+            if (_settings == null)
+            {
+                _settings = _gameObject.AddComponent<SettingsManager>();               
+            }
+
+            // Create the music list
+            if (_music == null)
+                _music = _gameObject.AddComponent<MusicManager>();
+
+            // Create the converter
+            if (_conversion == null)
+                _conversion = _gameObject.AddComponent<ConversionManager>();  
+
+            // Create folders
+            _gameObject.GetComponent<MusicManager>().CreateMusicFolder();
+
+            // Load the settings
+            _gameObject.GetComponent<SettingsManager>().LoadModSettings();
+        }
 
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
           
-			ensureInjector();
+            ensureComponents();			
 
-			// Create settings
-			if (_settings == null)
-				_settings = _gameObject.AddComponent<SettingsManager> ();
-
-			// Create the music list
-			if (_music == null)
-				_music = _gameObject.AddComponent<MusicManager> ();
-
-			// Create the converter
-			if (_conversion == null)
-				_conversion = _gameObject.AddComponent<ConversionManager> ();
-
-			// Create folders
-			_gameObject.GetComponent<MusicManager>().CreateMusicFolder();
-
-			// Load the settings
-			_gameObject.GetComponent<SettingsManager> ().LoadModSettings ();
+			
         }
 
         public void OnSettingsUI(UIHelperBase helper)
         {
+            ensureComponents();
+
             if (_settingsui == null)
                 _settingsui = _gameObject.AddComponent<SettingsUI>();
 
@@ -92,7 +99,7 @@ namespace CSLMusicMod
             base.OnLevelLoaded(mode);
 
             //ensure it!
-			ensureInjector();
+            ensureComponents();
 
             //Create ui
             if (_ui == null)

@@ -51,6 +51,7 @@ namespace CSLMusicMod
 
             //Update 4 settings
             SettingsFile.Set("Technical", "PlayWithoutConvert", ModOptions.PlayWithoutConvert);
+            SettingsFile.Set("Music Selection", "MusicTagTypePriority", String.Join(";", ModOptions.MusicTagTypePriority.ToArray()));
 
 			SettingsFile.Save();
 		}
@@ -109,6 +110,7 @@ namespace CSLMusicMod
 
             //Update 4 settings
             ModOptions.PlayWithoutConvert = SettingsFile.GetAsBool("Technical", "PlayWithoutConvert", true);
+            ModOptions.MusicTagTypePriority = new List<string>(SettingsFile.Get("Music Selection", "MusicTagTypePriority", String.Join(";", DefaultModOptions.MusicTagTypePriority.ToArray())).Split(';'));
 
 			//If there are non exisiting keys in the settings file, add them by saving the settings
 			if (SettingsFile.FoundNonExistingKeys)
@@ -161,6 +163,7 @@ namespace CSLMusicMod
 			public bool RandomTrackSelection = true;
 			public List<String> AdditionalCustomMusicFolders = new List<string>();
 			public List<String> ModdedMusicSourceFolders = new List<String>();
+            public List<String> MusicTagTypePriority = new List<string>();
 
             public bool PlayWithoutConvert = true;
 
@@ -176,6 +179,15 @@ namespace CSLMusicMod
 					return folders;
 				}
 			}
+
+            public Options()
+            {
+                //Add default music tag type priorities
+                MusicTagTypePriority.Add("sky");
+                MusicTagTypePriority.Add("night");
+                MusicTagTypePriority.Add("bad");
+                MusicTagTypePriority.Add("");
+            }
 		}
 	}
 }

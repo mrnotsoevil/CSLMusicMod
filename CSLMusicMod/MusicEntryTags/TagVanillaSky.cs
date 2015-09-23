@@ -7,9 +7,9 @@ namespace CSLMusicMod
     /**
      * Vanilla sky music tag implementation
      * */
-    public class TagVanillaSky : MusicEntry.MusicEntryTag
+    public class TagVanillaSky : MusicEntryTag
     {       
-        public TagVanillaSky() : base("sky", 1000)
+        public TagVanillaSky() : base("sky", "#sky - Music when in floating high above the city")
         {
 
         }

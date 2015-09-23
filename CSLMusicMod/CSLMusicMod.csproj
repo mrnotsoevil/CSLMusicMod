@@ -98,6 +98,9 @@
     <Compile Include="MusicEntryTags\TagVanillaSky.cs" />
     <Compile Include="MusicEntryTags\TagVanillaMood.cs" />
     <Compile Include="SettingsUI.cs" />
+    <Compile Include="MusicEntryTags\TagNight.cs" />
+    <Compile Include="MusicEntryTag.cs" />
+    <Compile Include="MusicEntryTags\TagDefault.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

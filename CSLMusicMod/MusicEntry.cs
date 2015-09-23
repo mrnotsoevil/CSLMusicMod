@@ -145,8 +145,13 @@ namespace CSLMusicMod
          * */
         public String GetMatchingMusic(AudioManager.ListenerInfo info)
         {
-            foreach (MusicEntryTag tag in GameObject.GetComponent<MusicManager>().MusicTagTypes)
+            var tagtypes = GameObject.GetComponent<MusicManager>().MusicTagTypes;
+            var tagpriority = GameObject.GetComponent<SettingsManager>().ModOptions.MusicTagTypePriority;
+
+            foreach (String tagname in tagpriority)
             {
+                var tag = tagtypes[tagname];
+
                 if (tag.TagApplies(GameObject, info))
                 {
                     if (TagSongs.ContainsKey(tag.Name) && TagSongs[tag.Name].Count != 0)
@@ -169,41 +174,6 @@ namespace CSLMusicMod
         public bool Contains(String song)
         {
             return SongTags.ContainsKey(song);
-        }
-
-        public abstract class MusicEntryTag :IComparable
-        {
-            /**
-             * The name of the tag; a song's tag is determined by #<Name>
-             * */
-            public String Name{get; private set;}
-
-            /*
-             * Priority: The lower this value the more priority this tag has
-             * */
-            public int Priority{ get; private set;}
-
-            public MusicEntryTag(String name, int priority)
-            {
-                Name = name.ToLower();
-                Priority = priority;
-            }
-
-            /**
-             * Returns if this tag applies to the current game situation
-             * */
-            public abstract bool TagApplies(GameObject gameObject, AudioManager.ListenerInfo info);
-
-            #region IComparable implementation
-
-            public int CompareTo(object obj)
-            {
-                if (obj == null || !(obj is MusicEntryTag))
-                    return 0;
-                return -Priority.CompareTo(((MusicEntryTag)obj).Priority); //Order inverted
-            }
-
-            #endregion
         }
     }
 }

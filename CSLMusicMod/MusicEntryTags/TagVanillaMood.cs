@@ -4,10 +4,10 @@ using ColossalFramework;
 
 namespace CSLMusicMod
 {
-    public class TagVanillaMood : MusicEntry.MusicEntryTag
+    public class TagVanillaMood : MusicEntryTag
     {      
 
-        public TagVanillaMood() : base("bad", 2000)
+        public TagVanillaMood() : base("bad", "#bad - Music when citizens are unhappy")
         {
         }
 

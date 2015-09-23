@@ -40,7 +40,7 @@ namespace CSLMusicMod
             }
         }
 
-        public List<MusicEntry.MusicEntryTag> MusicTagTypes = new List<MusicEntry.MusicEntryTag>();
+        public Dictionary<String, MusicEntryTag> MusicTagTypes = new Dictionary<String, MusicEntryTag>();
 
         public MusicManager()
         {
@@ -52,11 +52,19 @@ namespace CSLMusicMod
          * */
         private void InitializeTags()
         {
-            MusicTagTypes.Add(new TagVanillaSky());
-            MusicTagTypes.Add(new TagVanillaMood());
+            AddTagType(new TagVanillaSky());
+            AddTagType(new TagVanillaMood());
+            AddTagType(new TagNight());
+            AddTagType(new TagDefault());
+        }
 
-            //Sort them
-            MusicTagTypes.Sort();
+        /**
+         * Adds a music entry tag type
+         * */
+        public void AddTagType(MusicEntryTag tag)
+        {
+            Debug.Log("[CSLMusicMod] Adding tag type #" + tag.Name);
+            MusicTagTypes.Add(tag.Name, tag);
         }
 
         private bool AddUnknownCustomMusicFiles(ref bool mood_entries_not_found)
@@ -314,7 +322,7 @@ namespace CSLMusicMod
                         if (cell.Length == 2)
                         {
                             String baseName = cell[0];
-                            bool enabled = Boolean.Parse(cell[0].ToLower());
+                            bool enabled = (cell[0].ToLower()) == "true";
 
                             if(GetEntryByName(baseName) != null)
                                 MusicEntries.Add(new MusicEntry(enabled, gameObject, baseName));
