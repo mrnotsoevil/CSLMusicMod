@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using ColossalFramework.Plugins;
 using ColossalFramework;
+using CSLMusicMod.MusicEntryTags;
+using CSLMusicMod.Helpers;
 
 namespace CSLMusicMod
 {
@@ -54,7 +56,7 @@ namespace CSLMusicMod
         {
             AddTagType(new TagVanillaSky());
             AddTagType(new TagVanillaMood());
-            AddTagType(new TagNight());
+            AddTagType(new TagVanillaNight());
             AddTagType(new TagDefault());
         }
 
@@ -206,7 +208,11 @@ namespace CSLMusicMod
 
                 if (entry == null)
                 {
-                    entry = new MusicEntry(true, gameObject, GetVanillaMusicBaseName(file));
+                    if(baseName == "Colossal Menu")
+                        entry = new MusicEntry(false, gameObject, baseName);
+                    else
+                        entry = new MusicEntry(true, gameObject, baseName);
+
                     MusicEntries.Add(entry);
                 }
 

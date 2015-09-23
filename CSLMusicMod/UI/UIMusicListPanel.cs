@@ -5,7 +5,7 @@ using ColossalFramework;
 using System.IO;
 using System.Collections.Generic;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.UI
 {
     public class UIMusicListPanel : UIPanel
     {
@@ -16,9 +16,15 @@ namespace CSLMusicMod
 
         public CSLAudioWatcher AudioWatcher { get; set; }
 
+        public SettingsManager SettingsManager { get; set; }
+
+        public MusicManager MusicManager { get; set; }
+
         private MusicEntry _resort_CurrentItem;
         private int _resort_currentPivotIndex;
         private bool _resort_resorted;
+
+        private bool _music_list_initialized = false;
 
         public UIMusicListPanel()
         {
@@ -45,18 +51,21 @@ namespace CSLMusicMod
             _currentMusic.width = width;
             _currentMusic.height = 50;
             _currentMusic.relativePosition = new Vector3(15, 14);
-            _currentMusic.isVisible = true;
+            _currentMusic.isVisible = true;    
 
-            //Add list of music
-            AddList();
+            //Add list
+            InitializeMusicList();
 
             //Add settings panel
             _settingsPanel = (UIMusicSettingsPanel)GetUIView().AddUIComponent(typeof(UIMusicSettingsPanel));
             _settingsPanel.isVisible = false;
-            _settingsPanel.AudioWatcher = AudioWatcher;
             _settingsPanel.width = this.width;
             _settingsPanel.height = 402;
             _settingsPanel.relativePosition = new Vector3(relativePosition.x, relativePosition.y - _settingsPanel.height - 5);
+
+            _settingsPanel.MusicManager = MusicManager;
+            _settingsPanel.AudioWatcher = AudioWatcher;
+            _settingsPanel.SettingsManager = SettingsManager;
 
             //Add a button for settings
             _openSettings = AddUIComponent<UIButton>();
@@ -111,6 +120,20 @@ namespace CSLMusicMod
 
             if (isVisible)
             {
+                if (!_music_list_initialized)
+                {
+                    try
+                    {
+                        UpdateMusicList();
+                        _music_list_initialized = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError(ex);
+                    }
+
+                }
+
                 if (_currentMusic != null && AudioWatcher != null && AudioWatcher.CurrentMusicEntry != null && AudioWatcher.CurrentMusicFile != null)
                 {
                     _currentMusic.text = "Now playing: " + Path.GetFileNameWithoutExtension(AudioWatcher.CurrentMusicFile);
@@ -130,7 +153,7 @@ namespace CSLMusicMod
             }
         }
 
-        private void AddList()
+        private void InitializeMusicList()
         {
             var panel = _musicList = AddUIComponent<UIListBox>();
 
@@ -169,7 +192,7 @@ namespace CSLMusicMod
                     scroller.trackObject = track;
 
                     {
-                        UISlicedSprite thumbSprite = track.AddUIComponent<UISlicedSprite> ();
+                        UISlicedSprite thumbSprite = track.AddUIComponent<UISlicedSprite>();
                         thumbSprite.relativePosition = Vector2.zero;
                         thumbSprite.fillDirection = UIFillDirection.Vertical;
                         thumbSprite.autoSize = true;
@@ -187,33 +210,33 @@ namespace CSLMusicMod
                 scroller.isVisible = true;
             }
 
-            UpdateMusicList();
+            //UpdateMusicList();
 
             panel.eventItemClicked += delegate(UIComponent component, int value)
             {
                 if (AudioWatcher != null)
                 {
                     //+ Only if not resorted, switch to track
-                        if (!_resort_resorted && value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
+                    if (!_resort_resorted && value >= 0 && MusicManager.MusicEntries.Count > value)
                     {
-                            AudioWatcher.RequestSwitchMusic(gameObject.GetComponent<MusicManager>().MusicEntries[value], false);
+                        AudioWatcher.RequestSwitchMusic(MusicManager.MusicEntries[value]);
                     }
                 }
             };
             panel.eventItemDoubleClicked += delegate(UIComponent component, int value)
             {
-                    if (value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
+                if (value >= 0 && MusicManager.MusicEntries.Count > value)
                 {
                     //Store old entry
-                        MusicEntry current = AudioWatcher.CurrentMusicEntry;
+                    MusicEntry current = AudioWatcher.CurrentMusicEntry;
 
-                        MusicEntry entry = gameObject.GetComponent<MusicManager>().MusicEntries[value];
+                    MusicEntry entry = MusicManager.MusicEntries[value];
                     entry.Enable = !entry.Enable;
 
                     UpdateMusicListPreserveScroll();
 
                     //Restore the current entry
-                    AudioWatcher.RequestSwitchMusic(current, false);
+                    AudioWatcher.RequestSwitchMusic(current);
                 }
             };
 
@@ -222,9 +245,9 @@ namespace CSLMusicMod
             {
                 if (AudioWatcher != null)
                 {
-                        if (value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
+                    if (value >= 0 && MusicManager.MusicEntries.Count > value)
                     {
-                            _resort_CurrentItem = gameObject.GetComponent<MusicManager>().MusicEntries[value];
+                        _resort_CurrentItem = MusicManager.MusicEntries[value];
                         _resort_currentPivotIndex = value;
                         _resort_resorted = false;
                     }
@@ -236,22 +259,39 @@ namespace CSLMusicMod
 
                 if (_resort_resorted)
                 {
-                        gameObject.GetComponent<MusicManager>().SaveMusicFileSettings();
+                    MusicManager.SaveMusicFileSettings();
                 }
             };
             panel.eventItemMouseHover += delegate(UIComponent component, int value)
             {
-                    if (value >= 0 && gameObject.GetComponent<MusicManager>().MusicEntries.Count > value)
+                if (value >= 0 && MusicManager.MusicEntries.Count > value)
                 {
                     if (_resort_CurrentItem != null && value != _resort_currentPivotIndex)
                     {
-                            gameObject.GetComponent<MusicManager>().MusicEntries.Remove(_resort_CurrentItem);
-                            gameObject.GetComponent<MusicManager>().MusicEntries.Insert(value, _resort_CurrentItem);
+                        MusicManager.MusicEntries.Remove(_resort_CurrentItem);
+                        MusicManager.MusicEntries.Insert(value, _resort_CurrentItem);
                         _resort_currentPivotIndex = value;
 
                         UpdateMusicListPreserveScroll();
 
                         _resort_resorted = true;
+                    }
+                    else
+                    {
+                            var entry = MusicManager.MusicEntries[value];
+
+                            String tooltip = entry.BaseName + "\n----\n";
+                            tooltip += "Supported tags:\n";
+                            foreach(var tag in entry.TagSongs.Keys)
+                            {
+                                if(tag == "")
+                                    tooltip += "Default music\n";
+                                else
+                                    tooltip += "#" + tag + "\n";
+                            }
+                            tooltip += "\n\nClick on an item to play the song.\nDouble click to enable/disable it.\nDrag to resort the list.";
+
+                            _musicList.tooltip = tooltip;
                     }
                 }
             };
@@ -273,57 +313,22 @@ namespace CSLMusicMod
             }
         }
 
-        private void UpdateMusicList()
+        public void UpdateMusicList()
         {
             List<String> entries = new List<string>();
 
-            foreach (MusicEntry entry in gameObject.GetComponent<MusicManager>().MusicEntries)
+            Debug.Log("[CSLMusic] Generating music list");
+
+            foreach (MusicEntry entry in MusicManager.MusicEntries)
             {
                 String annot = "";
 
                 if (!entry.Enable)
                     annot += "[Disabled]";               
 
-                String music = Path.GetFileNameWithoutExtension(entry.BaseName);
+                String music = entry.BaseName;
                 String extra = "";
 
-                /*if (gameObject.GetComponent<SettingsManager>().ModOptions.MusicListShortNames)
-                {
-                    //Update 3.3 behaviour
-                    List<String> e = new List<String>();
-                    if (!String.IsNullOrEmpty(entry.BadMusic))
-                    {
-                        if (entry.EnableBadMusic)
-                            e.Add("#bad");
-                    }
-                    if (!String.IsNullOrEmpty(entry.SkyMusic))
-                    {
-                        if (entry.EnableSkyMusic)
-                            e.Add("#sky");
-                    }
-
-                    extra = String.Join(" ", e.ToArray());
-                }
-                else
-                {
-                    List<String> e = new List<String>();
-                    if (!String.IsNullOrEmpty(entry.BadMusic))
-                    {
-                        if (entry.EnableBadMusic)
-                            e.Add(Path.GetFileNameWithoutExtension(entry.BadMusic));
-                        else
-                            e.Add(Path.GetFileNameWithoutExtension("[" + entry.BadMusic + "]"));
-                    }
-                    if (!String.IsNullOrEmpty(entry.SkyMusic))
-                    {
-                        if (entry.EnableSkyMusic)
-                            e.Add(Path.GetFileNameWithoutExtension(entry.SkyMusic));
-                        else
-                            e.Add(Path.GetFileNameWithoutExtension("[" + entry.SkyMusic + "]"));
-                    }
-
-                    extra = String.Join(", ", e.ToArray());
-                }*/
                 entries.Add(String.Format("{0} {1} {2}", annot, music, extra));
             }
 

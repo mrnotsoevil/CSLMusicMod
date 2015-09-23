@@ -2,7 +2,7 @@ using System;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.UI
 {
     public class UICheckButton : UIButton
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 using ICities;
 using System.Collections.Generic;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.UI
 {
     /**
      * Controls the mod settings accessable by C:S settings UI API 

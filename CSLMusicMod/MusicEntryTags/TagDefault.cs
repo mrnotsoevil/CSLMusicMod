@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.MusicEntryTags
 {
     /**
      * The "default music" tag

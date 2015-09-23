@@ -77,16 +77,7 @@ namespace CSLMusicMod
          * Adds a song with manually tags
          * */
         public void AddSong(String filename, params String[] tags)
-        {
-            // Is the basename correct?
-            String baseName = Path.GetFileNameWithoutExtension(filename).Split('#')[0];
-
-            if (baseName != BaseName)
-            {
-                Debug.Log("[CSLMusicMod] Not adding " + filename + " to " + BaseName + ": BaseName does not match!");
-                return;
-            }
-
+        {          
             //Add into dictionaries
             List<String> taglist = new List<string>(tags);
 

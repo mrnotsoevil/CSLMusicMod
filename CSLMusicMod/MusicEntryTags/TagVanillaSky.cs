@@ -2,7 +2,7 @@
 using ColossalFramework;
 using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.MusicEntryTags
 {
     /**
      * Vanilla sky music tag implementation
@@ -18,8 +18,7 @@ namespace CSLMusicMod
         {
             SettingsManager.Options ModOptions = gameObject.GetComponent<SettingsManager>().ModOptions;
 
-            return (ModOptions.HeightDependentMusic
-            && GetListenerHeight(info) > ModOptions.HeightDependentMusic_HeightThreshold);
+            return (GetListenerHeight(info) > ModOptions.HeightDependentMusic_HeightThreshold);
         }
 
         private float GetListenerHeight(AudioManager.ListenerInfo listenerInfo)

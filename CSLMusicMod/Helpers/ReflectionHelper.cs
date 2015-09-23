@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Helpers
 {
     public static class ReflectionHelper
     {

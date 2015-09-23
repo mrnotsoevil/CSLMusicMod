@@ -4,6 +4,8 @@ using System.IO;
 using ColossalFramework.Plugins;
 using System.Collections.Generic;
 using System.Collections;
+using CSLMusicMod.IO;
+using CSLMusicMod.Helpers;
 
 namespace CSLMusicMod
 {

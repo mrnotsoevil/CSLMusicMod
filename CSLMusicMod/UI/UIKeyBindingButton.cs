@@ -3,7 +3,7 @@ using ColossalFramework.UI;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.UI
 {
     public class UIKeyBindingButton : UIButton
     {

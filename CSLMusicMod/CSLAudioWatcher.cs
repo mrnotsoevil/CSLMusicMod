@@ -4,6 +4,7 @@ using System.Reflection;
 using ColossalFramework;
 using System.IO;
 using System.Collections.Generic;
+using CSLMusicMod.Helpers;
 
 namespace CSLMusicMod
 {
@@ -102,7 +103,7 @@ namespace CSLMusicMod
 		
         private GameObject _gameObject;
 
-        //private bool _switchMusic_Requested;
+        private bool _switchMusic_Requested;
         private MusicEntry _switchMusic_Requested_Music;
         //private bool _switchMusic_Requested_useChirpy;
         /**
@@ -122,18 +123,20 @@ namespace CSLMusicMod
         public CSLAudioWatcher()
         {
             _firstTimeSwitched = false;
-            //_switchMusic_Requested = false;
+            _switchMusic_Requested = false;
             //_switchMusic_Requested_useChirpy = false;
         }
 
-        public void RequestSwitchMusic(bool chirp)
+        public void RequestSwitchMusic()
         {
-            RequestSwitchMusic(null, chirp);
+            RequestSwitchMusic(null);
         }
 
-        public void RequestSwitchMusic(MusicEntry entry, bool chirp)
+        public void RequestSwitchMusic(MusicEntry entry)
         {
-            //_switchMusic_Requested = true;
+            Debug.Log("[CSLMusic] Requested to switch music.");
+
+            _switchMusic_Requested = true;
             _switchMusic_Requested_Music = entry;
             //_switchMusic_Requested_useChirpy = chirp;
         }
@@ -165,9 +168,9 @@ namespace CSLMusicMod
             }
 
             //If user requests switch
-            /*if (_switchMusic_Requested)
+            if (_switchMusic_Requested)
             {
-                CSLCustomMusicEntry _cur = _currentMusic;
+                MusicEntry _cur = _currentMusic;
 
                 Debug.Log("[CSLMusic] User requested switch");
                 SwitchMusic(listenerInfo);
@@ -177,7 +180,7 @@ namespace CSLMusicMod
                 //Yay chirp
                 //if (_currentMusic != _cur && _switchMusic_Requested_useChirpy)
                 //    GameObject.GetComponent<MusicUI>().ChirpNowPlaying(_currentMusic);
-            }*/
+            }
 
             /**
                  * CSL usually changes the music by mood and camera height.
@@ -263,7 +266,7 @@ namespace CSLMusicMod
             else
             {
                 //The music file does not contain anything interesting, so switch to the next music
-                RequestSwitchMusic(false);
+                RequestSwitchMusic();
             }
         }
 
@@ -275,11 +278,33 @@ namespace CSLMusicMod
             if (MusicFile != file)
             {
                 Debug.Log("[CSLMusic] Forcing music back to " + file);
-                MusicFile = file;
+
+                if (Path.GetExtension(file).ToLower() == ".raw")
+                    Playback_Raw(file);
+                else
+                    Playback_Ogg(file);
 
                 //*** vanilla music! Stop fighting!
-                RemoveVanillaMusicFromAudioManager();
+                //RemoveVanillaMusicFromAudioManager();
             }
+        }
+
+        private void Playback_Ogg(String file)
+        {
+            //Disable vanilla music
+            MusicFile = null;
+
+            //Send file to background music player
+            GameObject.GetComponent<BackgroundMusicPlayer>().Playback(file);
+        }
+
+        private void Playback_Raw(String file)
+        {
+            //Disable mod player
+            GameObject.GetComponent<BackgroundMusicPlayer>().StopPlayback();
+
+            //Playback using vanilla
+            MusicFile = file;
         }
 
         private void RemoveVanillaMusicFromAudioManager()

@@ -2,7 +2,7 @@
 using ColossalFramework.Plugins;
 using System.IO;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Helpers
 {
 	public static class ModHelper
 	{

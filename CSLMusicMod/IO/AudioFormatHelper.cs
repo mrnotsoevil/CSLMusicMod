@@ -3,7 +3,7 @@ using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.IO
 {
     public static class AudioFormatHelper
     {

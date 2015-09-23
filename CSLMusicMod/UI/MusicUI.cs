@@ -3,7 +3,7 @@ using UnityEngine;
 using ColossalFramework.UI;
 using System.Collections.Generic;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.UI
 {
     public class MusicUI : MonoBehaviour
     {
@@ -19,13 +19,13 @@ namespace CSLMusicMod
             {
                 return this.gameObject.GetComponent<MusicInjector>().AudioWatcher;
             }
-        }
+        }       
 
         public SettingsManager.Options ModOptions
         {
             get
             {
-                return gameObject.GetComponent<SettingsManager> ().ModOptions;
+                return gameObject.GetComponent<SettingsManager>().ModOptions;
             }
         }
 
@@ -42,9 +42,12 @@ namespace CSLMusicMod
         {
             //Create ui
             UIView v = UIView.GetAView();
-            _current_Settings_Panel = (UIMusicListPanel)v.AddUIComponent(typeof(UIMusicListPanel));
-            _current_Settings_Panel.AudioWatcher = AudioWatcher;
+            _current_Settings_Panel = (UIMusicListPanel)v.AddUIComponent(typeof(UIMusicListPanel));           
             _current_Settings_Panel.Hide();
+
+            _current_Settings_Panel.AudioWatcher = AudioWatcher;
+            _current_Settings_Panel.SettingsManager = gameObject.GetComponent<SettingsManager>();
+            _current_Settings_Panel.MusicManager = gameObject.GetComponent<MusicManager>();
         }
 
         public void Update()
@@ -69,7 +72,7 @@ namespace CSLMusicMod
                 {
                     _key_NextTrack_IsDown = false;
 
-                    AudioWatcher.RequestSwitchMusic(true);
+                    AudioWatcher.RequestSwitchMusic();
                 }
 
                

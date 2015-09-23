@@ -2,7 +2,7 @@
 using UnityEngine;
 using ColossalFramework;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.MusicEntryTags
 {
     public class TagVanillaMood : MusicEntryTag
     {      
@@ -16,8 +16,7 @@ namespace CSLMusicMod
             SettingsManager.Options ModOptions = gameObject.GetComponent<SettingsManager>().ModOptions;
             int finalHappiness = (int)Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_finalHappiness;
 
-            return (ModOptions.MoodDependentMusic
-                && finalHappiness < ModOptions.MoodDependentMusic_MoodThreshold);
+            return (finalHappiness < ModOptions.MoodDependentMusic_MoodThreshold);
         }
     }
 }

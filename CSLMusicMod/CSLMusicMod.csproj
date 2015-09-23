@@ -55,12 +55,6 @@
     <Compile Include="CSLMusicMod.cs" />
     <Compile Include="MusicInjector.cs" />
     <Compile Include="CSLAudioWatcher.cs" />
-    <Compile Include="ReflectionHelper.cs" />
-    <Compile Include="SaveWav.cs" />
-    <Compile Include="MusicUI.cs" />
-    <Compile Include="CSLMusicChirperMessage.cs" />
-    <Compile Include="SimpleIni.cs" />
-    <Compile Include="UICheckButton.cs" />
     <Compile Include="NVorbis\BufferedReadStream.cs" />
     <Compile Include="NVorbis\DataPacket.cs" />
     <Compile Include="NVorbis\Huffman.cs" />
@@ -86,26 +80,36 @@
     <Compile Include="NVorbis\Ogg\OggPacket.cs" />
     <Compile Include="NVorbis\Ogg\OggPacketReader.cs" />
     <Compile Include="NVorbis\Ogg\OggPageFlags.cs" />
-    <Compile Include="UIKeyBindingButton.cs" />
-    <Compile Include="AudioFormatHelper.cs" />
-    <Compile Include="UIMusicListPanel.cs" />
-    <Compile Include="UIMusicSettingsPanel.cs" />
-    <Compile Include="ModHelper.cs" />
     <Compile Include="SettingsManager.cs" />
     <Compile Include="ConversionManager.cs" />
     <Compile Include="MusicManager.cs" />
     <Compile Include="MusicEntry.cs" />
     <Compile Include="MusicEntryTags\TagVanillaSky.cs" />
     <Compile Include="MusicEntryTags\TagVanillaMood.cs" />
-    <Compile Include="SettingsUI.cs" />
-    <Compile Include="MusicEntryTags\TagNight.cs" />
     <Compile Include="MusicEntryTag.cs" />
     <Compile Include="MusicEntryTags\TagDefault.cs" />
+    <Compile Include="BackgroundMusicPlayer.cs" />
+    <Compile Include="UI\MusicUI.cs" />
+    <Compile Include="UI\SettingsUI.cs" />
+    <Compile Include="UI\UICheckButton.cs" />
+    <Compile Include="UI\UIKeyBindingButton.cs" />
+    <Compile Include="UI\UIMusicListPanel.cs" />
+    <Compile Include="UI\UIMusicSettingsPanel.cs" />
+    <Compile Include="MusicEntryTags\TagVanillaNight.cs" />
+    <Compile Include="Compatibility\CSLMusicChirperMessage.cs" />
+    <Compile Include="IO\SimpleIni.cs" />
+    <Compile Include="IO\AudioFormatHelper.cs" />
+    <Compile Include="Helpers\ModHelper.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="NVorbis\" />
     <Folder Include="Resources\" />
     <Folder Include="MusicEntryTags\" />
+    <Folder Include="UI\" />
+    <Folder Include="Compatibility\" />
+    <Folder Include="IO\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>

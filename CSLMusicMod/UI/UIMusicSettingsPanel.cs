@@ -3,15 +3,17 @@ using ColossalFramework.UI;
 using UnityEngine;
 using ColossalFramework;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.UI
 {
     public class UIMusicSettingsPanel : UIPanel
     {
         public CSLAudioWatcher AudioWatcher { get; set; }
+        public SettingsManager SettingsManager { get; set; }
+        public MusicManager MusicManager { get; set; }
 
         private bool _initialized;
-        private UICheckButton _enable_Sky;
-        private UICheckButton _enable_Bad;
+        //private UICheckButton _enable_Sky;
+        //private UICheckButton _enable_Bad;
         //private UICheckButton _enable_Chirpy;
         //private UICheckButton _enable_MusicWhileLoading;
         private UICheckButton _enable_Playlist_random;
@@ -21,13 +23,8 @@ namespace CSLMusicMod
         private SavedFloat _MusicAudioVolume = new SavedFloat(Settings.musicAudioVolume, Settings.gameSettingsFile, DefaultSettings.musicAudioVolume, true);
         private UISlider _MusicVolumeSlider;
 
-        private SettingsManager SettingsManager
-        {
-            get
-            {
-                return gameObject.GetComponent<SettingsManager>();
-            }
-        }
+        //private UIButton _Playback_Next;
+        //private UIButton _Playback_Previous;
 
         public UIMusicSettingsPanel()
         {
@@ -65,11 +62,12 @@ namespace CSLMusicMod
             }
 
             //Add checkbuttons and more          
-            mkLabel("Select music by", 10, 50 + 5);
-            _enable_Sky = mkCheckBox("Height", 30 + 120 + 10, 50 + 34, 120);
-            _enable_Bad = mkCheckBox("Mood", 30, 50 + 34, 120);
-            mkLabel("Playlist", 10, 50 + 34 * 2 + 5);
-            _enable_Playlist_random = mkCheckBox("Play tracks randomly", 30, 50 + 34 * 3);
+            //mkLabel("Select music by", 10, 50 + 5);
+            //_enable_Sky = mkCheckBox("Height", 30 + 120 + 10, 50 + 34, 120);
+            //_enable_Bad = mkCheckBox("Mood", 30, 50 + 34, 120);
+            mkLabel("Playlist", 10, 50 + 34 * 0 + 5);
+            _enable_Playlist_random = mkCheckBox("Play tracks randomly", 30, 50 + 34 * 1);
+            mkLabel("Playback", 10, 50 + 34 * 2 + 5);
             //mkLabel("Tweaks", 10, 50 + 34 * 4 + 5);
             //_enable_Chirpy = mkCheckBox("Use Chirpy", 30, 50 + 34 * 5);
             //_enable_MusicWhileLoading = mkCheckBox("Music while loading", 30, 50 + 34 * 6);
@@ -85,8 +83,8 @@ namespace CSLMusicMod
 
 
             //Add tooltips
-            _enable_Sky.tooltip = "Change music if you float high enough above your city";
-            _enable_Bad.tooltip = "Change music depending on your popularity";
+           // _enable_Sky.tooltip = "Change music if you float high enough above your city";
+            //_enable_Bad.tooltip = "Change music depending on your popularity";
             //_enable_Chirpy.tooltip = "Great leader Chirpy will tell you which music is playing";
            // _enable_MusicWhileLoading.tooltip = "Play menu music while loading. Useful if music stutters while loading";
             _enable_Playlist_random.tooltip = "Select tracks to play randomly";
@@ -94,7 +92,7 @@ namespace CSLMusicMod
             _initialized = true;
 
             //Add events
-            _enable_Sky.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
+            /*_enable_Sky.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
             {
                 if (SettingsManager.ModOptions.HeightDependentMusic != state)
                 {
@@ -109,7 +107,7 @@ namespace CSLMusicMod
                     SettingsManager.ModOptions.MoodDependentMusic = state;
                     SettingsManager.SaveModSettings();
                 }
-            };
+            };*/
             _enable_Playlist_random.eventCheckStateChanged += delegate(UICheckButton sender, bool state)
             {
                 if (SettingsManager.ModOptions.RandomTrackSelection != state)
@@ -253,8 +251,8 @@ namespace CSLMusicMod
         {
             if (_initialized)
             {
-                _enable_Sky.isChecked = SettingsManager.ModOptions.HeightDependentMusic;
-                _enable_Bad.isChecked = SettingsManager.ModOptions.MoodDependentMusic;
+                //_enable_Sky.isChecked = SettingsManager.ModOptions.HeightDependentMusic;
+                //_enable_Bad.isChecked = SettingsManager.ModOptions.MoodDependentMusic;
                 _enable_Playlist_random.isChecked = SettingsManager.ModOptions.RandomTrackSelection;
                 //_enable_Chirpy.isChecked = SettingsManager.ModOptions.EnableChirper;
                 //_enable_MusicWhileLoading.isChecked = SettingsManager.ModOptions.MusicWhileLoading;

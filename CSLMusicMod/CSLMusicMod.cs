@@ -3,6 +3,7 @@ using ICities;
 using UnityEngine;
 using System.Collections;
 using System.IO;
+using CSLMusicMod.UI;
 
 namespace CSLMusicMod
 {
@@ -33,6 +34,7 @@ namespace CSLMusicMod
         private MusicManager _music;
         private ConversionManager _conversion;
         private SettingsManager _settings;
+        private BackgroundMusicPlayer _musicplayer;
 
         public CSLMusicMod()
         {
@@ -67,6 +69,10 @@ namespace CSLMusicMod
             // Create the converter
             if (_conversion == null)
                 _conversion = _gameObject.AddComponent<ConversionManager>();  
+
+            //Create music player
+            if (_musicplayer == null)
+                _musicplayer = _gameObject.AddComponent<BackgroundMusicPlayer>();
 
             // Create folders
             _gameObject.GetComponent<MusicManager>().CreateMusicFolder();

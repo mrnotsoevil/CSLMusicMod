@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using ColossalFramework.Plugins;
+using CSLMusicMod.IO;
 
 namespace CSLMusicMod
 {
@@ -23,9 +24,6 @@ namespace CSLMusicMod
 		public void SaveModSettings()
 		{
 			Debug.Log("[CSLMusic] Saving settings ...");
-
-			SettingsFile.Set("Music Selection", "HeightDependentMusic", ModOptions.HeightDependentMusic);
-			SettingsFile.Set("Music Selection", "MoodDependentMusic", ModOptions.MoodDependentMusic);
 
 			//SettingsFile.Set("Music Library", "AutoAddMusicTypesForCustomMusic", ModOptions.AutoAddMusicTypesForCustomMusic);
 
@@ -68,9 +66,6 @@ namespace CSLMusicMod
 			SettingsFile.Load();
 
 			var DefaultModOptions = new Options ();
-
-			ModOptions.HeightDependentMusic = SettingsFile.GetAsBool("Music Selection", "HeightDependentMusic", DefaultModOptions.HeightDependentMusic);
-			ModOptions.MoodDependentMusic = SettingsFile.GetAsBool("Music Selection", "MoodDependentMusic", DefaultModOptions.MoodDependentMusic);
 
 			//ModOptions.AutoAddMusicTypesForCustomMusic = SettingsFile.GetAsBool("Music Library", "AutoAddMusicTypesForCustomMusic", DefaultModOptions.AutoAddMusicTypesForCustomMusic);
 
@@ -150,9 +145,7 @@ namespace CSLMusicMod
         }
 
 		public class Options
-		{
-			public bool HeightDependentMusic = true;
-			public bool MoodDependentMusic = true;
+		{			
 			public bool MusicWhileLoading = true;			
 			public KeyCode Key_NextTrack = KeyCode.N;
 			public KeyCode Key_Settings = KeyCode.M;			

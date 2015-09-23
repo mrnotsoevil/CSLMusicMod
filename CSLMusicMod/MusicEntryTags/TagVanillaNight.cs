@@ -1,18 +1,18 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.MusicEntryTags
 {
-    public class TagNight : MusicEntryTag
+    public class TagVanillaNight : MusicEntryTag
     {
-        public TagNight() : base("night", "#night - Music at nighttime")
+        public TagVanillaNight() : base("night", "#night - Music at nighttime")
         {
         }
 
         public override bool TagApplies(UnityEngine.GameObject gameObject, AudioManager.ListenerInfo info)
         {
             //throw new NotImplementedException();
-            Debug.Log("[CSLMusicMod] #night not implemented yet");
+            //Debug.Log("[CSLMusicMod] #night not implemented yet");
 
             return false;
         }
