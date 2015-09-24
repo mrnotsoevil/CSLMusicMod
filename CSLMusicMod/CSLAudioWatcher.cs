@@ -127,6 +127,23 @@ namespace CSLMusicMod
             //_switchMusic_Requested_useChirpy = false;
         }
 
+        public void RequestSwitchToPreviousMusic()
+        {
+            if (_currentMusic != null && MusicManager.EnabledMusicEntries.Contains(_currentMusic))
+            {
+                int idx = MusicManager.EnabledMusicEntries.IndexOf(_currentMusic);
+               
+
+                if (idx > 0)
+                    idx--;
+                else
+                    idx = MusicManager.EnabledMusicEntries.Count - 1;
+
+                RequestSwitchMusic(MusicManager.EnabledMusicEntries[idx]);
+            }
+
+        }
+
         public void RequestSwitchMusic()
         {
             RequestSwitchMusic(null);
@@ -170,7 +187,7 @@ namespace CSLMusicMod
             //If user requests switch
             if (_switchMusic_Requested)
             {
-                MusicEntry _cur = _currentMusic;
+                //MusicEntry _cur = _currentMusic;
 
                 Debug.Log("[CSLMusic] User requested switch");
                 SwitchMusic(listenerInfo);
@@ -285,7 +302,7 @@ namespace CSLMusicMod
                     Playback_Ogg(file);
 
                 //*** vanilla music! Stop fighting!
-                //RemoveVanillaMusicFromAudioManager();
+                RemoveVanillaMusicFromAudioManager();
             }
         }
 

@@ -93,14 +93,13 @@
     <Compile Include="UI\SettingsUI.cs" />
     <Compile Include="UI\UICheckButton.cs" />
     <Compile Include="UI\UIKeyBindingButton.cs" />
-    <Compile Include="UI\UIMusicListPanel.cs" />
-    <Compile Include="UI\UIMusicSettingsPanel.cs" />
     <Compile Include="MusicEntryTags\TagVanillaNight.cs" />
     <Compile Include="Compatibility\CSLMusicChirperMessage.cs" />
     <Compile Include="IO\SimpleIni.cs" />
     <Compile Include="IO\AudioFormatHelper.cs" />
     <Compile Include="Helpers\ModHelper.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="UI\UIMusicListPanel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -111,5 +110,8 @@
     <Folder Include="Compatibility\" />
     <Folder Include="IO\" />
     <Folder Include="Helpers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Icons.png" />
   </ItemGroup>
 </Project>

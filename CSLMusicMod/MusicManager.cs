@@ -190,7 +190,7 @@ namespace CSLMusicMod
             mood_entries_not_found = false;
 
             String audioFileLocation = ReflectionHelper.GetPrivateField<String>(
-                                  Singleton<AudioManager>.instance, "m_audioLocation");
+                                           Singleton<AudioManager>.instance, "m_audioLocation");
 
             Debug.Log("[CSLMusic] Fetching unknown vanilla music files ...");
 
@@ -208,7 +208,7 @@ namespace CSLMusicMod
 
                 if (entry == null)
                 {
-                    if(baseName == "Colossal Menu")
+                    if (baseName == "Colossal Menu")
                         entry = new MusicEntry(false, gameObject, baseName);
                     else
                         entry = new MusicEntry(true, gameObject, baseName);
@@ -217,9 +217,10 @@ namespace CSLMusicMod
                 }
 
                 //Add the vanilla music according to the vanilla annotation
-                if (file.EndsWith("b"))
+                String file_noext = Path.GetFileNameWithoutExtension(file);
+                if (file_noext.EndsWith("b"))
                     entry.AddSong(file, "bad");
-                else if (file.EndsWith("s"))
+                else if (file_noext.EndsWith("s"))
                     entry.AddSong(file, "sky");
                 else
                     entry.AddSong(file, "");
@@ -330,7 +331,7 @@ namespace CSLMusicMod
                             String baseName = cell[0];
                             bool enabled = (cell[0].ToLower()) == "true";
 
-                            if(GetEntryByName(baseName) != null)
+                            if (GetEntryByName(baseName) != null)
                                 MusicEntries.Add(new MusicEntry(enabled, gameObject, baseName));
                         }                       
                     }
@@ -342,9 +343,9 @@ namespace CSLMusicMod
             //Add unknown music files
             bool mood_entries_not_found = false;
             bool changed = AddUnknownVanillaMusicFiles(ref mood_entries_not_found)
-                  | AddUnknownCustomMusicFiles(ref mood_entries_not_found)
-                  | AddUnknownMusicPackMusicFiles(ref mood_entries_not_found)
-                  | RemoveDeactivatedMusicPackSongs();
+                           | AddUnknownCustomMusicFiles(ref mood_entries_not_found)
+                           | AddUnknownMusicPackMusicFiles(ref mood_entries_not_found)
+                           | RemoveDeactivatedMusicPackSongs();
 
             //Update 3.3 if something was not assigned - retry now
             if (mood_entries_not_found)
@@ -358,6 +359,37 @@ namespace CSLMusicMod
 
             if (changed)
                 SaveMusicFileSettings();
+
+            //Write report
+            WriteReport();
+        }
+
+        public void WriteReport()
+        {
+            using (StreamWriter w = new StreamWriter("CSLMusicMod_MusicEntryReport.log"))
+            {
+                w.WriteLine("CSL Music Mod version " + CSLMusicMod.VersionName);
+
+                foreach (var entry in MusicEntries)
+                {
+                    w.WriteLine(entry.BaseName + ", enabled: " + entry.Enable);
+                    w.WriteLine();
+
+                    foreach (var tagsong in entry.TagSongs)
+                    {
+                        w.WriteLine("#" + tagsong.Key + "->");
+
+                        foreach (var song in tagsong.Value)
+                        {
+                            w.WriteLine("\t" + song);
+                        }
+                    }
+
+                    w.WriteLine();
+                    w.WriteLine();
+                    w.WriteLine();
+                }
+            }
         }
 
         public void SaveMusicFileSettings()
@@ -372,8 +404,8 @@ namespace CSLMusicMod
                 foreach (MusicEntry entry in MusicEntries)
                 {
                     String data = (String.Format("{0}\t{1}", 
-                        entry.BaseName,
-                        entry.Enable));
+                                      entry.BaseName,
+                                      entry.Enable));
 
                     w.WriteLine(data);
                 }
