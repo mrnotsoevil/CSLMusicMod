@@ -97,7 +97,9 @@ namespace CSLMusicMod.UI
                         "Music",
                         "Next",
                         "Previous",
-                        "Shuffle"
+                        "Shuffle",
+                        "SortAscending",
+                        "SortDescending"
                     });  
 
             }

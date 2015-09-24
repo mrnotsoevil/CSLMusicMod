@@ -37,6 +37,9 @@ namespace CSLMusicMod.UI
         private UIButton _Next_Track;
         private UIButton _Previous_Track;
         private UICheckButton _enable_Playlist_random;
+        //private UITextField _Filter;
+        private UIButton _SortAscending;
+        private UIButton _SortDescending;
 
         public UIMusicListPanel()
         {
@@ -54,7 +57,7 @@ namespace CSLMusicMod.UI
             backgroundSprite = "MenuPanel2";
             wrapLayout = true;
             this.width = 500;
-            this.height =  SettingsManager.ModOptions.LargePlayList ? screenResolution.y - 120 - 40 : 480;
+            this.height = SettingsManager.ModOptions.LargePlayList ? screenResolution.y - 120 - 60 : 480;
             relativePosition = new Vector3(screenResolution.x - width - 10, screenResolution.y - height - 120);
             this.isVisible = false;
             this.canFocus = true;
@@ -100,7 +103,9 @@ namespace CSLMusicMod.UI
                         "Music",
                         "Next",
                         "Previous",
-                        "Shuffle"
+                        "Shuffle",
+                        "SortAscending",
+                        "SortDescending"
                     });  
 
             }
@@ -138,7 +143,7 @@ namespace CSLMusicMod.UI
 
                 if (_currentMusic != null && AudioWatcher != null && AudioWatcher.CurrentMusicEntry != null && AudioWatcher.CurrentMusicFile != null)
                 {
-                    _currentMusic.text = "Now playing: " + Path.GetFileNameWithoutExtension(AudioWatcher.CurrentMusicFile);
+                    _currentMusic.text = ShortenString("Now playing: " + Path.GetFileNameWithoutExtension(AudioWatcher.CurrentMusicFile));
                 }
                 else
                 {
@@ -189,7 +194,7 @@ namespace CSLMusicMod.UI
                 _MusicVolumeSlider.relativePosition = new Vector3(15, 22);
                 _MusicVolumeSlider.width = 100;
                 _MusicVolumeSlider.height = 10;
-                _MusicVolumeSlider.backgroundSprite = "GenericPanelLight";
+                //_MusicVolumeSlider.backgroundSprite = "GenericPanelLight";
                 //_MusicVolumeSlider.color = new Color32(255, 255, 255, 100);
                 _MusicVolumeSlider.minValue = 0;
                 _MusicVolumeSlider.maxValue = 100;
@@ -253,6 +258,76 @@ namespace CSLMusicMod.UI
                     AudioWatcher.RequestSwitchMusic();
                 };
             }
+            {
+                _SortAscending = AddUIComponent<UIButton>();
+                _SortAscending.width = 36;
+                _SortAscending.height = 36;
+                _SortAscending.relativePosition = new Vector3(130 + 40 * 2, 10);
+                _SortAscending.normalBgSprite = "GenericPanel";
+                _SortAscending.tooltip = "Sort ascending";
+
+                _SortAscending.atlas = _atlas;
+                _SortAscending.hoveredBgSprite = "OptionBaseFocused";
+                _SortAscending.pressedBgSprite = "OptionBasePressed";
+                _SortAscending.normalFgSprite = "SortAscending";
+
+                _SortAscending.eventClick += delegate(UIComponent component, UIMouseEventParameter eventParam)
+                {
+                    MusicManager.MusicEntries.Sort(new Comparison<MusicEntry>((x, y) =>
+                            {
+                                return x.BaseName.CompareTo(y.BaseName);
+                            }));
+
+                    UpdateMusicListPreserveScroll();
+                };
+            }
+            {
+                _SortDescending = AddUIComponent<UIButton>();
+                _SortDescending.width = 36;
+                _SortDescending.height = 36;
+                _SortDescending.relativePosition = new Vector3(130 + 40 * 3, 10);
+                _SortDescending.normalBgSprite = "GenericPanel";
+                _SortDescending.tooltip = "Sort ascending";
+
+                _SortDescending.atlas = _atlas;
+                _SortDescending.hoveredBgSprite = "OptionBaseFocused";
+                _SortDescending.pressedBgSprite = "OptionBasePressed";
+                _SortDescending.normalFgSprite = "SortDescending";
+
+                _SortDescending.eventClick += delegate(UIComponent component, UIMouseEventParameter eventParam)
+                {
+                    MusicManager.MusicEntries.Sort(new Comparison<MusicEntry>((x, y) =>
+                            {
+                                return -x.BaseName.CompareTo(y.BaseName);
+                            }));
+
+                    UpdateMusicListPreserveScroll();
+                };
+            }
+            /*{
+                _Filter = AddUIComponent<UITextField>();
+                _Filter.width = width - 130 - 40 - 36 - 10 - 10 - 36 - 10;
+                _Filter.height = 36;
+                _Filter.relativePosition = new Vector3(130 + 40 + 10 + 36, 10);
+                _Filter.normalBgSprite = "TextFieldPanel";
+                _Filter.text = "Filter ...";
+                _Filter.horizontalAlignment = UIHorizontalAlignment.Left;
+                _Filter.verticalAlignment = UIVerticalAlignment.Middle;
+                _Filter.readOnly = false;
+
+                _Filter.eventGotFocus += delegate
+                {
+                        _Filter.text = "";
+                };
+                _Filter.eventLostFocus += delegate
+                {
+                        _Filter.text = "Filter ...";
+                };
+                _Filter.eventTextChanged += delegate
+                {
+                        UpdateMusicList();
+                };
+            }*/
             {
                 _enable_Playlist_random = AddUIComponent<UICheckButton>();
                 _enable_Playlist_random.width = 36;
@@ -456,18 +531,35 @@ namespace CSLMusicMod.UI
 
             foreach (MusicEntry entry in MusicManager.MusicEntries)
             {
+                /*if (IsFiltered(entry))
+                    continue;*/
+
                 String annot = "";
 
                 if (!entry.Enable)
                     annot += "[Disabled]";               
 
                 String music = entry.BaseName;
-                String extra = "";
 
-                entries.Add(String.Format("{0} {1} {2}", annot, music, extra));
+                entries.Add(ShortenString(String.Format("{0} {1}", annot, music)));
             }
 
             _musicList.items = entries.ToArray();
+        }
+
+        /*private bool IsFiltered(MusicEntry entry)
+        {
+            if (_Filter.text == "" || _Filter.text == "Filter ...")
+                return false;
+
+            return entry.BaseName.ToLower().Contains(_Filter.text.ToLower());
+        }*/
+
+        public String ShortenString(String str)
+        {
+            if (str.Length > 45)
+                return str.Substring(0, 45) + " ...";
+            return str;
         }
     }
 }

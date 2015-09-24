@@ -2,6 +2,7 @@
 using UnityEngine;
 using ColossalFramework;
 using System.IO;
+using System.Collections;
 
 namespace CSLMusicMod
 {
@@ -10,7 +11,20 @@ namespace CSLMusicMod
         public const float VolumeModifier_Switch = 0.06f;
         public const float VolumeModifier_Crossover = 0.02f;
 
+        private SavedFloat _MasterAudioVolume = new SavedFloat(Settings.musicAudioVolume, Settings.gameSettingsFile, DefaultSettings.musicAudioVolume, true);
         private SavedFloat _MusicAudioVolume = new SavedFloat(Settings.musicAudioVolume, Settings.gameSettingsFile, DefaultSettings.musicAudioVolume, true);
+
+        private float FinalVolume
+        {
+            get
+            {
+                if (Singleton<AudioManager>.instance.MuteAll)
+                    return 0f;
+
+                return _MasterAudioVolume.value * _MusicAudioVolume.value;
+            }
+        }
+
         private AudioSource _mainAudioSource;
         private AudioSource _helperAudioSource;
 
@@ -87,7 +101,27 @@ namespace CSLMusicMod
 
             Debug.Log("[CSLMusicMod] BackgroundMusicPlayer got " + file);
 
-            var clip = GetAudioClip(file);
+            _requestedClip = null;
+            StartCoroutine(_GetAudioClip(file, new Action<AudioClip>((clip) =>
+                        {
+                            Debug.Log("... " + clip.samples + " samples are in AudioClip");
+
+                            _requestedClip = null;
+
+                            if (_currentClip == null || Math.Abs(_currentClip.samples - clip.samples) > 1024)
+                            {
+                                //New track
+                                StopAndPlay(clip);
+                                //CrossfadeTo(clip, true);
+                            }
+                            else
+                            {
+                                //Xover track
+                                CrossfadeTo(clip, true);
+                            }
+                        })));
+
+            /*var clip = GetAudioClip(file);
 
             Debug.Log("... " + clip.samples + " samples are in AudioClip");
 
@@ -103,7 +137,7 @@ namespace CSLMusicMod
             {
                 //Xover track
                 CrossfadeTo(clip, true);
-            }
+            }*/
         }
 
         private void StopAndPlay(AudioClip clip)
@@ -147,12 +181,34 @@ namespace CSLMusicMod
             if (preserveTime)
                 _mainAudioSource.timeSamples = time;
 
-            _helperAudioSource.volume = _MusicAudioVolume.value;
+            _helperAudioSource.volume = FinalVolume;
 
             _currentClip = clip;
         }
 
-        private AudioClip GetAudioClip(String file)
+        private IEnumerator _GetAudioClip(String file, Action<AudioClip> action)
+        {
+            file = Path.GetFullPath(file);
+
+            if (Application.platform == RuntimePlatform.WindowsPlayer)
+                file = "file:///" + file;
+            else
+                file = "file://" + file;
+
+            Debug.Log("[CSLMusicMod] Loading clip from " + file);
+
+            WWW fs = new WWW(file);
+            var clip = fs.GetAudioClip(false, false);   
+
+            while (!clip.isReadyToPlay)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            action(clip);
+        }
+
+        /*private AudioClip GetAudioClip(String file)
         {
             file = Path.GetFullPath(file);
 
@@ -171,7 +227,7 @@ namespace CSLMusicMod
             }
 
             return clip;
-        }
+        }*/
 
         /**
          * Stops main audio stream and puts it into helper stream
@@ -195,13 +251,22 @@ namespace CSLMusicMod
             switch (CurrentState)
             {
                 case State.Playing:
-                    // Increase volume until it is the same
+                    // Increase or decrease volume until it is the same
+                    if (_mainAudioSource.volume < FinalVolume)
                     {
-                        var volume2 = Math.Min(_MusicAudioVolume.value, _mainAudioSource.volume + VolumeModifier_Switch);
+                        var volume2 = Math.Min(FinalVolume, _mainAudioSource.volume + VolumeModifier_Switch);
                         _mainAudioSource.volume = volume2;
 
-                        if (volume2 < _MusicAudioVolume.value)
+                        if (volume2 < FinalVolume)
                             Debug.Log("[CSLMusicMod] Increasing volume of Playing state to " + volume2);
+                    }
+                    else
+                    {
+                        var volume2 = Math.Max(FinalVolume, _mainAudioSource.volume - VolumeModifier_Switch);
+                        _mainAudioSource.volume = volume2;
+
+                        if (volume2 < FinalVolume)
+                            Debug.Log("[CSLMusicMod] Decreasing volume of Playing state to " + volume2);
                     }
 
                     //Is the music finished?
@@ -243,11 +308,11 @@ namespace CSLMusicMod
                     {
                         var volume1 = Math.Max(0f, _helperAudioSource.volume - VolumeModifier_Crossover);
                         _helperAudioSource.volume = volume1;
-                        var volume2 = Math.Min(_MusicAudioVolume.value, _mainAudioSource.volume + VolumeModifier_Crossover);
+                        var volume2 = Math.Min(FinalVolume, _mainAudioSource.volume + VolumeModifier_Crossover);
                         _mainAudioSource.volume = volume2;
 
                         //x-fade into "Playing" state
-                        if (volume1 <= 0 && volume2 >= _MusicAudioVolume.value)
+                        if (volume1 <= 0 && volume2 >= FinalVolume)
                         {
                             CurrentState = State.Playing;
                             Debug.Log("[CSLMusicMod] Crossfading finished.");

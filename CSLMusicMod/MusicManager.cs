@@ -111,11 +111,14 @@ namespace CSLMusicMod
              * and music from converted
              * */
             foreach (String folder in searchfolders)
-            {      
+            { 
                 if (Directory.Exists(folder))
                 { 
+                    var modid = Directory.GetParent(folder).Name;
+                    Debug.Log("[CSLMusic] Looking for MusicPack songs in " + folder + ", mod-id " + modid);
+
                     //Does the plugin exist? Is it active
-                    PluginManager.PluginInfo info = ModHelper.GetSourceModFromId(Path.GetFileName(folder));
+                    PluginManager.PluginInfo info = ModHelper.GetSourceModFromId(modid);
 
                     if (info == null)
                     {

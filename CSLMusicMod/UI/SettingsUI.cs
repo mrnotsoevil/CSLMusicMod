@@ -93,11 +93,14 @@ namespace CSLMusicMod.UI
                         ModOptions.EnableMusicPacks = isChecked;
                         SettingsManager.SaveModSettings();
                     }));
-            group.AddCheckbox("Enable direct *.ogg playback", ModOptions.PlayWithoutConvert, new OnCheckChanged((isChecked) =>
+            group.AddCheckbox("Direct playback of non-RAW files", ModOptions.PlayWithoutConvert, new OnCheckChanged((isChecked) =>
                     {
                         ModOptions.PlayWithoutConvert = isChecked;
                         SettingsManager.SaveModSettings();
                     }));
+
+            group.AddSpace(10);
+
             group.AddDropdown("Select music by ", new string[] 
                 {
                     "highest summarized priority",

@@ -110,7 +110,7 @@ namespace CSLMusicMod
             ModOptions.PlayWithoutConvert = SettingsFile.GetAsBool("Technical", "PlayWithoutConvert", DefaultModOptions.PlayWithoutConvert);
             ModOptions.MusicTagTypePriority = new List<string>(SettingsFile.Get("Music Selection", "MusicTagTypePriority", String.Join(";", DefaultModOptions.MusicTagTypePriority.ToArray())).Split(';'));
             ModOptions.ShowToolbarButton = SettingsFile.GetAsBool("UI", "ShowToolbarButton", DefaultModOptions.ShowToolbarButton);
-            ModOptions.ShowToolbarButton = SettingsFile.GetAsBool("UI", "LargePlayList", DefaultModOptions.LargePlayList);
+            ModOptions.LargePlayList = SettingsFile.GetAsBool("UI", "LargePlayList", DefaultModOptions.LargePlayList);
 
             try
             {
