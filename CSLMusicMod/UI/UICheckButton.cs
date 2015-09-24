@@ -37,7 +37,7 @@ namespace CSLMusicMod.UI
         public UICheckButton()
         {
             checkedColor = new Color32(0, 100, 180, 255);
-            uncheckedColor = new Color32(128, 128, 128, 128);
+            uncheckedColor = new Color32(128, 128, 128, 255);
             checkedHoverColor = new Color32(0, 128, 208, 255);
             uncheckedHoverColor = new Color32(200, 200, 200, 255);
 

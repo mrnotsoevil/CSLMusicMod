@@ -54,7 +54,7 @@ namespace CSLMusicMod.UI
             backgroundSprite = "MenuPanel2";
             wrapLayout = true;
             this.width = 500;
-            this.height = 480;
+            this.height =  SettingsManager.ModOptions.LargePlayList ? screenResolution.y - 120 - 40 : 480;
             relativePosition = new Vector3(screenResolution.x - width - 10, screenResolution.y - height - 120);
             this.isVisible = false;
             this.canFocus = true;
@@ -90,7 +90,7 @@ namespace CSLMusicMod.UI
             {
 
                 Debug.Log("[CSLMusicMod] Creating icon atlases ...");
-                _atlas = CreateAtlas("Icons.png", "CSLMusicModUI", UIView.Find<UITabstrip>("ToolMode").atlas.material, 31, 31, new string[]
+                _atlas = TextureHelper.CreateAtlas("Icons.png", "CSLMusicModUI", UIView.Find<UITabstrip>("ToolMode").atlas.material, 31, 31, new string[]
                     {
                         "OptionBase",
                         "OptionBaseDisabled",
@@ -186,10 +186,11 @@ namespace CSLMusicMod.UI
             }
             {
                 _MusicVolumeSlider = AddUIComponent<UISlider>();
-                _MusicVolumeSlider.relativePosition = new Vector3(15, 20);
+                _MusicVolumeSlider.relativePosition = new Vector3(15, 22);
                 _MusicVolumeSlider.width = 100;
                 _MusicVolumeSlider.height = 10;
-                _MusicVolumeSlider.backgroundSprite = "TextFieldPanel";
+                _MusicVolumeSlider.backgroundSprite = "GenericPanelLight";
+                //_MusicVolumeSlider.color = new Color32(255, 255, 255, 100);
                 _MusicVolumeSlider.minValue = 0;
                 _MusicVolumeSlider.maxValue = 100;
                 _MusicVolumeSlider.tooltip = "Drag to change the music volume";
@@ -197,11 +198,11 @@ namespace CSLMusicMod.UI
                 UIPanel thumb = _MusicVolumeSlider.AddUIComponent<UIPanel>();
                 thumb.width = 15;
                 thumb.height = 15;
-                thumb.backgroundSprite = "TextFieldPanelHovered";
+                thumb.backgroundSprite = "GenericProgressBarFill";
 
                 UIPanel fill = _MusicVolumeSlider.AddUIComponent<UIPanel>();
-                fill.backgroundSprite = "TextFieldPanel";
-                fill.color = new Color32(79, 210, 233, 255);
+                fill.backgroundSprite = "GenericProgressBarFill";
+                //fill.color = new Color32(79, 210, 233, 255);
                 _MusicVolumeSlider.fillIndicatorObject = fill;
 
                 _MusicVolumeSlider.thumbObject = thumb;
@@ -467,52 +468,6 @@ namespace CSLMusicMod.UI
             }
 
             _musicList.items = entries.ToArray();
-        }
-
-        /**
-         * All credits to Craxy, authour of Toggle Traffic Lights
-         * */
-        private static UITextureAtlas CreateAtlas(string file, string name, Material baseMaterial, int spriteWidth, int spriteHeight, string[] spriteNames)
-        {
-            var tex = new Texture2D(spriteWidth * spriteNames.Length, spriteHeight, TextureFormat.ARGB32, false)
-            {
-                filterMode = FilterMode.Bilinear,
-            };
-
-            //load texture
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            using (var textureStream = assembly.GetManifestResourceStream("CSLMusicMod.Resources." + file))
-            {
-                var buf = new byte[textureStream.Length];  //declare arraysize
-                textureStream.Read(buf, 0, buf.Length); // read from stream to byte array
-                tex.LoadImage(buf);
-                tex.Apply(true, false);
-            }
-
-            var atlas = ScriptableObject.CreateInstance<UITextureAtlas>();
-            // Setup atlas
-            var material = UnityEngine.Object.Instantiate(baseMaterial);
-            material.mainTexture = tex;
-
-            atlas.material = material;
-            atlas.name = name;
-
-            //add sprites
-            for (var i = 0; i < spriteNames.Length; ++i)
-            {
-                var uw = 1.0f / spriteNames.Length;
-
-                var spriteInfo = new UITextureAtlas.SpriteInfo
-                {
-                    name = spriteNames[i],
-                    texture = tex,
-                    region = new Rect(i * uw, 0, uw, 1),
-                };
-
-                atlas.AddSprite(spriteInfo);
-            }
-
-            return atlas;
         }
     }
 }

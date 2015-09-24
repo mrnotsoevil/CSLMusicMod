@@ -79,6 +79,9 @@ namespace CSLMusicMod
 
             // Load the settings
             _gameObject.GetComponent<SettingsManager>().LoadModSettings();
+
+            //Add audio watcher to player
+            _musicplayer.AudioWatcher = _injector.AudioWatcher;          
         }
 
         public override void OnCreated(ILoading loading)
@@ -97,6 +100,7 @@ namespace CSLMusicMod
             if (_settingsui == null)
                 _settingsui = _gameObject.AddComponent<SettingsUI>();
 
+            _settingsui.Mod = this;
             _settingsui.InitializeSettingsUI(helper);
         }
 
@@ -107,9 +111,21 @@ namespace CSLMusicMod
             //ensure it!
             ensureComponents();
 
+            //Reload music
+            _music.LoadMusicFiles();
+
             //Create ui
             if (_ui == null)
                 _ui = _gameObject.AddComponent<MusicUI>();
+        }
+
+        public void ReloadUI()
+        {
+            if (_ui != null)
+            {
+                MonoBehaviour.Destroy(_ui);
+                _ui = _gameObject.AddComponent<MusicUI>();
+            }
         }
 
         public override void OnLevelUnloading()

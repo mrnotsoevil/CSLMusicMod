@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using ColossalFramework;
 
 namespace CSLMusicMod.MusicEntryTags
 {
@@ -10,11 +11,8 @@ namespace CSLMusicMod.MusicEntryTags
         }
 
         public override bool TagApplies(UnityEngine.GameObject gameObject, AudioManager.ListenerInfo info)
-        {
-            //throw new NotImplementedException();
-            //Debug.Log("[CSLMusicMod] #night not implemented yet");
-
-            return false;
+        {           
+            return Singleton<SimulationManager>.instance.m_isNightTime;
         }
     }
 }

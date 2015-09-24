@@ -64,29 +64,29 @@ namespace CSLMusicMod
             }
         }
 
-		public SettingsManager.Options ModOptions
-		{
-			get
-			{
+        public SettingsManager.Options ModOptions
+        {
+            get
+            {
                 return _gameObject.GetComponent<SettingsManager>().ModOptions;			
-			}
-		}
+            }
+        }
 
-		public SettingsManager SettingsManager
-		{
-			get
-			{
+        public SettingsManager SettingsManager
+        {
+            get
+            {
                 return _gameObject.GetComponent<SettingsManager>();
-			}
-		}
+            }
+        }
 
-		public MusicManager MusicManager
-		{
-			get
-			{
+        public MusicManager MusicManager
+        {
+            get
+            {
                 return _gameObject.GetComponent<MusicManager>();
-			}
-		}
+            }
+        }
 
         public GameObject GameObject
         {
@@ -164,10 +164,15 @@ namespace CSLMusicMod
             if (!Singleton<LoadingManager>.instance.m_loadingComplete)
             {
                 //May be annoying (stuttering while loading), so it can be disabled
-				if (!ModOptions.MusicWhileLoading)
+                if (!ModOptions.MusicWhileLoading)
                 {
                     SwitchMusicToFile(null);
                 }
+
+
+                /////debug
+                //SwitchMusicToFile(MusicManager.GetEntryByName("Pekka Kana 2 - Pekka Kana (256 kbit_s)").TagSongs[""][0]);
+
 
                 return;
             }
@@ -291,19 +296,11 @@ namespace CSLMusicMod
         {
             //this file should be the current file
             _currentMusic_File = file;
-
-            if (MusicFile != file)
-            {
-                Debug.Log("[CSLMusic] Forcing music back to " + file);
-
-                if (Path.GetExtension(file).ToLower() == ".raw")
-                    Playback_Raw(file);
-                else
-                    Playback_Ogg(file);
-
-                //*** vanilla music! Stop fighting!
-                RemoveVanillaMusicFromAudioManager();
-            }
+           
+            if (Path.GetExtension(file).ToLower() == ".raw")
+                Playback_Raw(file);
+            else
+                Playback_Ogg(file);
         }
 
         private void Playback_Ogg(String file)
@@ -322,6 +319,9 @@ namespace CSLMusicMod
 
             //Playback using vanilla
             MusicFile = file;
+
+            //*** vanilla music! Stop fighting!
+            RemoveVanillaMusicFromAudioManager();
         }
 
         private void RemoveVanillaMusicFromAudioManager()
@@ -368,7 +368,7 @@ namespace CSLMusicMod
 
             MusicEntry newentry;
 
-			if (ModOptions.RandomTrackSelection)
+            if (ModOptions.RandomTrackSelection)
                 newentry = GetNextRandomMusic(entries);
             else
                 newentry = GetNextMusicFromList(entries);
@@ -420,7 +420,7 @@ namespace CSLMusicMod
                 music = entries[RANDOM.Next(entries.Count)];
 
                 //If too many iterations, cancel
-                if(++iters >= 5000)
+                if (++iters >= 5000)
                 {
                     Debug.Log("[CSLMusic][GetNextRandomMusic] Too many iterations. Canceling to prevent deadlock");                   
                     break;

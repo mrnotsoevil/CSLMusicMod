@@ -11,8 +11,9 @@ namespace CSLMusicMod
      * */
     public class MusicEntry
     {
-        public GameObject GameObject { get; private set;}
-        public String BaseName { get; private set;}
+        public GameObject GameObject { get; private set; }
+
+        public String BaseName { get; private set; }
 
         /**
          * Dictionary of <Tag> to <List of songs>
@@ -61,7 +62,7 @@ namespace CSLMusicMod
          * */
         public void AddSong(String filename)
         {
-           // Split tags from filename
+            // Split tags from filename
             string[] cell = Path.GetFileNameWithoutExtension(filename).Split('#');
             string[] tags = new string[cell.Length - 1];
 
@@ -128,13 +129,74 @@ namespace CSLMusicMod
       
 
         /**
+         * Gets the best matching music according to selection algorithm
+         * */
+        public String GetMatchingMusic(AudioManager.ListenerInfo info)
+        {
+            String song;
+
+            if (GameObject.GetComponent<SettingsManager>().ModOptions.MusicSelectionAlgorithm == SettingsManager.Options.MusicSelectionType.Priority)
+            {
+                song = SelectMusicByPriority(info);
+            }
+            else
+            {
+                song = SelectMusicByScore(info);
+            }
+
+            if (song != null)
+                return song;
+
+            //Select the "default" tag song if available
+            if (TagSongs.ContainsKey("") && TagSongs[""].Count != 0)
+                return TagSongs[""][0];
+
+            return null;
+        }
+
+        private String SelectMusicByScore(AudioManager.ListenerInfo info)
+        {
+            var tagtypes = GameObject.GetComponent<MusicManager>().MusicTagTypes;
+            var tagpriority = GameObject.GetComponent<SettingsManager>().ModOptions.MusicTagTypePriority;
+
+            String best_song = null;
+            int best_song_score = 0;
+
+            foreach (var songtag in SongTags)
+            {
+                int score = 0;
+
+                int tag_score = tagpriority.Count + 1;
+                foreach (String tagname in tagpriority)
+                {
+                    if (!songtag.Value.Contains(tagname))
+                        continue;
+
+                    var tag = tagtypes[tagname];
+
+                    if (tag.TagApplies(GameObject, info))
+                    {
+                        score += tag_score;
+                    }
+
+                    tag_score--;
+                }
+
+                if (score > best_song_score)
+                    best_song = songtag.Key;
+            }
+
+            return best_song;
+        }
+
+        /**
          * If there is a matching music provided by a tag, return the tag music with the highest priority
          * If no tag is matching and there is a default music, return the default
          * If no tag is matching and there is no default music, return null
          * 
          * Always choose the song with the lowest tag count
          * */
-        public String GetMatchingMusic(AudioManager.ListenerInfo info)
+        private String SelectMusicByPriority(AudioManager.ListenerInfo info)
         {
             var tagtypes = GameObject.GetComponent<MusicManager>().MusicTagTypes;
             var tagpriority = GameObject.GetComponent<SettingsManager>().ModOptions.MusicTagTypePriority;
@@ -154,10 +216,6 @@ namespace CSLMusicMod
                     }
                 }
             }
-
-            //Select the "default" tag song if available
-            if (TagSongs.ContainsKey("") && TagSongs[""].Count != 0)
-                return TagSongs[""][0];
 
             return null;
         }

@@ -61,7 +61,7 @@ namespace CSLMusicMod
                     String srcfile = task.Key;
                     String dstfile = task.Value;               
 
-                    if (Path.GetExtension(srcfile) == ".ogg")
+                    if (ModOptions.SupportedNonRawFileFormats.Contains( Path.GetExtension(srcfile)))
                     {
                         if (!File.Exists(dstfile))
                         {
@@ -111,7 +111,7 @@ namespace CSLMusicMod
 				//If not, convert the file to raw
 				foreach (String file in Directory.GetFiles(folder))
 				{ 
-					if (Path.GetExtension(file) == ".ogg")
+                    if (ModOptions.SupportedNonRawFileFormats.Contains(Path.GetExtension(file)))
 					{
 						String srcfile = file;
 						String dstfile;

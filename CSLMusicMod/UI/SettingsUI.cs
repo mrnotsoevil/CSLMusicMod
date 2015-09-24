@@ -11,6 +11,12 @@ namespace CSLMusicMod.UI
      * */
     public class SettingsUI : MonoBehaviour
     {
+        public CSLMusicMod Mod
+        {
+            get;
+            set;
+        }
+
         public SettingsManager SettingsManager
         {
             get
@@ -27,16 +33,19 @@ namespace CSLMusicMod.UI
             }
         }
 
-        private String[] KeyStringArray = Enum.GetNames(typeof(KeyCode));
-        private List<String> KeyStringList;
+        private List<String> KeyStringList = Enum.GetNames(typeof(KeyCode)).ToList();
         private List<KeyCode> KeyList;
+
+        private List<String> SelectionAlgorithmStringList = Enum.GetNames(typeof(SettingsManager.Options.MusicSelectionType)).ToList();
+        private List<SettingsManager.Options.MusicSelectionType> SelectionAlgorithmList;
+
         private Dictionary<int, MusicEntryTag> IndexTagMapping = new Dictionary<int, MusicEntryTag>();
         private Dictionary<MusicEntryTag, int> TagIndexMapping = new Dictionary<MusicEntryTag, int>();
 
         public SettingsUI()
         {
-            KeyStringList = new List<String>(KeyStringArray);
             KeyList = new List<KeyCode>((KeyCode[])Enum.GetValues(typeof(KeyCode)));
+            SelectionAlgorithmList = new List<SettingsManager.Options.MusicSelectionType>((SettingsManager.Options.MusicSelectionType[])Enum.GetValues(typeof(SettingsManager.Options.MusicSelectionType)));
         }
 
         public void Awake()
@@ -50,17 +59,30 @@ namespace CSLMusicMod.UI
 
             Debug.Log("[CSLMusicMod] Populating settings menu ...");
 
-            group.AddDropdown("Open playlist and settings", KeyStringArray, KeyStringList.IndexOf(ModOptions.Key_Settings.ToString()), (selection) =>
+            group.AddDropdown("Open playlist and settings", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Key_Settings.ToString()), (selection) =>
                 {
                     ModOptions.Key_Settings = KeyList[selection];
                     SettingsManager.SaveModSettings();
                 });
-            group.AddDropdown("Next song", KeyStringArray, KeyStringList.IndexOf(ModOptions.Key_NextTrack.ToString()), (selection) =>
+            group.AddDropdown("Next song", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Key_NextTrack.ToString()), (selection) =>
                 {
                     ModOptions.Key_NextTrack = KeyList[selection];
                     SettingsManager.SaveModSettings();
                 });
             group.AddSpace(10);
+            group.AddCheckbox("Show toolbar button", ModOptions.ShowToolbarButton, new OnCheckChanged((isChecked) =>
+                {
+                    ModOptions.ShowToolbarButton = isChecked;
+                    SettingsManager.SaveModSettings();
+                }));
+            group.AddCheckbox("Large playlist", ModOptions.LargePlayList, new OnCheckChanged((isChecked) =>
+                {
+                    ModOptions.LargePlayList = isChecked;
+                    SettingsManager.SaveModSettings();
+
+                    //Reload UI if possible
+                    Mod.ReloadUI();
+                }));
             group.AddCheckbox("Music in menu & while loading", ModOptions.MusicWhileLoading, new OnCheckChanged((isChecked) =>
                     {
                         ModOptions.MusicWhileLoading = isChecked;
@@ -76,6 +98,16 @@ namespace CSLMusicMod.UI
                         ModOptions.PlayWithoutConvert = isChecked;
                         SettingsManager.SaveModSettings();
                     }));
+            group.AddDropdown("Select music by ", new string[] 
+                {
+                    "highest summarized priority",
+                    "priority order"
+                },
+                SelectionAlgorithmStringList.IndexOf(ModOptions.MusicSelectionAlgorithm.ToString()), (selection) =>
+                {
+                    ModOptions.MusicSelectionAlgorithm = SelectionAlgorithmList[selection];
+                    SettingsManager.SaveModSettings();
+                });
             group.AddSpace(10);
 
             {

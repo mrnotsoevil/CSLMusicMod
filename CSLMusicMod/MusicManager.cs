@@ -14,11 +14,14 @@ namespace CSLMusicMod
         public const String CustomMusicDefaultFolder = "CSLMusicMod_Music";
         public const String MusicSettingsFileName = "CSLMusicMod_MusicFiles.csv";
 
+        public static readonly HashSet<String> Supported_Formats_Conversion = new HashSet<string>(new string[]{ ".ogg" });
+        public static readonly HashSet<String> Supported_Formats_Playback = new HashSet<string>(new string[] { ".ogg", ".wav", ".aiff", ".aif", ".mod", ".it", ".s3m", ".xm" });
+
         public SettingsManager.Options ModOptions
         {
             get
             {
-                return gameObject.GetComponent<SettingsManager>().ModOptions;
+                return gameObject.GetComponent<SettingsManager>().ModOptions; 
             }
         }
 
@@ -158,7 +161,7 @@ namespace CSLMusicMod
             {
                 if (!ModOptions.PlayWithoutConvert && Path.GetExtension(file) != ".raw")
                     continue;
-                if (Path.GetExtension(file) != ".raw" && Path.GetExtension(file) != ".ogg")
+                if (Path.GetExtension(file) != ".raw" && !ModOptions.SupportedNonRawFileFormats.Contains(Path.GetExtension(file)))
                     continue;
                 if (MusicFileKnown(file))
                     continue;
@@ -204,11 +207,24 @@ namespace CSLMusicMod
 
                 String baseName = GetVanillaMusicBaseName(file);
 
+                Debug.Log("[CSLMusicMod] Vanilla music base name: \"" + baseName + "\" <- " + file);
+
+                //After Dark Music
+                bool after_dark = false;
+                if (baseName.StartsWith("After Dark") && baseName != "After Dark Menu")
+                {
+                    after_dark = true;
+                    baseName = baseName.Replace("After Dark", "Colossal Style");
+
+                    Debug.Log("[CSLMusicMod] AfterDark override: " + baseName + " to Colossal Style#night");
+                    baseName = baseName.Replace("After Dark", "Colossal Style");
+                }
+
                 MusicEntry entry = GetEntryByName(baseName);
 
                 if (entry == null)
                 {
-                    if (baseName == "Colossal Menu")
+                    if (baseName == "Colossal Menu" || baseName == "After Dark Menu")
                         entry = new MusicEntry(false, gameObject, baseName);
                     else
                         entry = new MusicEntry(true, gameObject, baseName);
@@ -218,12 +234,26 @@ namespace CSLMusicMod
 
                 //Add the vanilla music according to the vanilla annotation
                 String file_noext = Path.GetFileNameWithoutExtension(file);
-                if (file_noext.EndsWith("b"))
-                    entry.AddSong(file, "bad");
-                else if (file_noext.EndsWith("s"))
-                    entry.AddSong(file, "sky");
+
+                if (after_dark)
+                {
+                    //This is afterdark music: add it as #night
+                    if (file_noext.EndsWith("b"))
+                        entry.AddSong(file, "bad", "night");
+                    else if (file_noext.EndsWith("s"))
+                        entry.AddSong(file, "sky", "night");
+                    else
+                        entry.AddSong(file, "night");
+                }
                 else
-                    entry.AddSong(file, "");
+                {
+                    if (file_noext.EndsWith("b"))
+                        entry.AddSong(file, "bad");
+                    else if (file_noext.EndsWith("s"))
+                        entry.AddSong(file, "sky");
+                    else
+                        entry.AddSong(file, "");
+                }
 
                 foundsomething = true;
             }
@@ -329,9 +359,9 @@ namespace CSLMusicMod
                         if (cell.Length == 2)
                         {
                             String baseName = cell[0];
-                            bool enabled = (cell[0].ToLower()) == "true";
+                            bool enabled = (cell[1].ToLower()) == "true";
 
-                            if (GetEntryByName(baseName) != null)
+                            if (GetEntryByName(baseName) == null)
                                 MusicEntries.Add(new MusicEntry(enabled, gameObject, baseName));
                         }                       
                     }
@@ -473,11 +503,11 @@ namespace CSLMusicMod
             filename = Path.GetFileNameWithoutExtension(filename);
 
             if (filename.EndsWith("s"))
-                return filename.Substring(0, filename.Length - 1);
+                return filename.Substring(0, filename.Length - 1).Trim();
             if (filename.EndsWith("b"))
-                return filename.Substring(0, filename.Length - 1);
+                return filename.Substring(0, filename.Length - 1).Trim();
 
-            return filename;
+            return filename.Trim();
         }
 
         public MusicEntry GetEntryByName(String name)
