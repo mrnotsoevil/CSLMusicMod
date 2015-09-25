@@ -68,7 +68,7 @@ namespace CSLMusicMod
 
             for (int i = 1; i < cell.Length; i++)
             {
-                tags[i - 1] = cell[i];
+                tags[i - 1] = cell[i].Trim();
             }
 
             AddSong(filename, tags);
