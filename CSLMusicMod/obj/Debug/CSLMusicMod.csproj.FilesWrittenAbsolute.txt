@@ -2,3 +2,12 @@
 /home/ruman/Project/CSLMusicMod/CSLMusicMod/bin/Debug/CSLMusicMod.dll
 /home/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.dll
 /home/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.dll.mdb
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.dll
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.dll.mdb
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/bin/Debug/CSLMusicMod.dll.mdb
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/bin/Debug/CSLMusicMod.dll
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.Icons.png
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.Floating.png
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.Next.png
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.Previous.png
+/home/ruman/Projects/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.Shuffle.png

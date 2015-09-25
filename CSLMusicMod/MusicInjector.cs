@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Reflection;
 using ColossalFramework;
 using System.Collections;
+using CSLMusicMod.Helpers;
 
 namespace CSLMusicMod
 {
@@ -42,8 +43,11 @@ namespace CSLMusicMod
         {
             Debug.Log("[CSLMusic] Adding CSLAudioWatcher ...");
 
-            //Loading
+           
             StartCoroutine(LoadMusicFiles());
+
+			//Give ptr of game object providing components
+            AudioWatcher.GameObject = gameObject;
 
             AudioManager.RegisterAudibleManager(AudioWatcher);
 
@@ -69,10 +73,10 @@ namespace CSLMusicMod
             yield return new WaitForSeconds(2f);
 
             //Convert
-            yield return StartCoroutine(CSLMusicModSettings.ConvertCustomMusic());
+			yield return StartCoroutine(gameObject.GetComponent<ConversionManager>().ConvertCustomMusic());
 
             //Load settings
-            CSLMusicModSettings.LoadMusicFiles();
+			gameObject.GetComponent<MusicManager> ().LoadMusicFiles ();
         }
     }
 }

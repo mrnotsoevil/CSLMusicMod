@@ -4,6 +4,7 @@ using System.Reflection;
 using ColossalFramework;
 using System.IO;
 using System.Collections.Generic;
+using CSLMusicMod.Helpers;
 
 namespace CSLMusicMod
 {
@@ -55,7 +56,7 @@ namespace CSLMusicMod
             }
         }
 
-        public CSLCustomMusicEntry CurrentMusicEntry
+        public MusicEntry CurrentMusicEntry
         {
             get
             {
@@ -63,9 +64,48 @@ namespace CSLMusicMod
             }
         }
 
+        public SettingsManager.Options ModOptions
+        {
+            get
+            {
+                return _gameObject.GetComponent<SettingsManager>().ModOptions;			
+            }
+        }
+
+        public SettingsManager SettingsManager
+        {
+            get
+            {
+                return _gameObject.GetComponent<SettingsManager>();
+            }
+        }
+
+        public MusicManager MusicManager
+        {
+            get
+            {
+                return _gameObject.GetComponent<MusicManager>();
+            }
+        }
+
+        public GameObject GameObject
+        {
+            get
+            {
+                return _gameObject;
+            }
+            set
+            {
+                _gameObject = value;
+            }
+        }
+
+		
+        private GameObject _gameObject;
+
         private bool _switchMusic_Requested;
-        private CSLCustomMusicEntry _switchMusic_Requested_Music;
-        private bool _switchMusic_Requested_useChirpy;
+        private MusicEntry _switchMusic_Requested_Music;
+        //private bool _switchMusic_Requested_useChirpy;
         /**
          * Keep track of the last max. position
          * If the stream restarts, switch the music
@@ -73,30 +113,49 @@ namespace CSLMusicMod
         private Stream _stream;
         private long _streamLastKnownMaxPosition;
         private bool _firstTimeSwitched;
-        private CSLCustomMusicEntry _previousMusic;
-        private CSLCustomMusicEntry _currentMusic;
+        private MusicEntry _previousMusic;
+        private MusicEntry _currentMusic;
         private String _currentMusic_File;
 
         //Contains already played tracks (by random selection)
-        private HashSet<CSLCustomMusicEntry> _already_Played_Music = new HashSet<CSLCustomMusicEntry>();
+        private HashSet<MusicEntry> _already_Played_Music = new HashSet<MusicEntry>();
 
         public CSLAudioWatcher()
         {
             _firstTimeSwitched = false;
             _switchMusic_Requested = false;
-            _switchMusic_Requested_useChirpy = false;
+            //_switchMusic_Requested_useChirpy = false;
         }
 
-        public void RequestSwitchMusic(bool chirp)
+        public void RequestSwitchToPreviousMusic()
         {
-            RequestSwitchMusic(null, chirp);
+            if (_currentMusic != null && MusicManager.EnabledMusicEntries.Contains(_currentMusic))
+            {
+                int idx = MusicManager.EnabledMusicEntries.IndexOf(_currentMusic);
+               
+
+                if (idx > 0)
+                    idx--;
+                else
+                    idx = MusicManager.EnabledMusicEntries.Count - 1;
+
+                RequestSwitchMusic(MusicManager.EnabledMusicEntries[idx]);
+            }
+
         }
 
-        public void RequestSwitchMusic(CSLCustomMusicEntry entry, bool chirp)
+        public void RequestSwitchMusic()
         {
+            RequestSwitchMusic(null);
+        }
+
+        public void RequestSwitchMusic(MusicEntry entry)
+        {
+            Debug.Log("[CSLMusic] Requested to switch music.");
+
             _switchMusic_Requested = true;
             _switchMusic_Requested_Music = entry;
-            _switchMusic_Requested_useChirpy = chirp;
+            //_switchMusic_Requested_useChirpy = chirp;
         }
 
         public void PlayAudio(AudioManager.ListenerInfo listenerInfo)
@@ -105,10 +164,15 @@ namespace CSLMusicMod
             if (!Singleton<LoadingManager>.instance.m_loadingComplete)
             {
                 //May be annoying (stuttering while loading), so it can be disabled
-                if (!CSLMusicModSettings.MusicWhileLoading)
+                if (!ModOptions.MusicWhileLoading)
                 {
                     SwitchMusicToFile(null);
                 }
+
+
+                /////debug
+                //SwitchMusicToFile(MusicManager.GetEntryByName("Pekka Kana 2 - Pekka Kana (256 kbit_s)").TagSongs[""][0]);
+
 
                 return;
             }
@@ -122,13 +186,13 @@ namespace CSLMusicMod
                 _firstTimeSwitched = true;
 
                 //Yay chirp
-                MusicUI.ChirpNowPlaying(_currentMusic);
+                //GameObject.GetComponent<MusicUI>().ChirpNowPlaying(_currentMusic);
             }
 
             //If user requests switch
             if (_switchMusic_Requested)
             {
-                CSLCustomMusicEntry _cur = _currentMusic;
+                //MusicEntry _cur = _currentMusic;
 
                 Debug.Log("[CSLMusic] User requested switch");
                 SwitchMusic(listenerInfo);
@@ -136,8 +200,8 @@ namespace CSLMusicMod
                 _switchMusic_Requested = false;
 
                 //Yay chirp
-                if (_currentMusic != _cur && _switchMusic_Requested_useChirpy)
-                    MusicUI.ChirpNowPlaying(_currentMusic);
+                //if (_currentMusic != _cur && _switchMusic_Requested_useChirpy)
+                //    GameObject.GetComponent<MusicUI>().ChirpNowPlaying(_currentMusic);
             }
 
             /**
@@ -195,7 +259,7 @@ namespace CSLMusicMod
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " has restarted"); 
                     SwitchMusic(info);
                 }
-                else if (pos >= CurrentMusicStream.Length - CSLMusicModSettings.MusicStreamSwitchTime)
+                else if (pos >= CurrentMusicStream.Length - ModOptions.MusicStreamSwitchTime)
                 {
                     Debug.Log("[CSLMusic] Switch because stream " + pos + "/" + CurrentMusicStream.Length + " lk " + _streamLastKnownMaxPosition + " is ending"); 
                     SwitchMusic(info);
@@ -215,15 +279,16 @@ namespace CSLMusicMod
 
             //Determine the actual music file
 
-            String musicFile = _currentMusic.GetMusicFromMood(info);
+            String musicFile = _currentMusic.GetMatchingMusic(info);
 
-            if (musicFile != null) //Should not happen - but to be sure test it
+            if (musicFile != null)
             {
                 SwitchMusicToFile(musicFile);
             }
             else
             {
-                Debug.Log("[CSLMusic] GetMusicFromMood returned NULL? WTF");
+                //The music file does not contain anything interesting, so switch to the next music
+                RequestSwitchMusic();
             }
         }
 
@@ -231,15 +296,32 @@ namespace CSLMusicMod
         {
             //this file should be the current file
             _currentMusic_File = file;
+           
+            if (Path.GetExtension(file).ToLower() == ".raw")
+                Playback_Raw(file);
+            else
+                Playback_Ogg(file);
+        }
 
-            if (MusicFile != file)
-            {
-                Debug.Log("[CSLMusic] Forcing music back to " + file);
-                MusicFile = file;
+        private void Playback_Ogg(String file)
+        {
+            //Disable vanilla music
+            MusicFile = null;
 
-                //*** vanilla music! Stop fighting!
-                RemoveVanillaMusicFromAudioManager();
-            }
+            //Send file to background music player
+            GameObject.GetComponent<BackgroundMusicPlayer>().Playback(file);
+        }
+
+        private void Playback_Raw(String file)
+        {
+            //Disable mod player
+            GameObject.GetComponent<BackgroundMusicPlayer>().StopPlayback();
+
+            //Playback using vanilla
+            MusicFile = file;
+
+            //*** vanilla music! Stop fighting!
+            RemoveVanillaMusicFromAudioManager();
         }
 
         private void RemoveVanillaMusicFromAudioManager()
@@ -251,7 +333,7 @@ namespace CSLMusicMod
         {
             Debug.Log("[CSLMusic] Switching music ...");
 
-            List<CSLCustomMusicEntry> entries = CSLMusicModSettings.EnabledMusicEntries;
+            List<MusicEntry> entries = MusicManager.EnabledMusicEntries;
 
             if (entries.Count == 0)
             {
@@ -268,14 +350,14 @@ namespace CSLMusicMod
             //Set current music entry
             _currentMusic = _switchMusic_Requested_Music == null ? GetNextMusic(entries) : _switchMusic_Requested_Music;
             _switchMusic_Requested_Music = null; //Reset requested
-            _switchMusic_Requested = false;
+            //_switchMusic_Requested = false;
 
             UpdateMusic(info);
 
             Debug.Log("Now always enforcing " + _currentMusic);
         }
 
-        private CSLCustomMusicEntry GetNextMusic(List<CSLCustomMusicEntry> entries)
+        private MusicEntry GetNextMusic(List<MusicEntry> entries)
         {
             //If the set of already played music contains as much files as entries, reset
             if (_already_Played_Music.Count >= entries.Count)
@@ -284,9 +366,9 @@ namespace CSLMusicMod
                 Debug.Log("[CSLMusic][GetNextRandomMusic] Resetting already played music list #internal");
             }
 
-            CSLCustomMusicEntry newentry;
+            MusicEntry newentry;
 
-            if (CSLMusicModSettings.RandomTrackSelection)
+            if (ModOptions.RandomTrackSelection)
                 newentry = GetNextRandomMusic(entries);
             else
                 newentry = GetNextMusicFromList(entries);
@@ -295,7 +377,7 @@ namespace CSLMusicMod
             return newentry;
         }
 
-        private CSLCustomMusicEntry GetNextMusicFromList(List<CSLCustomMusicEntry> entries)
+        private MusicEntry GetNextMusicFromList(List<MusicEntry> entries)
         {
             if (entries.Count == 0)
             {
@@ -320,7 +402,7 @@ namespace CSLMusicMod
             return entries[index];
         }
 
-        private CSLCustomMusicEntry GetNextRandomMusic(List<CSLCustomMusicEntry> entries)
+        private MusicEntry GetNextRandomMusic(List<MusicEntry> entries)
         {
             if (entries.Count == 0)
             {
@@ -328,7 +410,7 @@ namespace CSLMusicMod
             }
 
             //Fetch a random music file until it is not matching with the previous one
-            CSLCustomMusicEntry music;
+            MusicEntry music;
 
             //Iterations fallback
             int iters = 0;
@@ -338,7 +420,7 @@ namespace CSLMusicMod
                 music = entries[RANDOM.Next(entries.Count)];
 
                 //If too many iterations, cancel
-                if(++iters >= 5000)
+                if (++iters >= 5000)
                 {
                     Debug.Log("[CSLMusic][GetNextRandomMusic] Too many iterations. Canceling to prevent deadlock");                   
                     break;
