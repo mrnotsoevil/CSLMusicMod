@@ -159,16 +159,23 @@ namespace CSLMusicMod
             var tagtypes = GameObject.GetComponent<MusicManager>().MusicTagTypes;
             var tagpriority = GameObject.GetComponent<SettingsManager>().ModOptions.MusicTagTypePriority;
 
+            // Two scores: primary score = count of matching tags, secondary score = score according tag priority
             String best_song = null;
-            int best_song_score = 0;
+            float best_song_score1 = 0;
+            int best_song_score2 = 0;
 
             foreach (var songtag in SongTags)
             {
-                int score = 0;
+                //Debug.Log(songtag.Key + ":::::::::");
 
-                int tag_score = tagpriority.Count + 1;
+                float score1 = 0;
+                int score2 = 0;
+
+                int tag_score = tagpriority.Count + 2;
                 foreach (String tagname in tagpriority)
                 {
+                    tag_score--;
+
                     if (!songtag.Value.Contains(tagname))
                         continue;
 
@@ -176,15 +183,27 @@ namespace CSLMusicMod
 
                     if (tag.TagApplies(GameObject, info))
                     {
-                        score += tag_score;
+                        //Debug.Log("#" + tagname + " applies");
+                        score1 += 1f / songtag.Value.Count;
+                        score2 += tag_score;
                     }
-
-                    tag_score--;
                 }
 
-                if (score > best_song_score)
-                    best_song = songtag.Key;
+                //Debug.Log(songtag.Key + " -> " + score1 + " | " + score2);
+
+                if (score1 >= best_song_score1)
+                {
+                    if ( score1 > best_song_score1 || score1 == best_song_score1 && score2 > best_song_score2)
+                    {
+                        best_song = songtag.Key;
+                        best_song_score1 = score1;
+                        best_song_score2 = score2;
+                    }
+                   
+                }
             }
+
+            //Debug.Log("[] best song: " + best_song + ", score1 " + best_song_score1 + ", score2 " + best_song_score2);
 
             return best_song;
         }

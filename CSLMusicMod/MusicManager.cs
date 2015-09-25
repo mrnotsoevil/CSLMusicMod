@@ -61,6 +61,7 @@ namespace CSLMusicMod
             AddTagType(new TagVanillaMood());
             AddTagType(new TagVanillaNight());
             AddTagType(new TagDefault());
+            AddTagType(new TagFalse());
         }
 
         /**
@@ -223,11 +224,37 @@ namespace CSLMusicMod
                     baseName = baseName.Replace("After Dark", "Colossal Style");
                 }
 
+                // Translate names to OST original names
+                switch (baseName)
+                {
+                    case "Colossal Menu":
+                        baseName = "Cities: Skylines - Main Theme";
+                        break;
+                    case "After Dark Menu":
+                        baseName = "Cities: Skylines - Main Theme (After Dark)";
+                        break;
+                    case "Colossal Style 1":
+                        baseName = "Cities: Skylines - Stern Berger";
+                        break;
+                    case "Colossal Style 2":
+                        baseName = "Cities: Skylines - Burned Bean Coffee";
+                        break;
+                    case "Colossal Style 3":
+                        baseName = "Cities: Skylines - AUKIO";
+                        break;
+                    case "Colossal Style 4":
+                        baseName = "Cities: Skylines - Itsy Bitsy Critter";
+                        break;
+                    case "Colossal Style 5":
+                        baseName = "Cities: Skylines - Dino Oil";
+                        break;
+                }
+
                 MusicEntry entry = GetEntryByName(baseName);
 
                 if (entry == null)
                 {
-                    if (baseName == "Colossal Menu" || baseName == "After Dark Menu")
+                    if (baseName == "Cities: Skylines - Main Theme" || baseName == "Cities: Skylines - Main Theme (After Dark)")
                         entry = new MusicEntry(false, gameObject, baseName);
                     else
                         entry = new MusicEntry(true, gameObject, baseName);

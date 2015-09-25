@@ -11,7 +11,7 @@ namespace CSLMusicMod.MusicEntryTags
         }
 
         public override bool TagApplies(UnityEngine.GameObject gameObject, AudioManager.ListenerInfo info)
-        {           
+        {     
             return Singleton<SimulationManager>.instance.m_isNightTime;
         }
     }

@@ -273,6 +273,7 @@ namespace CSLMusicMod
                     if (!_mainAudioSource.isPlaying)
                     {
                         Debug.Log("[CSLMusicMod] Playback finished.");
+                        ImmediatelyStopPlayback();
                         AudioWatcher.RequestSwitchMusic();
                     }
 

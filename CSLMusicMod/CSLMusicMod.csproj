@@ -101,6 +101,7 @@
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="UI\UIMusicListPanel.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />
+    <Compile Include="MusicEntryTags\TagFalse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

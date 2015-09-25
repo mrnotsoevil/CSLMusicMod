@@ -12,6 +12,7 @@ namespace CSLMusicMod.UI
         private bool _initialized = false;
 
         UILabel _currentMusic;
+        String _currentMusic_current;
         UIListBox _musicList;
         //        UIButton _openSettings;
         //UIMusicSettingsPanel _settingsPanel;
@@ -143,7 +144,13 @@ namespace CSLMusicMod.UI
 
                 if (_currentMusic != null && AudioWatcher != null && AudioWatcher.CurrentMusicEntry != null && AudioWatcher.CurrentMusicFile != null)
                 {
-                    _currentMusic.text = ShortenString("Now playing: " + Path.GetFileNameWithoutExtension(AudioWatcher.CurrentMusicFile));
+                    var music = Path.GetFileNameWithoutExtension(AudioWatcher.CurrentMusicFile);
+
+                    if (music != _currentMusic_current)
+                    {
+                        _currentMusic_current = music;
+                        _currentMusic.text = ShortenString("Now playing: " + music, 45);
+                    }
                 }
                 else
                 {
@@ -541,7 +548,7 @@ namespace CSLMusicMod.UI
 
                 String music = entry.BaseName;
 
-                entries.Add(ShortenString(String.Format("{0} {1}", annot, music)));
+                entries.Add(String.Format("{0} {1}", annot, music));
             }
 
             _musicList.items = entries.ToArray();
@@ -555,10 +562,32 @@ namespace CSLMusicMod.UI
             return entry.BaseName.ToLower().Contains(_Filter.text.ToLower());
         }*/
 
-        public String ShortenString(String str)
+        /*public String ShortenString(String str, float width, UIFontRenderer renderer)
         {
-            if (str.Length > 45)
-                return str.Substring(0, 45) + " ...";
+            var size = renderer.MeasureString(str);
+            var difference = width - size.x / 2;
+
+            if (difference > 0)
+            {
+                //Try to figure out how many characters to trim
+                var wpc = Math.Ceiling(size.x / str.Length);
+                var trimdown = 4 + (int)Math.Ceiling(difference / wpc) + 3;
+
+                return str.Substring(0, str.Length - trimdown) + " ...";
+            }
+            return str;
+        }*/
+
+        public String ShortenString(String str, int size)
+        {
+            var diff = str.Length - size;
+
+            if (diff > 0)
+            {
+                return str.Substring(0, str.Length - diff - 4) + " ...";
+            }
+
+
             return str;
         }
     }
