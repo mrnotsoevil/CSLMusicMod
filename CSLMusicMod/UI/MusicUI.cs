@@ -63,7 +63,7 @@ namespace CSLMusicMod.UI
             _toolbar_Button.width = 36;
             _toolbar_Button.height = 36;
             Vector2 screenResolution = view.GetScreenResolution();
-            _toolbar_Button.relativePosition = new Vector3(screenResolution.x - _toolbar_Button.width - 10 - 20, screenResolution.y - _toolbar_Button.height / 2 - 120 + 7);
+            _toolbar_Button.relativePosition = new Vector3(screenResolution.x - _toolbar_Button.width - 10 - 20 - 40, screenResolution.y - _toolbar_Button.height / 2 - 120 + 7);
         
             _toolbar_Button.eventClick += delegate
             {
