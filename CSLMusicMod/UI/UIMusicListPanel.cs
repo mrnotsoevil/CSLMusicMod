@@ -221,6 +221,9 @@ namespace CSLMusicMod.UI
 
                 _MusicVolumeSlider.eventValueChanged += delegate(UIComponent component, float value)
                 {
+                    if (this.m_IsDisposing)
+                        return;
+
                     //I use x100 because it failed with 0..1?
                     value = value / 100f;
 
@@ -284,8 +287,10 @@ namespace CSLMusicMod.UI
                             {
                                 return x.BaseName.CompareTo(y.BaseName);
                             }));
+                    MusicManager.SaveMusicFileSettings();
 
                     UpdateMusicListPreserveScroll();
+
                 };
             }
             {
@@ -307,6 +312,7 @@ namespace CSLMusicMod.UI
                             {
                                 return -x.BaseName.CompareTo(y.BaseName);
                             }));
+                    MusicManager.SaveMusicFileSettings();
 
                     UpdateMusicListPreserveScroll();
                 };
