@@ -296,6 +296,12 @@ namespace CSLMusicMod
         {
             //this file should be the current file
             _currentMusic_File = file;
+
+            if (file == null)
+            {
+                Playback_Raw(file);
+                return;
+            }
            
             if (Path.GetExtension(file).ToLower() == ".raw")
                 Playback_Raw(file);
@@ -354,7 +360,7 @@ namespace CSLMusicMod
 
             UpdateMusic(info);
 
-            Debug.Log("Now always enforcing " + _currentMusic);
+            Debug.Log("Now always enforcing " + _currentMusic.BaseName);
         }
 
         private MusicEntry GetNextMusic(List<MusicEntry> entries)

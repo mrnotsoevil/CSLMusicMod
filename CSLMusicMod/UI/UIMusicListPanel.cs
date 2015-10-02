@@ -150,6 +150,7 @@ namespace CSLMusicMod.UI
                     {
                         _currentMusic_current = music;
                         _currentMusic.text = ShortenString("Now playing: " + music, 45);
+                        _currentMusic.tooltip = music + "\nbelongs to " + AudioWatcher.CurrentMusicEntry.BaseName;
                     }
                 }
                 else
@@ -510,7 +511,7 @@ namespace CSLMusicMod.UI
                             if (tag == "")
                                 tooltip += "Default music\n";
                             else
-                                tooltip += "#" + tag + "\n";
+                                tooltip += MusicManager.TagIndicator + tag + "\n";
                         }
                         tooltip += "\n\nClick on an item to play the song.\nDouble click to enable/disable it.\nDrag to resort the list.";
 

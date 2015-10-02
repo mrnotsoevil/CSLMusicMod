@@ -103,8 +103,8 @@ namespace CSLMusicMod.UI
 
             group.AddDropdown("Select music by ", new string[] 
                 {
-                    "highest summarized priority",
-                    "priority order"
+                    "AND - all tags must apply",
+                    "OR - at least one tag must apply"
                 },
                 SelectionAlgorithmStringList.IndexOf(ModOptions.MusicSelectionAlgorithm.ToString()), (selection) =>
                 {

@@ -3,6 +3,7 @@ using UnityEngine;
 using ColossalFramework;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
@@ -36,6 +37,8 @@ namespace CSLMusicMod
 
         public State CurrentState { get; private set; }
 
+        private String _playback_req = null;
+
         public BackgroundMusicPlayer()
         {
             CurrentState = State.Stopped;
@@ -56,6 +59,9 @@ namespace CSLMusicMod
                 _mainAudioSource = Singleton<AudioManager>.instance.ObtainPlayer((AudioClip)null).m_source;                        
             if (_helperAudioSource == null)
                 _helperAudioSource = Singleton<AudioManager>.instance.ObtainPlayer((AudioClip)null).m_source;
+
+            _mainAudioSource.loop = false;
+            _helperAudioSource.loop = false;
         }
 
         public void Start()
@@ -78,6 +84,12 @@ namespace CSLMusicMod
 
         public void StopPlayback()
         {
+            _playback_req = null;
+            __StopPlayback();
+        }
+
+        public void __StopPlayback()
+        {
             if (CurrentState != State.Stopped)
             {
                 ensureAudioSources();
@@ -91,6 +103,11 @@ namespace CSLMusicMod
         }
 
         public void Playback(String file)
+        {
+            _playback_req = file;
+        }
+
+        private void __Playback(String file)
         {
             if (_currentFile == file)
                 return;
@@ -195,6 +212,9 @@ namespace CSLMusicMod
             else
                 file = "file://" + file;
 
+            // Dear Unity, it is great that you unify URL and file system access. But this is crap.
+            file = file.Replace("#", "%23");
+
             Debug.Log("[CSLMusicMod] Loading clip from " + file);
 
             WWW fs = new WWW(file);
@@ -202,6 +222,8 @@ namespace CSLMusicMod
 
             while (!clip.isReadyToPlay)
             {
+                Debug.Log("--- Loading ...");
+                Debug.Log(clip.loadState);
                 yield return new WaitForSeconds(0.1f);
             }
 
@@ -271,10 +293,18 @@ namespace CSLMusicMod
 
                     //Is the music finished?
                     if (!_mainAudioSource.isPlaying)
-                    {
+                    {                       
                         Debug.Log("[CSLMusicMod] Playback finished.");
                         ImmediatelyStopPlayback();
-                        AudioWatcher.RequestSwitchMusic();
+
+                        if (_playback_req == null)
+                            AudioWatcher.RequestSwitchMusic();
+                    }
+
+                    if (_playback_req != null)
+                    {
+                        __Playback(_playback_req);
+                        _playback_req = null;
                     }
 
                     break;
@@ -299,6 +329,11 @@ namespace CSLMusicMod
                     if (_requestedClip != null)
                     {
                         StopAndPlay(_requestedClip);
+                    }
+                    else if (_playback_req != null)
+                    {
+                        __Playback(_playback_req);
+                        _playback_req = null;
                     }
 
                     break;

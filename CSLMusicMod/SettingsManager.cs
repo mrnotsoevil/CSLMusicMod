@@ -175,7 +175,7 @@ namespace CSLMusicMod
 
             public bool PlayWithoutConvert = true;
             public bool ShowToolbarButton = true;
-            public MusicSelectionType MusicSelectionAlgorithm = MusicSelectionType.ScoreTags;
+            public MusicSelectionType MusicSelectionAlgorithm = MusicSelectionType.AND;
             public bool LargePlayList = false;
 
             public List<String> CustomMusicFolders
@@ -213,8 +213,8 @@ namespace CSLMusicMod
 
             public enum MusicSelectionType
             {
-                ScoreTags,
-                Priority
+                AND,
+                OR
             }
         }
     }

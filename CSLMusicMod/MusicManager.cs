@@ -13,6 +13,7 @@ namespace CSLMusicMod
     {
         public const String CustomMusicDefaultFolder = "CSLMusicMod_Music";
         public const String MusicSettingsFileName = "CSLMusicMod_MusicFiles.csv";
+        public const char TagIndicator = '#';
 
         public static readonly HashSet<String> Supported_Formats_Conversion = new HashSet<string>(new string[]{ ".ogg" });
         public static readonly HashSet<String> Supported_Formats_Playback = new HashSet<string>(new string[] { ".ogg", ".wav", ".aiff", ".aif", ".mod", ".it", ".s3m", ".xm" });
@@ -522,7 +523,7 @@ namespace CSLMusicMod
          * */
         private String GetCustomMusicBaseName(String filename)
         {			
-            return Path.GetFileNameWithoutExtension(filename).Split('#')[0].Trim();
+            return Path.GetFileNameWithoutExtension(filename).Split(TagIndicator)[0].Trim();
         }
 
         /**
