@@ -89,7 +89,7 @@ namespace CSLMusicMod
 
             // Always add implicit default tag
 
-            {
+            /*{
                 if (!TagSongs.ContainsKey(""))
                     TagSongs.Add("", new List<string>());
 
@@ -102,10 +102,10 @@ namespace CSLMusicMod
                     TagSongs.Add(tag, new List<string>());
 
                 TagSongs[tag].Add(filename);
-            }
+            }*/
 
             // Switch for "default tag"
-            /*if (taglist.Count == 0)
+            if (taglist.Count == 0)
             {
                 if (!TagSongs.ContainsKey(""))
                     TagSongs.Add("", new List<string>());
@@ -121,7 +121,7 @@ namespace CSLMusicMod
 
                     TagSongs[tag].Add(filename);
                 }
-            }*/
+            }
 
             //Sort all songs
             foreach (var songs in TagSongs.Values)

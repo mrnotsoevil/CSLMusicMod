@@ -71,18 +71,32 @@ namespace CSLMusicMod.UI
                 });
             group.AddSpace(10);
             group.AddCheckbox("Show toolbar button", ModOptions.ShowToolbarButton, new OnCheckChanged((isChecked) =>
-                {
-                    ModOptions.ShowToolbarButton = isChecked;
-                    SettingsManager.SaveModSettings();
-                }));
-            group.AddCheckbox("Large playlist", ModOptions.LargePlayList, new OnCheckChanged((isChecked) =>
-                {
-                    ModOptions.LargePlayList = isChecked;
-                    SettingsManager.SaveModSettings();
+                    {
+                        ModOptions.ShowToolbarButton = isChecked;
+                        SettingsManager.SaveModSettings();
+                    }));
+            group.AddCheckbox("Fixate toolbar button", ModOptions.FixateToolbarButton, new OnCheckChanged((isChecked) =>
+                    {
+                        ModOptions.FixateToolbarButton = isChecked;
+                        SettingsManager.SaveModSettings();
+                    }));
+            group.AddButton("Reset toolbar button position", new OnButtonClicked(() =>
+                    {
+                        ModOptions.ToolbarButtonX = -1;
+                        ModOptions.ToolbarButtonY = -1;
+                        SettingsManager.SaveModSettings();
+                    }));
 
-                    //Reload UI if possible
-                    Mod.ReloadUI();
-                }));
+            group.AddSpace(10);
+
+            group.AddCheckbox("Large playlist", ModOptions.LargePlayList, new OnCheckChanged((isChecked) =>
+                    {
+                        ModOptions.LargePlayList = isChecked;
+                        SettingsManager.SaveModSettings();
+
+                        //Reload UI if possible
+                        Mod.ReloadUI();
+                    }));
             group.AddCheckbox("Music in menu & while loading", ModOptions.MusicWhileLoading, new OnCheckChanged((isChecked) =>
                     {
                         ModOptions.MusicWhileLoading = isChecked;
@@ -98,10 +112,21 @@ namespace CSLMusicMod.UI
                         ModOptions.PlayWithoutConvert = isChecked;
                         SettingsManager.SaveModSettings();
                     }));
+            group.AddSlider("non-RAW crossfade sample count difference (2^x)", 0, 20, 0.5f, (float)Math.Log(ModOptions.CrossfadeLimit, 2), new OnValueChanged((float val) =>
+                    {
+                        ModOptions.CrossfadeLimit = (int)(Math.Pow(2.0, val));
+                        SettingsManager.SaveModSettings();
+                    }));
+            group.AddCheckbox("Force non-RAW crossfading", ModOptions.IgnoreCrossfadeLimit, new OnCheckChanged((isChecked) =>
+                {
+                    ModOptions.IgnoreCrossfadeLimit = isChecked;
+                    SettingsManager.SaveModSettings();
+                }));
+
 
             group.AddSpace(10);
 
-            group.AddDropdown("Select music by ", new string[] 
+            group.AddDropdown("Select music by ", new string[]
                 {
                     "AND - all tags must apply",
                     "OR - at least one tag must apply"
@@ -141,23 +166,23 @@ namespace CSLMusicMod.UI
                             SettingsManager.SaveModSettings();
                         }));
                 group.AddDropdown("Tag priority 2", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[1]]], new OnDropdownSelectionChanged((selection) =>
-                    {
-                        var tag = IndexTagMapping[selection];
-                        ModOptions.MusicTagTypePriority[1] = tag.Name;
-                        SettingsManager.SaveModSettings();
-                    }));
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[1] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
                 group.AddDropdown("Tag priority 3", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[2]]], new OnDropdownSelectionChanged((selection) =>
-                    {
-                        var tag = IndexTagMapping[selection];
-                        ModOptions.MusicTagTypePriority[2] = tag.Name;
-                        SettingsManager.SaveModSettings();
-                    }));
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[2] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
                 group.AddDropdown("Tag priority 4", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[3]]], new OnDropdownSelectionChanged((selection) =>
-                    {
-                        var tag = IndexTagMapping[selection];
-                        ModOptions.MusicTagTypePriority[3] = tag.Name;
-                        SettingsManager.SaveModSettings();
-                    }));
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[3] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
             }
         }
     }

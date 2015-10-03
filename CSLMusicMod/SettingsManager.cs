@@ -54,6 +54,13 @@ namespace CSLMusicMod
             SettingsFile.Set("Technical", "MusicSelectionAlgorithm", ModOptions.MusicSelectionAlgorithm.ToString());
             SettingsFile.Set("UI", "LargePlayList", ModOptions.LargePlayList);
 
+            SettingsFile.Set("UI", "ToolbarButtonX", (int)ModOptions.ToolbarButtonX);
+            SettingsFile.Set("UI", "ToolbarButtonY", (int)ModOptions.ToolbarButtonY);
+            SettingsFile.Set("UI", "FixateToolbarButton", ModOptions.FixateToolbarButton);
+
+            SettingsFile.Set("Technical", "CrossfadeLimit", (int)ModOptions.CrossfadeLimit);
+            SettingsFile.Set("Technical", "IgnoreCrossfadeLimit", ModOptions.IgnoreCrossfadeLimit);
+
             SettingsFile.Save();
         }
 
@@ -111,6 +118,14 @@ namespace CSLMusicMod
             ModOptions.MusicTagTypePriority = new List<string>(SettingsFile.Get("Music Selection", "MusicTagTypePriority", String.Join(";", DefaultModOptions.MusicTagTypePriority.ToArray())).Split(';'));
             ModOptions.ShowToolbarButton = SettingsFile.GetAsBool("UI", "ShowToolbarButton", DefaultModOptions.ShowToolbarButton);
             ModOptions.LargePlayList = SettingsFile.GetAsBool("UI", "LargePlayList", DefaultModOptions.LargePlayList);
+
+            ModOptions.ToolbarButtonX = SettingsFile.GetAsInt("UI", "ToolbarButtonX", (int)DefaultModOptions.ToolbarButtonX);
+            ModOptions.ToolbarButtonY = SettingsFile.GetAsInt("UI", "ToolbarButtonY", (int)DefaultModOptions.ToolbarButtonY);
+            ModOptions.FixateToolbarButton = SettingsFile.GetAsBool("UI", "FixateToolbarButton", DefaultModOptions.FixateToolbarButton);
+
+            ModOptions.CrossfadeLimit = SettingsFile.GetAsInt("Technical", "CrossfadeLimit", DefaultModOptions.CrossfadeLimit);
+            ModOptions.IgnoreCrossfadeLimit = SettingsFile.GetAsBool("Technical", "IgnoreCrossfadeLimit", DefaultModOptions.IgnoreCrossfadeLimit);
+
 
             try
             {
@@ -177,6 +192,13 @@ namespace CSLMusicMod
             public bool ShowToolbarButton = true;
             public MusicSelectionType MusicSelectionAlgorithm = MusicSelectionType.AND;
             public bool LargePlayList = false;
+
+            public float ToolbarButtonX = -1;
+            public float ToolbarButtonY = -1;
+            public bool FixateToolbarButton = true;
+
+            public int CrossfadeLimit = 1024;
+            public bool IgnoreCrossfadeLimit = false;
 
             public List<String> CustomMusicFolders
             {

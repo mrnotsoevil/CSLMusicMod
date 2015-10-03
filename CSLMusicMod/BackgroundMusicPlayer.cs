@@ -39,6 +39,14 @@ namespace CSLMusicMod
 
         private String _playback_req = null;
 
+        private SettingsManager.Options ModOptions
+        {
+            get
+            {
+                return gameObject.GetComponent<SettingsManager>().ModOptions;
+            }
+        }
+
         public BackgroundMusicPlayer()
         {
             CurrentState = State.Stopped;
@@ -104,6 +112,9 @@ namespace CSLMusicMod
 
         public void Playback(String file)
         {
+            if (_currentFile == file)
+                return;
+
             _playback_req = file;
         }
 
@@ -125,16 +136,21 @@ namespace CSLMusicMod
 
                             _requestedClip = null;
 
-                            if (_currentClip == null || Math.Abs(_currentClip.samples - clip.samples) > 1024)
+                            if (_currentClip == null)
                             {
-                                //New track
                                 StopAndPlay(clip);
-                                //CrossfadeTo(clip, true);
+
                             }
                             else
                             {
-                                //Xover track
-                                CrossfadeTo(clip, true);
+                                if (ModOptions.IgnoreCrossfadeLimit || Math.Abs(_currentClip.samples - clip.samples) <= ModOptions.CrossfadeLimit)
+                                {
+                                    CrossfadeTo(clip, true);
+                                }
+                                else
+                                {
+                                    StopAndPlay(clip);
+                                }
                             }
                         })));
 
@@ -195,7 +211,8 @@ namespace CSLMusicMod
             _mainAudioSource.clip = clip;
             _mainAudioSource.Play();
 
-            if (preserveTime)
+            // prevent too high sample count
+            if (preserveTime && time < clip.samples)
                 _mainAudioSource.timeSamples = time;
 
             _helperAudioSource.volume = FinalVolume;
@@ -298,7 +315,13 @@ namespace CSLMusicMod
                         ImmediatelyStopPlayback();
 
                         if (_playback_req == null)
+                        {
                             AudioWatcher.RequestSwitchMusic();
+                        }
+                        else
+                        {
+                            Debug.Log("[CSLMusicMod] Playback finished. Not requesting a new song as a song is in queue.");
+                        }
                     }
 
                     if (_playback_req != null)
