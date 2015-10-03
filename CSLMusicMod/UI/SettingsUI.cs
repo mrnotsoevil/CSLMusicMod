@@ -107,17 +107,17 @@ namespace CSLMusicMod.UI
                         ModOptions.EnableMusicPacks = isChecked;
                         SettingsManager.SaveModSettings();
                     }));
-            group.AddCheckbox("Direct playback of non-RAW files", ModOptions.PlayWithoutConvert, new OnCheckChanged((isChecked) =>
+            group.AddCheckbox("Direct playback of non-RAW files*", ModOptions.PlayWithoutConvert, new OnCheckChanged((isChecked) =>
                     {
                         ModOptions.PlayWithoutConvert = isChecked;
                         SettingsManager.SaveModSettings();
                     }));
-            group.AddSlider("non-RAW crossfade sample count difference (2^x)", 0, 20, 0.5f, (float)Math.Log(ModOptions.CrossfadeLimit, 2), new OnValueChanged((float val) =>
+            group.AddSlider("non-RAW crossfading limit*", 0, 20, 0.5f, (float)Math.Log(ModOptions.CrossfadeLimit, 2), new OnValueChanged((float val) =>
                     {
                         ModOptions.CrossfadeLimit = (int)(Math.Pow(2.0, val));
                         SettingsManager.SaveModSettings();
                     }));
-            group.AddCheckbox("Force non-RAW crossfading", ModOptions.IgnoreCrossfadeLimit, new OnCheckChanged((isChecked) =>
+            group.AddCheckbox("Force non-RAW crossfading*", ModOptions.IgnoreCrossfadeLimit, new OnCheckChanged((isChecked) =>
                 {
                     ModOptions.IgnoreCrossfadeLimit = isChecked;
                     SettingsManager.SaveModSettings();
