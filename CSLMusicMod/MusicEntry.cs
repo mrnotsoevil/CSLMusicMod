@@ -201,7 +201,7 @@ namespace CSLMusicMod
                     }
 
                     if (applicable)
-                    {
+                    {                       
                         // Determine the score; if better -> set to new song
                         int score = 0;
 
@@ -213,6 +213,7 @@ namespace CSLMusicMod
                         if (score > best_score)
                         {
                             song = currentsong;
+                            best_score = score;
                         }
                     }
                 }
