@@ -315,7 +315,7 @@ namespace CSLMusicMod
             MusicFile = null;
 
             //Send file to background music player
-            GameObject.GetComponent<BackgroundMusicPlayer>().Playback(file);
+            GameObject.GetComponent<BackgroundMusicPlayer>().Playback(file, _currentMusic);
         }
 
         private void Playback_Raw(String file)

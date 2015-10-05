@@ -470,7 +470,7 @@ namespace CSLMusicMod.UI
                 if (AudioWatcher != null)
                 {
                     //+ Only if not resorted, switch to track
-                    if (!_resort_resorted && value >= 0 && MusicManager.MusicEntries.Count > value)
+                    if (!_resort_resorted && value >= 0 && _filtered_MusicEntryList.Count > value)
                     {
                         //AudioWatcher.RequestSwitchMusic(MusicManager.MusicEntries[value]);
                         AudioWatcher.RequestSwitchMusic(_filtered_MusicEntryList[value]); //use filtered list
@@ -479,7 +479,7 @@ namespace CSLMusicMod.UI
             };
             panel.eventItemDoubleClicked += delegate(UIComponent component, int value)
             {
-                if (value >= 0 && MusicManager.MusicEntries.Count > value)
+                if (value >= 0 && _filtered_MusicEntryList.Count > value)
                 {
                     //Store old entry
                     MusicEntry current = AudioWatcher.CurrentMusicEntry;
@@ -523,7 +523,7 @@ namespace CSLMusicMod.UI
             };
             panel.eventItemMouseHover += delegate(UIComponent component, int value)
             {
-                if (value >= 0 && MusicManager.MusicEntries.Count > value)
+                if (value >= 0 && _filtered_MusicEntryList.Count > value)
                 {
                     if (_resort_CurrentItem != null && value != _resort_currentPivotIndex)
                     {
@@ -541,7 +541,7 @@ namespace CSLMusicMod.UI
                     }
                     else
                     {
-                        var entry = MusicManager.MusicEntries[value];
+                        var entry = _filtered_MusicEntryList[value];
 
                         String tooltip = entry.BaseName + "\n----\n";
                         tooltip += "Supported tags:\n";

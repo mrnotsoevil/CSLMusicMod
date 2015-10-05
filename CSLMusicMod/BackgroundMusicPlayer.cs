@@ -29,6 +29,8 @@ namespace CSLMusicMod
         private AudioSource _mainAudioSource;
         private AudioSource _helperAudioSource;
 
+        private MusicEntry _previousEntry;
+        private MusicEntry _currentEntry;
         private String _currentFile;
         private AudioClip _currentClip;
         private AudioClip _requestedClip;
@@ -37,6 +39,7 @@ namespace CSLMusicMod
 
         public State CurrentState { get; private set; }
 
+        private MusicEntry _playback_req_entry = null;
         private String _playback_req = null;
 
         private SettingsManager.Options ModOptions
@@ -86,6 +89,9 @@ namespace CSLMusicMod
             if (_helperAudioSource.isPlaying)
                 _helperAudioSource.Stop();
 
+            _mainAudioSource.timeSamples = 0;
+            _helperAudioSource.timeSamples = 0;
+
             CurrentState = State.Stopped;
 
         }
@@ -110,15 +116,16 @@ namespace CSLMusicMod
             }
         }
 
-        public void Playback(String file)
+        public void Playback(String file, MusicEntry entry)
         {
             if (_currentFile == file)
                 return;
 
             _playback_req = file;
+            _playback_req_entry = entry;
         }
 
-        private void __Playback(String file)
+        private void __Playback(String file, MusicEntry entry)
         {
             if (_currentFile == file)
                 return;
@@ -126,6 +133,8 @@ namespace CSLMusicMod
             ensureAudioSources();
 
             _currentFile = file;
+            _previousEntry = _currentEntry;
+            _currentEntry = entry;
 
             Debug.Log("[CSLMusicMod] BackgroundMusicPlayer got " + file);
 
@@ -143,7 +152,7 @@ namespace CSLMusicMod
                             }
                             else
                             {
-                                if (ModOptions.IgnoreCrossfadeLimit || Math.Abs(_currentClip.samples - clip.samples) <= ModOptions.CrossfadeLimit)
+                                if (_previousEntry == _currentEntry && (ModOptions.IgnoreCrossfadeLimit || Math.Abs(_currentClip.samples - clip.samples) <= ModOptions.CrossfadeLimit))
                                 {
                                     CrossfadeTo(clip, true);
                                 }
@@ -182,6 +191,7 @@ namespace CSLMusicMod
                 _mainAudioSource.clip = clip;               
                 _currentClip = clip;
                 _requestedClip = null;
+                _mainAudioSource.timeSamples = 0;
                 _mainAudioSource.Play();
                 CurrentState = State.Playing;
 
@@ -326,7 +336,8 @@ namespace CSLMusicMod
 
                     if (_playback_req != null)
                     {
-                        __Playback(_playback_req);
+                        __Playback(_playback_req, _playback_req_entry);
+                        _playback_req_entry = null;
                         _playback_req = null;
                     }
 
@@ -355,8 +366,9 @@ namespace CSLMusicMod
                     }
                     else if (_playback_req != null)
                     {
-                        __Playback(_playback_req);
+                        __Playback(_playback_req, _playback_req_entry);
                         _playback_req = null;
+                        _playback_req_entry = null;
                     }
 
                     break;
