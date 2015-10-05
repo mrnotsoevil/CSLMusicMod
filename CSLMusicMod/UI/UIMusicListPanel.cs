@@ -28,6 +28,7 @@ namespace CSLMusicMod.UI
         private bool _resort_resorted;
 
         private bool _music_list_initialized = false;
+        private List<MusicEntry> _filtered_MusicEntryList = new List<MusicEntry>();
 
         //Texture atlas
         private UITextureAtlas _atlas;
@@ -38,9 +39,18 @@ namespace CSLMusicMod.UI
         private UIButton _Next_Track;
         private UIButton _Previous_Track;
         private UICheckButton _enable_Playlist_random;
-        //private UITextField _Filter;
+        private UITextField _Filter;
+        private UIButton _Filter_Clear;
         private UIButton _SortAscending;
         private UIButton _SortDescending;
+
+        private bool Filtered
+        {
+            get
+            {
+                return _Filter.text.Trim() != "";
+            }
+        }
 
         public UIMusicListPanel()
         {
@@ -106,7 +116,9 @@ namespace CSLMusicMod.UI
                         "Previous",
                         "Shuffle",
                         "SortAscending",
-                        "SortDescending"
+                        "SortDescending",
+                        "Search",
+                        "Clear"
                     });  
 
             }
@@ -318,30 +330,47 @@ namespace CSLMusicMod.UI
                     UpdateMusicListPreserveScroll();
                 };
             }
-            /*{
+            {
                 _Filter = AddUIComponent<UITextField>();
-                _Filter.width = width - 130 - 40 - 36 - 10 - 10 - 36 - 10;
+                _Filter.width = width - 130 - 40 - 36 - 10 - 10 - 36 * 3 - 10;
                 _Filter.height = 36;
-                _Filter.relativePosition = new Vector3(130 + 40 + 10 + 36, 10);
-                _Filter.normalBgSprite = "TextFieldPanel";
-                _Filter.text = "Filter ...";
+                _Filter.relativePosition = new Vector3(130 + 40 + 10 + 36 * 3, 10);
+                _Filter.padding = new RectOffset(6, 6, 3, 3);
+                _Filter.builtinKeyNavigation = true;
+                _Filter.isInteractive = true;
+                _Filter.readOnly = false;
                 _Filter.horizontalAlignment = UIHorizontalAlignment.Left;
                 _Filter.verticalAlignment = UIVerticalAlignment.Middle;
-                _Filter.readOnly = false;
+                _Filter.selectionSprite = "EmptySprite";
+                _Filter.selectionBackgroundColor = new Color32(0, 172, 234, 255);
+                _Filter.normalBgSprite = "TextFieldPanel";
+                _Filter.disabledTextColor = new Color32(0, 0, 0, 128);
+                _Filter.color = new Color32(60, 60, 60, 255);
+                _Filter.textColor = Color.gray;
+                _Filter.padding = new RectOffset(6, 6, 9, 9);
 
-                _Filter.eventGotFocus += delegate
-                {
-                        _Filter.text = "";
-                };
-                _Filter.eventLostFocus += delegate
-                {
-                        _Filter.text = "Filter ...";
-                };
+                _Filter_Clear = AddUIComponent<UIButton>();
+                _Filter_Clear.width = 22;
+                _Filter_Clear.height = 22;
+                _Filter_Clear.relativePosition = _Filter.relativePosition + new Vector3(7 + _Filter.width - 36, 7);
+                _Filter_Clear.atlas = _atlas;
+                _Filter_Clear.normalFgSprite = "Search";
+                _Filter_Clear.hoveredColor = new Color32(255, 255, 255, 128);
+            
                 _Filter.eventTextChanged += delegate
                 {
-                        UpdateMusicList();
+                    if (!Filtered)
+                        _Filter_Clear.normalFgSprite = "Search";
+                    else
+                        _Filter_Clear.normalFgSprite = "Clear";
+
+                    UpdateMusicList();
                 };
-            }*/
+                _Filter_Clear.eventClick += (component, eventParam) =>
+                {
+                    _Filter.text = "";
+                };
+            }
             {
                 _enable_Playlist_random = AddUIComponent<UICheckButton>();
                 _enable_Playlist_random.width = 36;
@@ -443,7 +472,8 @@ namespace CSLMusicMod.UI
                     //+ Only if not resorted, switch to track
                     if (!_resort_resorted && value >= 0 && MusicManager.MusicEntries.Count > value)
                     {
-                        AudioWatcher.RequestSwitchMusic(MusicManager.MusicEntries[value]);
+                        //AudioWatcher.RequestSwitchMusic(MusicManager.MusicEntries[value]);
+                        AudioWatcher.RequestSwitchMusic(_filtered_MusicEntryList[value]); //use filtered list
                     }
                 }
             };
@@ -454,7 +484,8 @@ namespace CSLMusicMod.UI
                     //Store old entry
                     MusicEntry current = AudioWatcher.CurrentMusicEntry;
 
-                    MusicEntry entry = MusicManager.MusicEntries[value];
+                    //MusicEntry entry = MusicManager.MusicEntries[value];
+                    var entry = _filtered_MusicEntryList[value];
                     entry.Enable = !entry.Enable;
 
                     UpdateMusicListPreserveScroll();
@@ -469,6 +500,10 @@ namespace CSLMusicMod.UI
             {
                 if (AudioWatcher != null)
                 {
+                    //Disable resort while filtering
+                    if (Filtered)
+                        return;
+
                     if (value >= 0 && MusicManager.MusicEntries.Count > value)
                     {
                         _resort_CurrentItem = MusicManager.MusicEntries[value];
@@ -492,6 +527,10 @@ namespace CSLMusicMod.UI
                 {
                     if (_resort_CurrentItem != null && value != _resort_currentPivotIndex)
                     {
+                        //Disable resort while filtering
+                        if (Filtered)
+                            return;
+
                         MusicManager.MusicEntries.Remove(_resort_CurrentItem);
                         MusicManager.MusicEntries.Insert(value, _resort_CurrentItem);
                         _resort_currentPivotIndex = value;
@@ -540,50 +579,43 @@ namespace CSLMusicMod.UI
         public void UpdateMusicList()
         {
             List<String> entries = new List<string>();
+            _filtered_MusicEntryList.Clear();
 
             Debug.Log("[CSLMusic] Generating music list");
 
             foreach (MusicEntry entry in MusicManager.MusicEntries)
             {
-                /*if (IsFiltered(entry))
-                    continue;*/
+                var entrytext = EntryText(entry);
 
-                String annot = "";
+                if (IsFiltered(entrytext))
+                    continue;
 
-                if (!entry.Enable)
-                    annot += "[Disabled]";               
-
-                String music = entry.BaseName;
-
-                entries.Add(String.Format("{0} {1}", annot, music));
+                _filtered_MusicEntryList.Add(entry);
+                entries.Add(entrytext);
             }
 
             _musicList.items = entries.ToArray();
         }
 
-        /*private bool IsFiltered(MusicEntry entry)
+        private String EntryText(MusicEntry entry)
         {
-            if (_Filter.text == "" || _Filter.text == "Filter ...")
+            String annot = "";
+
+            if (!entry.Enable)
+                annot += "[Disabled]";               
+
+            String music = entry.BaseName;
+
+            return String.Format("{0} {1}", annot, music);
+        }
+
+        private bool IsFiltered(String entrytext)
+        {
+            if (!Filtered)
                 return false;
 
-            return entry.BaseName.ToLower().Contains(_Filter.text.ToLower());
-        }*/
-
-        /*public String ShortenString(String str, float width, UIFontRenderer renderer)
-        {
-            var size = renderer.MeasureString(str);
-            var difference = width - size.x / 2;
-
-            if (difference > 0)
-            {
-                //Try to figure out how many characters to trim
-                var wpc = Math.Ceiling(size.x / str.Length);
-                var trimdown = 4 + (int)Math.Ceiling(difference / wpc) + 3;
-
-                return str.Substring(0, str.Length - trimdown) + " ...";
-            }
-            return str;
-        }*/
+            return !entrytext.ToLower().Contains(_Filter.text.ToLower());
+        }
 
         public String ShortenString(String str, int size)
         {

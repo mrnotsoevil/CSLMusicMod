@@ -123,7 +123,9 @@ namespace CSLMusicMod.UI
                         "Previous",
                         "Shuffle",
                         "SortAscending",
-                        "SortDescending"
+                        "SortDescending",
+                        "Search",
+                        "Clear"
                     });  
 
             }
