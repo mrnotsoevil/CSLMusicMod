@@ -61,6 +61,7 @@ namespace CSLMusicMod
             AddTagType(new TagVanillaSky());
             AddTagType(new TagVanillaMood());
             AddTagType(new TagVanillaNight());
+			AddTagType(new TagVanillaSnow ());
             AddTagType(new TagDefault());
             AddTagType(new TagFalse());
         }
@@ -225,6 +226,27 @@ namespace CSLMusicMod
                     baseName = baseName.Replace("After Dark", "Colossal Style");
                 }
 
+				//Snowfall Music
+				bool snowfall = false;
+				bool snowfall_night = false;
+
+				if (baseName.StartsWith ("WinterNight") && baseName != "Winter MENU") 
+				{
+					snowfall_night = true;
+					baseName = baseName.Replace("WinterNight", "Colossal Style");
+
+					Debug.Log("[CSLMusicMod] Snowfall override: " + baseName + " to Colossal Style#snow#night");
+					baseName = baseName.Replace("WinterNight", "Colossal Style");
+				}
+				else if (baseName.StartsWith ("Winter") && baseName != "Winter MENU") 
+				{
+					snowfall = true;
+					baseName = baseName.Replace("Winter", "Colossal Style");
+
+					Debug.Log("[CSLMusicMod] Snowfall override: " + baseName + " to Colossal Style#snow");
+					baseName = baseName.Replace("Winter", "Colossal Style");
+				}
+
                 // Translate names to OST original names
                 switch (baseName)
                 {
@@ -234,6 +256,9 @@ namespace CSLMusicMod
                     case "After Dark Menu":
                         baseName = "Cities: Skylines - Main Theme (After Dark)";
                         break;
+					case "Winter MENU":
+						baseName = "Cities: Skylines - Main Theme (Snowfall)";
+						break;
                     case "Colossal Style 1":
                         baseName = "Cities: Skylines - Stern Berger";
                         break;
@@ -255,7 +280,7 @@ namespace CSLMusicMod
 
                 if (entry == null)
                 {
-                    if (baseName == "Cities: Skylines - Main Theme" || baseName == "Cities: Skylines - Main Theme (After Dark)")
+					if (baseName == "Cities: Skylines - Main Theme" || baseName == "Cities: Skylines - Main Theme (After Dark)" || baseName == "Cities: Skylines - Main Theme (Snowfall)")
                         entry = new MusicEntry(false, gameObject, baseName);
                     else
                         entry = new MusicEntry(true, gameObject, baseName);
@@ -266,16 +291,34 @@ namespace CSLMusicMod
                 //Add the vanilla music according to the vanilla annotation
                 String file_noext = Path.GetFileNameWithoutExtension(file);
 
-                if (after_dark)
-                {
-                    //This is afterdark music: add it as #night
-                    if (file_noext.EndsWith("b"))
-                        entry.AddSong(file, "bad", "night");
-                    else if (file_noext.EndsWith("s"))
-                        entry.AddSong(file, "sky", "night");
-                    else
-                        entry.AddSong(file, "night");
-                }
+				if (after_dark)
+				{
+					//This is afterdark music: add it as #night
+					if (file_noext.EndsWith("b"))
+						entry.AddSong(file, "bad", "night");
+					else if (file_noext.EndsWith("s"))
+						entry.AddSong(file, "sky", "night");
+					else
+						entry.AddSong(file, "night");
+				}
+				else if (snowfall_night)
+				{
+					if (file_noext.EndsWith("b"))
+						entry.AddSong(file, "snow", "bad", "night");
+					else if (file_noext.EndsWith("s"))
+						entry.AddSong(file, "snow", "sky", "night");
+					else
+						entry.AddSong(file, "snow", "night");
+				}
+				else if (snowfall)
+				{
+					if (file_noext.EndsWith("b"))
+						entry.AddSong(file, "snow", "bad");
+					else if (file_noext.EndsWith("s"))
+						entry.AddSong(file, "snow", "sky");
+					else
+						entry.AddSong(file, "snow");
+				}
                 else
                 {
                     if (file_noext.EndsWith("b"))
@@ -496,7 +539,7 @@ namespace CSLMusicMod
                 w.WriteLine("Frequency 44100Hz");
                 w.WriteLine();
                 w.WriteLine("--- Ogg Vorbis");
-                w.WriteLine("The mod will convert the files into *.raw audio files.");
+				w.WriteLine("The mod will play *.ogg files directly (default) or convert the files into *.raw audio files (you must enable this in the settings).");
                 w.WriteLine("NVorbis (https://nvorbis.codeplex.com) is used for converting");
                 w.WriteLine("the audio files. If NVorbis could not convert your file,");
                 w.WriteLine("check for extremly large ID3 tags (e.g. Cover images).");

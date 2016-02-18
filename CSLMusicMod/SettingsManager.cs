@@ -115,7 +115,7 @@ namespace CSLMusicMod
 
             //Update 4 settings
             ModOptions.PlayWithoutConvert = SettingsFile.GetAsBool("Technical", "PlayWithoutConvert", DefaultModOptions.PlayWithoutConvert);
-            ModOptions.MusicTagTypePriority = new List<string>(SettingsFile.Get("Music Selection", "MusicTagTypePriority", String.Join(";", DefaultModOptions.MusicTagTypePriority.ToArray())).Split(';'));
+            //ModOptions.MusicTagTypePriority = new List<string>(SettingsFile.Get("Music Selection", "MusicTagTypePriority", String.Join(";", DefaultModOptions.MusicTagTypePriority.ToArray())).Split(';'));
             ModOptions.ShowToolbarButton = SettingsFile.GetAsBool("UI", "ShowToolbarButton", DefaultModOptions.ShowToolbarButton);
             ModOptions.LargePlayList = SettingsFile.GetAsBool("UI", "LargePlayList", DefaultModOptions.LargePlayList);
 
@@ -126,6 +126,13 @@ namespace CSLMusicMod
             ModOptions.CrossfadeLimit = SettingsFile.GetAsInt("Technical", "CrossfadeLimit", DefaultModOptions.CrossfadeLimit);
             ModOptions.IgnoreCrossfadeLimit = SettingsFile.GetAsBool("Technical", "IgnoreCrossfadeLimit", DefaultModOptions.IgnoreCrossfadeLimit);
 
+			//Update 5 (Snowfall) - Catch additional tags. Discard config if there is something wrong with it
+			var tag_type_priority = new List<string>(SettingsFile.Get("Music Selection", "MusicTagTypePriority", String.Join(";", DefaultModOptions.MusicTagTypePriority.ToArray())).Split(';'));
+
+			if (tag_type_priority.Count == DefaultModOptions.MusicTagTypePriority.Count)
+				ModOptions.MusicTagTypePriority = tag_type_priority;
+			else
+				ModOptions.MusicTagTypePriority = DefaultModOptions.MusicTagTypePriority;
 
             try
             {
@@ -227,6 +234,7 @@ namespace CSLMusicMod
             public Options()
             {
                 //Add default music tag type priorities
+				MusicTagTypePriority.Add("snow");
                 MusicTagTypePriority.Add("sky");
                 MusicTagTypePriority.Add("night");
                 MusicTagTypePriority.Add("bad");

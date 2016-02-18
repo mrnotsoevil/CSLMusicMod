@@ -177,6 +177,12 @@ namespace CSLMusicMod.UI
                                 ModOptions.MusicTagTypePriority[3] = tag.Name;
                                 SettingsManager.SaveModSettings();
                             }));
+					subgroup.AddDropdown("Tag priority 5", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[4]]], new OnDropdownSelectionChanged((selection) =>
+						{
+							var tag = IndexTagMapping[selection];
+							ModOptions.MusicTagTypePriority[4] = tag.Name;
+							SettingsManager.SaveModSettings();
+						}));
                 }
             }
             {
