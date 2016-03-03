@@ -248,10 +248,17 @@ namespace CSLMusicMod
 
         public void CacheAudioClip(String song)
         {
-            StartCoroutine(_GetAudioClip(song, new Action<AudioClip>((clip) =>
-                {
+            String ext = Path.GetExtension(song).ToLower();
 
-                })));
+            if (MusicManager.Supported_Formats_Playback.Contains(ext))
+            {
+                Debug.Log("[CSLMusicMod] Prefetching " + song);
+
+                StartCoroutine(_GetAudioClip(song, new Action<AudioClip>((clip) =>
+                            {
+
+                            })));
+            }
         }
 
         private IEnumerator _GetAudioClip(String file, Action<AudioClip> action, bool reload = false)
