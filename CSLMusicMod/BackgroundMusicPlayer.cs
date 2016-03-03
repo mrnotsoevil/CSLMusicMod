@@ -251,7 +251,7 @@ namespace CSLMusicMod
             {
                 Debug.Log("--- Loading ...");
                 Debug.Log(clip.loadState);
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.5f);
             }
 
             action(clip);

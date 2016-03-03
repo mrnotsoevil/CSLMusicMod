@@ -193,11 +193,14 @@ namespace CSLMusicMod
                     var currentsong = kv.Key;
 
                     foreach (var tagname in kv.Value)
-                    {                       
-                        if (sel_and)
-                            applicable &= __applicableTags[tagname];
-                        else
-                            applicable |= __applicableTags[tagname];
+                    {            
+                        if (__applicableTags.ContainsKey(tagname))
+                        {
+                            if (sel_and)
+                                applicable &= __applicableTags[tagname];
+                            else
+                                applicable |= __applicableTags[tagname];
+                        }
                     }
 
                     if (applicable)
@@ -207,7 +210,8 @@ namespace CSLMusicMod
 
                         foreach (var tag in kv.Value)
                         {
-                            score += __tagScore[tag];
+                            if(__tagScore.ContainsKey(tag))
+                                score += __tagScore[tag];
                         }
 
                         if (score > best_score)
