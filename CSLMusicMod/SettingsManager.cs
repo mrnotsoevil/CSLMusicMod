@@ -61,6 +61,11 @@ namespace CSLMusicMod
             SettingsFile.Set("Technical", "CrossfadeLimit", (int)ModOptions.CrossfadeLimit);
             SettingsFile.Set("Technical", "IgnoreCrossfadeLimit", ModOptions.IgnoreCrossfadeLimit);
 
+            //Update 5.1 settings
+
+            SettingsFile.Set("Performance", "CacheSongs", ModOptions.CacheSongs);
+            SettingsFile.Set("Performance", "PrefetchSongs", ModOptions.PrefetchSongs);
+
             SettingsFile.Save();
         }
 
@@ -143,6 +148,10 @@ namespace CSLMusicMod
                 ModOptions.MusicSelectionAlgorithm = DefaultModOptions.MusicSelectionAlgorithm;
             }
 
+            // Update 5.1
+            ModOptions.CacheSongs = SettingsFile.GetAsBool("Performance", "CacheSongs", DefaultModOptions.CacheSongs);
+            ModOptions.PrefetchSongs = SettingsFile.GetAsBool("Performance", "PrefetchSongs", DefaultModOptions.PrefetchSongs);
+
             //If there are non exisiting keys in the settings file, add them by saving the settings
             if (SettingsFile.FoundNonExistingKeys)
             {
@@ -206,6 +215,9 @@ namespace CSLMusicMod
 
             public int CrossfadeLimit = 1024;
             public bool IgnoreCrossfadeLimit = false;
+
+            public bool CacheSongs = true;
+            public bool PrefetchSongs = false;
 
             public List<String> CustomMusicFolders
             {

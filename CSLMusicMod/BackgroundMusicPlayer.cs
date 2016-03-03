@@ -42,6 +42,9 @@ namespace CSLMusicMod
         private MusicEntry _playback_req_entry = null;
         private String _playback_req = null;
 
+        // Store already loaded clips here. Allows to preload all music
+        private Dictionary<String, AudioClip> _musicCache = new Dictionary<string, AudioClip>();
+
         private SettingsManager.Options ModOptions
         {
             get
@@ -230,28 +233,68 @@ namespace CSLMusicMod
             _currentClip = clip;
         }
 
-        private IEnumerator _GetAudioClip(String file, Action<AudioClip> action)
+        public void PrefetchAudioClips(List<MusicEntry> entries)
         {
-            file = Path.GetFullPath(file);
+            Debug.Log("[CSLMusicMod] Prefetching songs ...");
 
-            if (Application.platform == RuntimePlatform.WindowsPlayer)
-                file = "file:///" + file;
-            else
-                file = "file://" + file;
-
-            // Dear Unity, it is great that you unify URL and file system access. But this is crap.
-            file = file.Replace("#", "%23");
-
-            Debug.Log("[CSLMusicMod] Loading clip from " + file);
-
-            WWW fs = new WWW(file);
-            var clip = fs.GetAudioClip(false, false);   
-
-            while (!clip.isReadyToPlay)
+            foreach (var entry in entries)
             {
-                Debug.Log("--- Loading ...");
-                Debug.Log(clip.loadState);
-                yield return new WaitForSeconds(0.5f);
+                foreach (var song in entry.SongTags.Keys)
+                {
+                    CacheAudioClip(song);
+                }
+            }
+        }
+
+        public void CacheAudioClip(String song)
+        {
+            StartCoroutine(_GetAudioClip(song, new Action<AudioClip>((clip) =>
+                {
+
+                })));
+        }
+
+        private IEnumerator _GetAudioClip(String file, Action<AudioClip> action, bool reload = false)
+        {
+            String filename = file = Path.GetFullPath(file);
+            AudioClip clip = null;
+
+            if (reload || !_musicCache.ContainsKey(filename))
+            {
+                
+
+                if (Application.platform == RuntimePlatform.WindowsPlayer)
+                    file = "file:///" + file;
+                else
+                    file = "file://" + file;
+
+                // Dear Unity, it is great that you unify URL and file system access. But this is crap.
+                file = file.Replace("#", "%23");
+
+                Debug.Log("[CSLMusicMod] Loading clip from " + file + " ... (enforced: " + reload + ")");
+
+                WWW fs = new WWW(file);
+                clip = fs.GetAudioClip(false, false);   
+
+                while (!clip.isReadyToPlay)
+                {
+                    //Debug.Log("--- Loading ...");
+                    //Debug.Log(clip.loadState);
+                    yield return new WaitForSeconds(0.1f);
+                }
+
+                // Put into cache
+                if (ModOptions.CacheSongs)
+                {
+                    _musicCache[filename] = clip;
+                    Debug.Log("[CSLMusicMod] Cache now contains " + _musicCache.Count.ToString() + " songs.");
+                }
+            }
+            else
+            {
+                Debug.Log("[CSLMusicMod] Using clip from cache");
+
+                clip = _musicCache[filename];
             }
 
             action(clip);
@@ -289,7 +332,7 @@ namespace CSLMusicMod
             _mainAudioSource.Stop();
             _helperAudioSource.Play();
 
-            Debug.Log("[CSLMusicMod] Main audio successully tranformed to helper audio.");
+            Debug.Log("[CSLMusicMod] Main audio successully transformed to helper audio.");
         }
 
         public void Update()

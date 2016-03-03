@@ -104,6 +104,20 @@ namespace CSLMusicMod.UI
                         }));
             }
             {
+                var subgroup = group.AddGroup("Performance");
+
+                subgroup.AddCheckbox("Cache *.ogg songs", ModOptions.CacheSongs, new OnCheckChanged((isChecked) =>
+                    {
+                        ModOptions.CacheSongs = isChecked;
+                        SettingsManager.SaveModSettings();
+                    }));
+                subgroup.AddCheckbox("Preload all *.ogg songs (don't use if you have a lot songs!)", ModOptions.PrefetchSongs, new OnCheckChanged((isChecked) =>
+                    {
+                        ModOptions.PrefetchSongs = isChecked;
+                        SettingsManager.SaveModSettings();
+                    }));
+            }
+            {
                 var subgroup = group.AddGroup("Tweaks");
 
                 subgroup.AddCheckbox("Music in menu & while loading", ModOptions.MusicWhileLoading, new OnCheckChanged((isChecked) =>

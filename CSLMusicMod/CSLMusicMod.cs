@@ -88,8 +88,7 @@ namespace CSLMusicMod
         {
             base.OnCreated(loading);
           
-            ensureComponents();			
-
+            ensureComponents();		
 			
         }
 
@@ -103,6 +102,7 @@ namespace CSLMusicMod
             _settingsui.Mod = this;
             _settingsui.InitializeSettingsUI(helper);
         }
+               
 
         public override void OnLevelLoaded(LoadMode mode)
         {
@@ -113,6 +113,12 @@ namespace CSLMusicMod
 
             //Reload music
             _music.LoadMusicFiles();
+
+            //Preload if activated
+            if (_settings.ModOptions.PrefetchSongs && _settings.ModOptions.PlayWithoutConvert)
+            {
+                _musicplayer.PrefetchAudioClips(_music.MusicEntries);
+            }
 
             //Create ui
             if (_ui == null)
