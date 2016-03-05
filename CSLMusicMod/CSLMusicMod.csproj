@@ -103,6 +103,19 @@
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="MusicEntryTags\TagFalse.cs" />
     <Compile Include="MusicEntryTags\TagVanillaSnow.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneLittleHamlet.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneTinyTown.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneBoomTown.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneBusyTown.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneBigTown.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneSmallCity.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneBigCity.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneGrandCity.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneCapitalCity.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneColossalCity.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneMetropolis.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneMegalopolis.cs" />
+    <Compile Include="MusicEntryTags\Milestones\TagMilestoneWorthyVillage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -113,6 +126,7 @@
     <Folder Include="Compatibility\" />
     <Folder Include="IO\" />
     <Folder Include="Helpers\" />
+    <Folder Include="MusicEntryTags\Milestones\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Icons.png" />

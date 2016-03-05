@@ -62,6 +62,19 @@ namespace CSLMusicMod
             AddTagType(new TagVanillaMood());
             AddTagType(new TagVanillaNight());
 			AddTagType(new TagVanillaSnow ());
+            AddTagType(new TagMilestoneLittleHamlet());
+            AddTagType(new TagMilestoneWorthyVillage());
+            AddTagType(new TagMilestoneTinyTown());
+            AddTagType(new TagMilestoneBoomTown());
+            AddTagType(new TagMilestoneBusyTown());
+            AddTagType(new TagMilestoneBigTown());
+            AddTagType(new TagMilestoneSmallCity());
+            AddTagType(new TagMilestoneBigCity());
+            AddTagType(new TagMilestoneGrandCity());
+            AddTagType(new TagMilestoneCapitalCity());
+            AddTagType(new TagMilestoneColossalCity());
+            AddTagType(new TagMilestoneMetropolis());
+            AddTagType(new TagMilestoneMegalopolis());
             AddTagType(new TagDefault());
             AddTagType(new TagFalse());
         }

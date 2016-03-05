@@ -1,11 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/MusicEntryTags/TagVanillaSnow.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/BackgroundMusicPlayer.cs">
     <Files>
-      <File FileName="CSLMusicMod/UI/SettingsUI.cs" Line="136" Column="81" />
-      <File FileName="CSLMusicMod/MusicManager.cs" Line="64" Column="29" />
-      <File FileName="CSLMusicMod/SettingsManager.cs" Line="241" Column="46" />
-      <File FileName="CSLMusicMod/MusicEntryTags/TagVanillaSnow.cs" Line="8" Column="3" />
+      <File FileName="CSLMusicMod/BackgroundMusicPlayer.cs" Line="255" Column="64" />
+      <File FileName="CSLMusicMod/CSLAudioWatcher.cs" Line="416" Column="14" />
+      <File FileName="CSLMusicMod/MusicManager.cs" Line="19" Column="48" />
+      <File FileName="CSLMusicMod/CSLMusicMod.cs" Line="126" Column="10" />
+      <File FileName="CSLMusicMod/UI/SettingsUI.cs" Line="112" Column="59" />
+      <File FileName="CSLMusicMod/SettingsManager.cs" Line="235" Column="42" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -197,6 +197,84 @@ namespace CSLMusicMod.UI
 							ModOptions.MusicTagTypePriority[4] = tag.Name;
 							SettingsManager.SaveModSettings();
 						}));
+                    subgroup.AddDropdown("Tag priority 6", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[5]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[5] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 7", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[6]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[6] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 8", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[7]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[7] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 9", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[8]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[8] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 10", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[9]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[9] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 11", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[10]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[10] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 12", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[11]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[11] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 13", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[12]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[12] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 14", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[13]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[13] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 15", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[14]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[14] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 16", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[15]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[15] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 17", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[16]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[16] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
+                    subgroup.AddDropdown("Tag priority 18", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[17]]], new OnDropdownSelectionChanged((selection) =>
+                        {
+                            var tag = IndexTagMapping[selection];
+                            ModOptions.MusicTagTypePriority[17] = tag.Name;
+                            SettingsManager.SaveModSettings();
+                        }));
                 }
             }
             {

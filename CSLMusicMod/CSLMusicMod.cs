@@ -89,7 +89,6 @@ namespace CSLMusicMod
             base.OnCreated(loading);
           
             ensureComponents();		
-			
         }
 
         public void OnSettingsUI(UIHelperBase helper)

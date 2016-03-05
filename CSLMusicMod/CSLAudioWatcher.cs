@@ -105,6 +105,7 @@ namespace CSLMusicMod
 
         private bool _switchMusic_Requested;
         private MusicEntry _switchMusic_Requested_Music;
+        private bool _music_UserOverride = false; // User wants to play the current music. Always play even if there is no default tag
         //private bool _switchMusic_Requested_useChirpy;
         /**
          * Keep track of the last max. position
@@ -149,10 +150,11 @@ namespace CSLMusicMod
             RequestSwitchMusic(null);
         }
 
-        public void RequestSwitchMusic(MusicEntry entry)
+        public void RequestSwitchMusic(MusicEntry entry, bool user = false)
         {
             Debug.Log("[CSLMusic] Requested to switch music.");
 
+            _music_UserOverride = user;
             _switchMusic_Requested = true;
             _switchMusic_Requested_Music = entry;
             //_switchMusic_Requested_useChirpy = chirp;
@@ -284,6 +286,11 @@ namespace CSLMusicMod
             if (musicFile != null)
             {
                 SwitchMusicToFile(musicFile);
+            }
+            else if (_music_UserOverride && _currentMusic.SongTags.Keys.Count == 1)
+            {
+                //If the user requested this entry and there is actually only one entry, then switch to it.
+                SwitchMusicToFile(new List<String>(_currentMusic.SongTags.Keys)[0]);
             }
             else
             {

@@ -473,7 +473,7 @@ namespace CSLMusicMod.UI
                     if (!_resort_resorted && value >= 0 && _filtered_MusicEntryList.Count > value)
                     {
                         //AudioWatcher.RequestSwitchMusic(MusicManager.MusicEntries[value]);
-                        AudioWatcher.RequestSwitchMusic(_filtered_MusicEntryList[value]); //use filtered list
+                        AudioWatcher.RequestSwitchMusic(_filtered_MusicEntryList[value], true); //use filtered list
                     }
                 }
             };
@@ -491,7 +491,7 @@ namespace CSLMusicMod.UI
                     UpdateMusicListPreserveScroll();
 
                     //Restore the current entry
-                    AudioWatcher.RequestSwitchMusic(current);
+                    AudioWatcher.RequestSwitchMusic(current, true);
                 }
             };
 

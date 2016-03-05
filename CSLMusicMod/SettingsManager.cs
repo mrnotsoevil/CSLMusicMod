@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using ColossalFramework.Plugins;
 using CSLMusicMod.IO;
+using ColossalFramework;
 
 namespace CSLMusicMod
 {
@@ -133,11 +134,28 @@ namespace CSLMusicMod
 
 			//Update 5 (Snowfall) - Catch additional tags. Discard config if there is something wrong with it
 			var tag_type_priority = new List<string>(SettingsFile.Get("Music Selection", "MusicTagTypePriority", String.Join(";", DefaultModOptions.MusicTagTypePriority.ToArray())).Split(';'));
+            bool tag_type_check_ok = true;
 
-			if (tag_type_priority.Count == DefaultModOptions.MusicTagTypePriority.Count)
-				ModOptions.MusicTagTypePriority = tag_type_priority;
-			else
-				ModOptions.MusicTagTypePriority = DefaultModOptions.MusicTagTypePriority;
+            tag_type_check_ok = (tag_type_priority.Count == DefaultModOptions.MusicTagTypePriority.Count); // Correct count			
+            
+            foreach (var t in tag_type_priority) //Correct content
+            {
+                if (!gameObject.GetComponent<MusicManager>().MusicTagTypes.ContainsKey(t))
+                {
+                    tag_type_check_ok = false;
+                    break;
+                }
+            }
+
+            if (!tag_type_check_ok)
+            {
+                Debug.Log("[CSLMusicMod] Loading tag priority failed. Resetting.");
+                ModOptions.MusicTagTypePriority = DefaultModOptions.MusicTagTypePriority;
+            }
+            else
+            {
+                ModOptions.MusicTagTypePriority = tag_type_priority;
+            }
 
             try
             {
@@ -250,6 +268,19 @@ namespace CSLMusicMod
                 MusicTagTypePriority.Add("sky");
                 MusicTagTypePriority.Add("night");
                 MusicTagTypePriority.Add("bad");
+                MusicTagTypePriority.Add("milestone13");
+                MusicTagTypePriority.Add("milestone12");
+                MusicTagTypePriority.Add("milestone11");
+                MusicTagTypePriority.Add("milestone10");
+                MusicTagTypePriority.Add("milestone09");
+                MusicTagTypePriority.Add("milestone08");
+                MusicTagTypePriority.Add("milestone07");
+                MusicTagTypePriority.Add("milestone06");
+                MusicTagTypePriority.Add("milestone05");
+                MusicTagTypePriority.Add("milestone04");
+                MusicTagTypePriority.Add("milestone03");
+                MusicTagTypePriority.Add("milestone02");
+                MusicTagTypePriority.Add("milestone01");
                 MusicTagTypePriority.Add("");
             }
 
