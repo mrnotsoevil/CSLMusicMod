@@ -121,6 +121,9 @@ namespace CSLMusicMod
         //Contains already played tracks (by random selection)
         private HashSet<MusicEntry> _already_Played_Music = new HashSet<MusicEntry>();
 
+		// Keeps track of update time
+		private int _musicUpdateTime = 0;
+
         public CSLAudioWatcher()
         {
             _firstTimeSwitched = false;
@@ -217,7 +220,14 @@ namespace CSLMusicMod
                  * */
          
             UpdateAudioPlayer(listenerInfo);
-            UpdateMusic(listenerInfo);
+
+			// Update the current music based on style
+			int current_time = (int)(Time.time * 1000);
+			if (current_time - _musicUpdateTime >= SettingsManager.ModOptions.MusicUpdateTime)
+			{
+				UpdateMusic(listenerInfo);
+				_musicUpdateTime = current_time;
+			}            
         }
 
         private void UpdateAudioPlayer(AudioManager.ListenerInfo info)
@@ -318,6 +328,8 @@ namespace CSLMusicMod
 
         private void Playback_Ogg(String file)
         {
+			Debug.Log ("[CSLMusic] Playing OGG music file " + file);
+
             //Disable vanilla music
             MusicFile = null;
 
@@ -327,6 +339,8 @@ namespace CSLMusicMod
 
         private void Playback_Raw(String file)
         {
+			Debug.Log ("[CSLMusic] Playing RAW music file " + file);
+
             //Disable mod player
             GameObject.GetComponent<BackgroundMusicPlayer>().StopPlayback();
 

@@ -121,7 +121,7 @@ namespace CSLMusicMod
 
         public void Playback(String file, MusicEntry entry)
         {
-            if (_currentFile == file)
+			if (CurrentState != State.Stopped && _currentFile == file)
                 return;
 
             _playback_req = file;
@@ -130,13 +130,21 @@ namespace CSLMusicMod
 
         private void __Playback(String file, MusicEntry entry)
         {
-            if (_currentFile == file)
-                return;
-
             ensureAudioSources();
 
-            _currentFile = file;
-            _previousEntry = _currentEntry;
+			if (CurrentState == State.Stopped)
+			{
+				_previousEntry = null;
+			}
+			else
+			{
+				if (_currentFile == file)
+				    return;
+
+				_previousEntry = _currentEntry;
+			}
+
+            _currentFile = file;            
             _currentEntry = entry;
 
             Debug.Log("[CSLMusicMod] BackgroundMusicPlayer got " + file);

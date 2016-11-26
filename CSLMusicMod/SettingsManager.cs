@@ -67,6 +67,9 @@ namespace CSLMusicMod
             SettingsFile.Set("Performance", "CacheSongs", ModOptions.CacheSongs);
             SettingsFile.Set("Performance", "PrefetchSongs", ModOptions.PrefetchSongs);
 
+			// Update 5.2 Settings
+			SettingsFile.Set("Performance", "MusicUpdateTime", ModOptions.MusicUpdateTime);
+
             SettingsFile.Save();
         }
 
@@ -170,6 +173,9 @@ namespace CSLMusicMod
             ModOptions.CacheSongs = SettingsFile.GetAsBool("Performance", "CacheSongs", DefaultModOptions.CacheSongs);
             ModOptions.PrefetchSongs = SettingsFile.GetAsBool("Performance", "PrefetchSongs", DefaultModOptions.PrefetchSongs);
 
+			// Update 5.2
+			ModOptions.MusicUpdateTime = SettingsFile.GetAsInt("Performance", "MusicUpdateTime", DefaultModOptions.MusicUpdateTime);
+
             //If there are non exisiting keys in the settings file, add them by saving the settings
             if (SettingsFile.FoundNonExistingKeys)
             {
@@ -236,6 +242,8 @@ namespace CSLMusicMod
 
             public bool CacheSongs = true;
             public bool PrefetchSongs = false;
+
+			public int MusicUpdateTime = 1000;
 
             public List<String> CustomMusicFolders
             {

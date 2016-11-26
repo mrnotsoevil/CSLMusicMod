@@ -106,12 +106,17 @@ namespace CSLMusicMod.UI
             {
                 var subgroup = group.AddGroup("Performance");
 
-                subgroup.AddCheckbox("Cache *.ogg songs", ModOptions.CacheSongs, new OnCheckChanged((isChecked) =>
+                subgroup.AddSlider("Music update interval", 0, 5000, 1, ModOptions.MusicUpdateTime, new OnValueChanged((value) =>
+                    {
+                        ModOptions.MusicUpdateTime = (int)(value);
+                        SettingsManager.SaveModSettings();
+                    }));
+                subgroup.AddCheckbox("Cache *.ogg songs (will eat memory!)", ModOptions.CacheSongs, new OnCheckChanged((isChecked) =>
                     {
                         ModOptions.CacheSongs = isChecked;
                         SettingsManager.SaveModSettings();
                     }));
-                subgroup.AddCheckbox("Preload all *.ogg songs (don't use if you have a lot songs!)", ModOptions.PrefetchSongs, new OnCheckChanged((isChecked) =>
+                subgroup.AddCheckbox("Preload all *.ogg songs (will eat memory!)", ModOptions.PrefetchSongs, new OnCheckChanged((isChecked) =>
                     {
                         ModOptions.PrefetchSongs = isChecked;
                         SettingsManager.SaveModSettings();

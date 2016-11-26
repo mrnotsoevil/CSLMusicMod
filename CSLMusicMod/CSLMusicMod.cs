@@ -9,7 +9,7 @@ namespace CSLMusicMod
 {
     public class CSLMusicMod : LoadingExtensionBase, IUserMod
     {
-        public const String VersionName = "Update 4";
+        public const String VersionName = "Update 5.2";
 
         public string Name
         {
