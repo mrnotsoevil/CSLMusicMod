@@ -20,6 +20,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="bin/Debug/copytomoddir.sh" workingdir="${TargetDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -28,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,82 +57,42 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CSLMusicMod.cs" />
-    <Compile Include="MusicInjector.cs" />
-    <Compile Include="CSLAudioWatcher.cs" />
-    <Compile Include="NVorbis\BufferedReadStream.cs" />
-    <Compile Include="NVorbis\DataPacket.cs" />
-    <Compile Include="NVorbis\Huffman.cs" />
-    <Compile Include="NVorbis\IContainerReader.cs" />
-    <Compile Include="NVorbis\IPacketProvider.cs" />
-    <Compile Include="NVorbis\IVorbisStreamStatus.cs" />
-    <Compile Include="NVorbis\Mdct.cs" />
-    <Compile Include="NVorbis\NewStreamEventArgs.cs" />
-    <Compile Include="NVorbis\ParameterChangeEventArgs.cs" />
-    <Compile Include="NVorbis\RingBuffer.cs" />
-    <Compile Include="NVorbis\StreamReadBuffer.cs" />
-    <Compile Include="NVorbis\Utils.cs" />
-    <Compile Include="NVorbis\VorbisCodebook.cs" />
-    <Compile Include="NVorbis\VorbisFloor.cs" />
-    <Compile Include="NVorbis\VorbisMapping.cs" />
-    <Compile Include="NVorbis\VorbisMode.cs" />
-    <Compile Include="NVorbis\VorbisReader.cs" />
-    <Compile Include="NVorbis\VorbisResidue.cs" />
-    <Compile Include="NVorbis\VorbisStreamDecoder.cs" />
-    <Compile Include="NVorbis\VorbisTime.cs" />
-    <Compile Include="NVorbis\Ogg\OggContainerReader.cs" />
-    <Compile Include="NVorbis\Ogg\OggCrc.cs" />
-    <Compile Include="NVorbis\Ogg\OggPacket.cs" />
-    <Compile Include="NVorbis\Ogg\OggPacketReader.cs" />
-    <Compile Include="NVorbis\Ogg\OggPageFlags.cs" />
-    <Compile Include="SettingsManager.cs" />
-    <Compile Include="ConversionManager.cs" />
-    <Compile Include="MusicManager.cs" />
-    <Compile Include="MusicEntry.cs" />
-    <Compile Include="MusicEntryTags\TagVanillaSky.cs" />
-    <Compile Include="MusicEntryTags\TagVanillaMood.cs" />
-    <Compile Include="MusicEntryTag.cs" />
-    <Compile Include="MusicEntryTags\TagDefault.cs" />
-    <Compile Include="BackgroundMusicPlayer.cs" />
-    <Compile Include="UI\MusicUI.cs" />
-    <Compile Include="UI\SettingsUI.cs" />
-    <Compile Include="UI\UICheckButton.cs" />
-    <Compile Include="UI\UIKeyBindingButton.cs" />
-    <Compile Include="MusicEntryTags\TagVanillaNight.cs" />
     <Compile Include="Compatibility\CSLMusicChirperMessage.cs" />
-    <Compile Include="IO\SimpleIni.cs" />
-    <Compile Include="IO\AudioFormatHelper.cs" />
     <Compile Include="Helpers\ModHelper.cs" />
-    <Compile Include="Helpers\ReflectionHelper.cs" />
-    <Compile Include="UI\UIMusicListPanel.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />
-    <Compile Include="MusicEntryTags\TagFalse.cs" />
-    <Compile Include="MusicEntryTags\TagVanillaSnow.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneLittleHamlet.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneTinyTown.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneBoomTown.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneBusyTown.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneBigTown.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneSmallCity.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneBigCity.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneGrandCity.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneCapitalCity.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneColossalCity.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneMetropolis.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneMegalopolis.cs" />
-    <Compile Include="MusicEntryTags\Milestones\TagMilestoneWorthyVillage.cs" />
+    <Compile Include="CustomRadioContentInfo.cs" />
+    <Compile Include="RedirectionHelper.cs" />
+    <Compile Include="LoadingExtension.cs" />
+    <Compile Include="Loading.cs" />
+    <Compile Include="ChannelInitializer.cs" />
+    <Compile Include="ContentInitializer.cs" />
+    <Compile Include="Detours.cs" />
+    <Compile Include="UserRadioContent.cs" />
+    <Compile Include="UserRadioChannel.cs" />
+    <Compile Include="UserRadioCollection.cs" />
+    <Compile Include="CustomRadioPanel.cs" />
+    <Compile Include="LitJson\IJsonWrapper.cs" />
+    <Compile Include="LitJson\JsonData.cs" />
+    <Compile Include="LitJson\JsonException.cs" />
+    <Compile Include="LitJson\JsonMapper.cs" />
+    <Compile Include="LitJson\JsonMockWrapper.cs" />
+    <Compile Include="LitJson\JsonReader.cs" />
+    <Compile Include="LitJson\JsonWriter.cs" />
+    <Compile Include="LitJson\Lexer.cs" />
+    <Compile Include="LitJson\ParserToken.cs" />
+    <Compile Include="ModOptions.cs" />
+    <Compile Include="UI\SettingsUI.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="NVorbis\" />
     <Folder Include="Resources\" />
-    <Folder Include="MusicEntryTags\" />
-    <Folder Include="UI\" />
     <Folder Include="Compatibility\" />
-    <Folder Include="IO\" />
     <Folder Include="Helpers\" />
-    <Folder Include="MusicEntryTags\Milestones\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Icons.png" />
+    <EmbeddedResource Include="Resources\thumbnail.png" />
+    <EmbeddedResource Include="Resources\thumbnail_extra.png" />
+    <EmbeddedResource Include="Resources\thumbnail_package.png" />
   </ItemGroup>
 </Project>

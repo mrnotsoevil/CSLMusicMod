@@ -1,6 +1,7 @@
 ﻿using System;
 using ColossalFramework.UI;
 using UnityEngine;
+using System.IO;
 
 namespace CSLMusicMod
 {
@@ -17,14 +18,28 @@ namespace CSLMusicMod
                 };
 
             //load texture
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            using (var textureStream = assembly.GetManifestResourceStream("CSLMusicMod.Resources." + file))
+            if(File.Exists(file))
             {
-                var buf = new byte[textureStream.Length];  //declare arraysize
-                textureStream.Read(buf, 0, buf.Length); // read from stream to byte array
-                tex.LoadImage(buf);
-                tex.Apply(true, false);
+                using (var textureStream = File.Open(file, FileMode.Open))
+                {
+                    var buf = new byte[textureStream.Length];  //declare arraysize
+                    textureStream.Read(buf, 0, buf.Length); // read from stream to byte array
+                    tex.LoadImage(buf);
+                    tex.Apply(true, false);
+                }
             }
+            else
+            {
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                using (var textureStream = assembly.GetManifestResourceStream("CSLMusicMod.Resources." + file))
+                {
+                    var buf = new byte[textureStream.Length];  //declare arraysize
+                    textureStream.Read(buf, 0, buf.Length); // read from stream to byte array
+                    tex.LoadImage(buf);
+                    tex.Apply(true, false);
+                }
+            }
+
 
             var atlas = ScriptableObject.CreateInstance<UITextureAtlas>();
             // Setup atlas

@@ -6,304 +6,76 @@ using System.Collections.Generic;
 
 namespace CSLMusicMod.UI
 {
-    /**
-     * Controls the mod settings accessable by C:S settings UI API 
-     * */
-    public class SettingsUI : MonoBehaviour
+    public static class SettingsUI
     {
-        public CSLMusicMod Mod
-        {
-            get;
-            set;
-        }
-
-        public SettingsManager SettingsManager
-        {
-            get
-            {
-                return gameObject.GetComponent<SettingsManager>();
-            }
-        }
-
-        public SettingsManager.Options ModOptions
-        {
-            get
-            {
-                return gameObject.GetComponent<SettingsManager>().ModOptions;
-            }
-        }
-
-        private List<String> KeyStringList = Enum.GetNames(typeof(KeyCode)).ToList();
-        private List<KeyCode> KeyList;
-
-        private List<String> SelectionAlgorithmStringList = Enum.GetNames(typeof(SettingsManager.Options.MusicSelectionType)).ToList();
-        private List<SettingsManager.Options.MusicSelectionType> SelectionAlgorithmList;
-
-        private Dictionary<int, MusicEntryTag> IndexTagMapping = new Dictionary<int, MusicEntryTag>();
-        private Dictionary<MusicEntryTag, int> TagIndexMapping = new Dictionary<MusicEntryTag, int>();
-
-        public SettingsUI()
-        {
-            KeyList = new List<KeyCode>((KeyCode[])Enum.GetValues(typeof(KeyCode)));
-            SelectionAlgorithmList = new List<SettingsManager.Options.MusicSelectionType>((SettingsManager.Options.MusicSelectionType[])Enum.GetValues(typeof(SettingsManager.Options.MusicSelectionType)));
-        }
-
-        public void Awake()
-        {
-            DontDestroyOnLoad(this);
-        }
-
-        public void InitializeSettingsUI(UIHelperBase ui)
+        public static void InitializeSettingsUI(UIHelperBase ui)
         {
             UIHelperBase group = ui.AddGroup("CSL Music Mod");
 
-            Debug.Log("[CSLMusicMod] Populating settings menu ...");
+            Debug.Log("[CSLMusicMod] Populating settings menu ...");          
+
+            ModOptions options = ModOptions.Instance;
+
+            group.AddGroup("Note: Settings only take effect after reloading the map.");
 
             {
-                var subgroup = group.AddGroup("Key bindings");
-                subgroup.AddDropdown("Open playlist and settings", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Key_Settings.ToString()), (selection) =>
-                    {
-                        ModOptions.Key_Settings = KeyList[selection];
-                        SettingsManager.SaveModSettings();
-                    });
-                subgroup.AddDropdown("Next song", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Key_NextTrack.ToString()), (selection) =>
-                    {
-                        ModOptions.Key_NextTrack = KeyList[selection];
-                        SettingsManager.SaveModSettings();
-                    });
-            }
-            {
-                var subgroup = group.AddGroup("User interface");
+                var subgroup = group.AddGroup("Default channels");
 
-                subgroup.AddCheckbox("Large playlist", ModOptions.LargePlayList, new OnCheckChanged((isChecked) =>
+                subgroup.AddCheckbox("Add channel with all content ('CSLMusic Mix')", 
+                    options.CreateMixChannels, 
+                    new OnCheckChanged((bool isChecked) =>
                         {
-                            ModOptions.LargePlayList = isChecked;
-                            SettingsManager.SaveModSettings();
-
-                            //Reload UI if possible
-                            Mod.ReloadUI();
+                        options.CreateMixChannels = isChecked;
                         }));
-
-                group.AddSpace(10);
-
-                subgroup.AddCheckbox("Show toolbar button", ModOptions.ShowToolbarButton, new OnCheckChanged((isChecked) =>
-                        {
-                            ModOptions.ShowToolbarButton = isChecked;
-                            SettingsManager.SaveModSettings();
-                        }));
-                subgroup.AddCheckbox("Fixate toolbar button", ModOptions.FixateToolbarButton, new OnCheckChanged((isChecked) =>
-                        {
-                            ModOptions.FixateToolbarButton = isChecked;
-                            SettingsManager.SaveModSettings();
-                        }));
-                subgroup.AddButton("Reset toolbar button position", new OnButtonClicked(() =>
-                        {
-                            ModOptions.ToolbarButtonX = -1;
-                            ModOptions.ToolbarButtonY = -1;
-                            SettingsManager.SaveModSettings();
-                        }));
-            }
-            {
-                var subgroup = group.AddGroup("Performance");
-
-                subgroup.AddSlider("Music update interval", 0, 5000, 1, ModOptions.MusicUpdateTime, new OnValueChanged((value) =>
+                subgroup.AddCheckbox("Create channels from unused music files", 
+                    options.CreateChannelsFromLegacyPacks, 
+                    new OnCheckChanged((bool isChecked) =>
                     {
-                        ModOptions.MusicUpdateTime = (int)(value);
-                        SettingsManager.SaveModSettings();
-                    }));
-                subgroup.AddCheckbox("Cache *.ogg songs (will eat memory!)", ModOptions.CacheSongs, new OnCheckChanged((isChecked) =>
-                    {
-                        ModOptions.CacheSongs = isChecked;
-                        SettingsManager.SaveModSettings();
-                    }));
-                subgroup.AddCheckbox("Preload all *.ogg songs (will eat memory!)", ModOptions.PrefetchSongs, new OnCheckChanged((isChecked) =>
-                    {
-                        ModOptions.PrefetchSongs = isChecked;
-                        SettingsManager.SaveModSettings();
+                        options.CreateChannelsFromLegacyPacks = isChecked;
                     }));
             }
             {
-                var subgroup = group.AddGroup("Tweaks");
-
-                subgroup.AddCheckbox("Music in menu & while loading", ModOptions.MusicWhileLoading, new OnCheckChanged((isChecked) =>
+                var subgroup = group.AddGroup("Music packs");
+                subgroup.AddCheckbox("Use music from music packs", 
+                    options.EnableMusicPacks, 
+                    new OnCheckChanged((bool isChecked) =>
                         {
-                            ModOptions.MusicWhileLoading = isChecked;
-                            SettingsManager.SaveModSettings();
-                        }));
-                subgroup.AddCheckbox("Enable music packs", ModOptions.EnableMusicPacks, new OnCheckChanged((isChecked) =>
-                        {
-                            ModOptions.EnableMusicPacks = isChecked;
-                            SettingsManager.SaveModSettings();
+                            options.EnableMusicPacks = isChecked;
                         }));
             }
             {
-                var subgroup = group.AddGroup("Context sensitive music");
-
-                subgroup.AddDropdown("Select music by ", new string[]
-                    {
-                        "AND - all tags must apply",
-                        "OR - at least one tag must apply"
-                    },
-                    SelectionAlgorithmStringList.IndexOf(ModOptions.MusicSelectionAlgorithm.ToString()), (selection) =>
-                    {
-                        ModOptions.MusicSelectionAlgorithm = SelectionAlgorithmList[selection];
-                        SettingsManager.SaveModSettings();
-                    });
-                subgroup.AddSpace(10);
-
-                {
-                    var tagtypes = gameObject.GetComponent<MusicManager>().MusicTagTypes;
-                    var tagpriority = ModOptions.MusicTagTypePriority;
-                    var tagtypeslist = new List<String>();
-
-                    IndexTagMapping.Clear();
-                    TagIndexMapping.Clear();
-
-                    {
-                        int tag_idx = 0;
-                        foreach (var tag in tagtypes.Values)
+                var subgroup = group.AddGroup("Allowed content");
+                subgroup.AddCheckbox("Music", 
+                    options.AllowContentMusic, 
+                    new OnCheckChanged((bool isChecked) =>
                         {
-                            tagtypeslist.Add(tag.Description);
-                            IndexTagMapping.Add(tag_idx, tag);
-                            TagIndexMapping.Add(tag, tag_idx);
-
-                            tag_idx++;
-                        }
-                    }
-
-                    // Tag priority entries
-                    subgroup.AddDropdown("Tag priority 1", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[0]]], new OnDropdownSelectionChanged((selection) =>
-                            {
-                                var tag = IndexTagMapping[selection];
-                                ModOptions.MusicTagTypePriority[0] = tag.Name;
-                                SettingsManager.SaveModSettings();
-                            }));
-                    subgroup.AddDropdown("Tag priority 2", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[1]]], new OnDropdownSelectionChanged((selection) =>
-                            {
-                                var tag = IndexTagMapping[selection];
-                                ModOptions.MusicTagTypePriority[1] = tag.Name;
-                                SettingsManager.SaveModSettings();
-                            }));
-                    subgroup.AddDropdown("Tag priority 3", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[2]]], new OnDropdownSelectionChanged((selection) =>
-                            {
-                                var tag = IndexTagMapping[selection];
-                                ModOptions.MusicTagTypePriority[2] = tag.Name;
-                                SettingsManager.SaveModSettings();
-                            }));
-                    subgroup.AddDropdown("Tag priority 4", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[3]]], new OnDropdownSelectionChanged((selection) =>
-                            {
-                                var tag = IndexTagMapping[selection];
-                                ModOptions.MusicTagTypePriority[3] = tag.Name;
-                                SettingsManager.SaveModSettings();
-                            }));
-					subgroup.AddDropdown("Tag priority 5", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[4]]], new OnDropdownSelectionChanged((selection) =>
-						{
-							var tag = IndexTagMapping[selection];
-							ModOptions.MusicTagTypePriority[4] = tag.Name;
-							SettingsManager.SaveModSettings();
-						}));
-                    subgroup.AddDropdown("Tag priority 6", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[5]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[5] = tag.Name;
-                            SettingsManager.SaveModSettings();
+                            options.AllowContentMusic = isChecked;
                         }));
-                    subgroup.AddDropdown("Tag priority 7", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[6]]], new OnDropdownSelectionChanged((selection) =>
+                subgroup.AddCheckbox("Blurbs", 
+                    options.AllowContentBlurb, 
+                    new OnCheckChanged((bool isChecked) =>
                         {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[6] = tag.Name;
-                            SettingsManager.SaveModSettings();
+                            options.AllowContentBlurb = isChecked;
                         }));
-                    subgroup.AddDropdown("Tag priority 8", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[7]]], new OnDropdownSelectionChanged((selection) =>
+                subgroup.AddCheckbox("Talks", 
+                    options.AllowContentTalk, 
+                    new OnCheckChanged((bool isChecked) =>
                         {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[7] = tag.Name;
-                            SettingsManager.SaveModSettings();
+                            options.AllowContentTalk = isChecked;
                         }));
-                    subgroup.AddDropdown("Tag priority 9", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[8]]], new OnDropdownSelectionChanged((selection) =>
+                subgroup.AddCheckbox("Commercials", 
+                    options.AllowContentCommercial, 
+                    new OnCheckChanged((bool isChecked) =>
                         {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[8] = tag.Name;
-                            SettingsManager.SaveModSettings();
+                            options.AllowContentCommercial = isChecked;
                         }));
-                    subgroup.AddDropdown("Tag priority 10", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[9]]], new OnDropdownSelectionChanged((selection) =>
+                subgroup.AddCheckbox("Broadcasts", 
+                    options.AllowContentBroadcast, 
+                    new OnCheckChanged((bool isChecked) =>
                         {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[9] = tag.Name;
-                            SettingsManager.SaveModSettings();
+                            options.AllowContentBroadcast = isChecked;
                         }));
-                    subgroup.AddDropdown("Tag priority 11", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[10]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[10] = tag.Name;
-                            SettingsManager.SaveModSettings();
-                        }));
-                    subgroup.AddDropdown("Tag priority 12", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[11]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[11] = tag.Name;
-                            SettingsManager.SaveModSettings();
-                        }));
-                    subgroup.AddDropdown("Tag priority 13", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[12]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[12] = tag.Name;
-                            SettingsManager.SaveModSettings();
-                        }));
-                    subgroup.AddDropdown("Tag priority 14", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[13]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[13] = tag.Name;
-                            SettingsManager.SaveModSettings();
-                        }));
-                    subgroup.AddDropdown("Tag priority 15", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[14]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[14] = tag.Name;
-                            SettingsManager.SaveModSettings();
-                        }));
-                    subgroup.AddDropdown("Tag priority 16", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[15]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[15] = tag.Name;
-                            SettingsManager.SaveModSettings();
-                        }));
-                    subgroup.AddDropdown("Tag priority 17", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[16]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[16] = tag.Name;
-                            SettingsManager.SaveModSettings();
-                        }));
-                    subgroup.AddDropdown("Tag priority 18", tagtypeslist.ToArray(), TagIndexMapping[tagtypes[tagpriority[17]]], new OnDropdownSelectionChanged((selection) =>
-                        {
-                            var tag = IndexTagMapping[selection];
-                            ModOptions.MusicTagTypePriority[17] = tag.Name;
-                            SettingsManager.SaveModSettings();
-                        }));
-                }
             }
-            {
-                var subgroup = group.AddGroup("Advanced");
-
-                subgroup.AddCheckbox("Direct playback of non-RAW files", ModOptions.PlayWithoutConvert, new OnCheckChanged((isChecked) =>
-                    {
-                        ModOptions.PlayWithoutConvert = isChecked;
-                        SettingsManager.SaveModSettings();
-                    }));
-                subgroup.AddSlider("non-RAW crossfading limit", 0, 20, 0.5f, (float)Math.Log(ModOptions.CrossfadeLimit, 2), new OnValueChanged((float val) =>
-                    {
-                        ModOptions.CrossfadeLimit = (int)(Math.Pow(2.0, val));
-                        SettingsManager.SaveModSettings();
-                    }));
-                subgroup.AddCheckbox("Force non-RAW crossfading", ModOptions.IgnoreCrossfadeLimit, new OnCheckChanged((isChecked) =>
-                    {
-                        ModOptions.IgnoreCrossfadeLimit = isChecked;
-                        SettingsManager.SaveModSettings();
-                    }));
-            }
-
-
-
         }
     }
 }

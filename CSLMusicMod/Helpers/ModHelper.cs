@@ -48,7 +48,7 @@ namespace CSLMusicMod.Helpers
 			{
 				if (info.publishedFileID.AsUInt64.ToString() == id)
 				{
-                    if (Directory.Exists(Path.Combine(info.modPath, MusicManager.CustomMusicDefaultFolder)))
+                    if (Directory.Exists(Path.Combine(info.modPath, "CSLMusicMod_Music")))
 						return info;
 				}
 			}
