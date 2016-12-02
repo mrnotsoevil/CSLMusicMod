@@ -121,8 +121,21 @@ namespace CSLMusicMod.UI
         {
             base.OnVisibilityChanged();
 
-            if (isVisible)
-                Focus();
+            // Bring the radio panel to the front
+            var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
+
+            if(radiopanel != null)
+            {
+                var panel = ReflectionHelper.GetPrivateField<UIPanel>(radiopanel, "m_radioPanel");
+                var list = ReflectionHelper.GetPrivateField<UIPanel>(radiopanel, "m_radioList");
+
+                if (panel != null)
+                    panel.BringToFront();
+                if (list != null)
+                    panel.BringToFront();
+
+                this.SendToBack();
+            }
 
             UpdateValues();
         }

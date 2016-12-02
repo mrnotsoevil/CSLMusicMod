@@ -2,6 +2,8 @@
 Creating a music pack
 =========================
 
+More detailed documentation: https://github.com/rumangerst/CSLMusicMod/wiki
+
 How to create a music pack for CSL Music Mod http://steamcommunity.com/sharedfiles/filedetails/?id=422934383
 
 1. Go to Source folder and open Mod.cs
