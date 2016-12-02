@@ -131,6 +131,19 @@ namespace CSLMusicMod
             }
         }
 
+        public bool EnableCustomUI
+        {
+            get
+            {
+                return m_Options.EnableCustomUI;
+            }
+            set
+            {
+                m_Options.EnableCustomUI = value;
+                SaveSettings();
+            }
+        }
+
         public String SettingsFilename
         {
             get
@@ -197,6 +210,7 @@ namespace CSLMusicMod
             public bool AllowContentTalk { get; set; }
             public bool AllowContentCommercial { get; set; }
             public bool AllowContentBroadcast { get; set; }
+            public bool EnableCustomUI { get; set; }
 
             public Options()
             {
@@ -208,6 +222,7 @@ namespace CSLMusicMod
                 AllowContentTalk = true;
                 AllowContentCommercial = true;
                 AllowContentBroadcast = true;
+                EnableCustomUI = true;
             }
         }
     }

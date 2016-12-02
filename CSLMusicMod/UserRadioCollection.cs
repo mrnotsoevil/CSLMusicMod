@@ -232,14 +232,28 @@ namespace CSLMusicMod
                     while(av.Count != 0)
                     {
                         var type = av[CSLMusicMod.RANDOM.Next(0, av.Count)];
-                        var w1 = CSLMusicMod.RANDOM.Next(0, content.Count(song => song.m_ContentType == type));
-                        var w2 = CSLMusicMod.RANDOM.Next(0, content.Count(song => song.m_ContentType == type));
+
+                        switch(type)
+                        {
+                            case RadioContentInfo.ContentType.Blurb:
+                                statechain.Add(new RadioChannelInfo.State() { m_contentType = type, m_minCount = 0, m_maxCount = 1 });
+                                break;
+                            case RadioContentInfo.ContentType.Broadcast:
+                                statechain.Add(new RadioChannelInfo.State() { m_contentType = type, m_minCount = 0, m_maxCount = 1 });
+                                break;
+                            case RadioContentInfo.ContentType.Commercial:
+                                statechain.Add(new RadioChannelInfo.State() { m_contentType = type, m_minCount = 0, m_maxCount = 3 });
+                                break;
+                            case RadioContentInfo.ContentType.Music:
+                                statechain.Add(new RadioChannelInfo.State() { m_contentType = type, m_minCount = 1, m_maxCount = 5 });
+                                break;
+                            case RadioContentInfo.ContentType.Talk:
+                                statechain.Add(new RadioChannelInfo.State() { m_contentType = type, m_minCount = 0, m_maxCount = 1 });
+                                break;
+                        }
 
                         av.Remove(type);
-                        var min = Math.Min(w1, w2);
-                        var max = Math.Max(w1, w2);
 
-                        statechain.Add(new RadioChannelInfo.State() { m_contentType = type, m_minCount = min, m_maxCount = max });
                     }
                 }
 

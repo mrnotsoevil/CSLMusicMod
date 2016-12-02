@@ -2,6 +2,7 @@
 using ICities;
 using UnityEngine;
 using System.Collections.Generic;
+using CSLMusicMod.UI;
 
 namespace CSLMusicMod
 {
@@ -11,6 +12,7 @@ namespace CSLMusicMod
         public static ChannelInitializer StationContainer;
         public static ContentInitializer ContentContainer;
         public static Detours MethodDetours;
+        public static MusicUI UI;
 
         public LoadingExtension()
         {
@@ -52,12 +54,23 @@ namespace CSLMusicMod
                 }
 
                 DebugOutput();
+
+                // Build UI
+                if (UI == null)
+                {
+                    UI = new GameObject("CSLMusicMod_UI").AddComponent<MusicUI>();
+                }
             }
         }
 
         public override void OnReleased()
         {
             base.OnReleased();
+            if (UI != null)
+            {
+                UnityEngine.Object.Destroy(UI.gameObject);
+                UI = null;
+            }
             if (StationContainer != null)
             {
                 UnityEngine.Object.Destroy(StationContainer.gameObject);
@@ -76,7 +89,7 @@ namespace CSLMusicMod
             if (UserRadioContainer != null)
             {
                 UnityEngine.Object.Destroy(UserRadioContainer.gameObject);
-                MethodDetours = null;
+                UserRadioContainer = null;
             }
 
         }

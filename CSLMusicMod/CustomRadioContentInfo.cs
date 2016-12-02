@@ -10,16 +10,11 @@ namespace CSLMusicMod
     {
         public WWW CustomObtainClip()
         {
-            for(int i = 0; i < Singleton<AudioManager>.instance.m_radioChannels.m_size; ++i)
-            {
-                Debug.Log(Singleton<AudioManager>.instance.m_radioChannels.m_buffer[i].Info);
-            }
-
             if(File.Exists(this.m_fileName))
             {
                 Debug.Log("Loading Clip from " + this.m_fileName);
 
-                return new WWW("file:///" + this.m_fileName);
+                return new WWW("file:///" + WWW.EscapeURL(this.m_fileName));
             }
             else
             {

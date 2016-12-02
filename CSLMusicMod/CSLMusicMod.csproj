@@ -82,6 +82,10 @@
     <Compile Include="LitJson\ParserToken.cs" />
     <Compile Include="ModOptions.cs" />
     <Compile Include="UI\SettingsUI.cs" />
+    <Compile Include="UI\MusicUI.cs" />
+    <Compile Include="UI\UIMusicListPanel.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="CustomRadioChannelInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -90,9 +94,9 @@
     <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Icons.png" />
     <EmbeddedResource Include="Resources\thumbnail.png" />
     <EmbeddedResource Include="Resources\thumbnail_extra.png" />
     <EmbeddedResource Include="Resources\thumbnail_package.png" />
+    <EmbeddedResource Include="Resources\icons.png" />
   </ItemGroup>
 </Project>

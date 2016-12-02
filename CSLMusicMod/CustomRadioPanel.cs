@@ -24,7 +24,7 @@ namespace CSLMusicMod
                 button.pressedFgSprite = station.m_Thumbnail;
                 button.focusedFgSprite = station.m_Thumbnail;
                 button.disabledFgSprite = station.m_Thumbnail;
-                button.tooltip = station.name;
+                button.tooltip = station.GetLocalizedTitle();
             }
             else
             {
