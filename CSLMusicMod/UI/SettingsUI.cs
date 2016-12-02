@@ -17,23 +17,7 @@ namespace CSLMusicMod.UI
             ModOptions options = ModOptions.Instance;
 
             group.AddGroup("Note: Settings only take effect after reloading the map.");
-
-            {
-                var subgroup = group.AddGroup("Default channels");
-
-                subgroup.AddCheckbox("Add channel with all content ('CSLMusic Mix')", 
-                    options.CreateMixChannels, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                        options.CreateMixChannels = isChecked;
-                        }));
-                subgroup.AddCheckbox("Create channels from unused music files", 
-                    options.CreateChannelsFromLegacyPacks, 
-                    new OnCheckChanged((bool isChecked) =>
-                    {
-                        options.CreateChannelsFromLegacyPacks = isChecked;
-                    }));
-            }
+           
             {
                 var subgroup = group.AddGroup("Music packs");
                 subgroup.AddCheckbox("Use music from music packs", 
@@ -41,6 +25,12 @@ namespace CSLMusicMod.UI
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.EnableMusicPacks = isChecked;
+                        }));
+                subgroup.AddCheckbox("Create channels from unused music files", 
+                    options.CreateChannelsFromLegacyPacks, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.CreateChannelsFromLegacyPacks = isChecked;
                         }));
             }
             {
@@ -74,6 +64,45 @@ namespace CSLMusicMod.UI
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.AllowContentBroadcast = isChecked;
+                        }));
+            }
+            {
+                var subgroup = group.AddGroup("CSLMusic Mix");
+                subgroup.AddCheckbox("Create channel with all content", 
+                    options.CreateMixChannels, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.CreateMixChannels = isChecked;
+                        }));
+                subgroup.AddCheckbox("Include music", 
+                    options.MixContentMusic, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.MixContentMusic = isChecked;
+                        }));
+                subgroup.AddCheckbox("Include blurbs", 
+                    options.MixContentBlurb, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.MixContentBlurb = isChecked;
+                        }));
+                subgroup.AddCheckbox("Include talks", 
+                    options.MixContentTalk, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.MixContentTalk = isChecked;
+                        }));
+                subgroup.AddCheckbox("Include commercials", 
+                    options.MixContentCommercial, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.MixContentCommercial = isChecked;
+                        }));
+                subgroup.AddCheckbox("Include Bbroadcasts", 
+                    options.MixContentBroadcast, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.MixContentBroadcast = isChecked;
                         }));
             }
         }

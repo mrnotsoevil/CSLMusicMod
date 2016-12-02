@@ -98,5 +98,6 @@
     <EmbeddedResource Include="Resources\thumbnail_extra.png" />
     <EmbeddedResource Include="Resources\thumbnail_package.png" />
     <EmbeddedResource Include="Resources\icons.png" />
+    <EmbeddedResource Include="Resources\thumbnail_mix.png" />
   </ItemGroup>
 </Project>

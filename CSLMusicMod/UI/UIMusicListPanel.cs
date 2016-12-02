@@ -35,8 +35,6 @@ namespace CSLMusicMod.UI
 
         private bool m_SortAscending = true;
 
-        private int m_CurrentAudioChannel = -1;
-
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
 
         private bool Filtered
@@ -154,20 +152,8 @@ namespace CSLMusicMod.UI
                 if (m_VolumeSlider.value / 100f != m_MusicAudioVolume.value)
                 {
                     m_VolumeSlider.value = m_MusicAudioVolume.value * 100f;
-                }
-
-                // Update currently visible audio channel if needed
-                AudioManager mgr = Singleton<AudioManager>.instance;
-                ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
-
-                if(activechannel != m_CurrentAudioChannel)
-                {
-                    RebuildList();
-                    m_CurrentAudioChannel = activechannel;
-                }
-            }
-
-           
+                }            
+            }           
         }
 
         private void RebuildList()
@@ -176,22 +162,28 @@ namespace CSLMusicMod.UI
 
             ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
 
-            Debug.Log("Selected active channel " + activechannel + " of " + mgr.m_radioChannelCount);
+            //Debug.Log("Selected active channel " + activechannel + " of " + mgr.m_radioChannelCount);
 
-            if(activechannel >= 0 && activechannel < mgr.m_radioChannelCount)
+            if(activechannel >= 0)
             {
                 RadioChannelData channeldata = mgr.m_radioChannels[activechannel];
                 RadioChannelInfo info = channeldata.Info;
 
-                Debug.Log("Info: " + info);
-
                 m_CurrentContent.Clear();
+
+                // Only show supported content entries
+                HashSet<RadioContentInfo.ContentType> supported_content = new HashSet<RadioContentInfo.ContentType>();
+
+                foreach(var state in info.m_stateChain)
+                {
+                    supported_content.Add(state.m_contentType);
+                }
 
                 for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
                 {
                     var c = PrefabCollection<RadioContentInfo>.GetPrefab(i);
 
-                    if(c.m_radioChannels.Contains(info))
+                    if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                     {
                         if(!IsFiltered(GetEntryTextFor(c)))
                         {
@@ -200,7 +192,7 @@ namespace CSLMusicMod.UI
                     }
                 }
 
-                Debug.Log(m_CurrentContent.Count + " entries ");
+                //Debug.Log(m_CurrentContent.Count + " entries ");
             }
 
             m_CurrentContent.Sort((RadioContentInfo x, RadioContentInfo y) =>
@@ -429,30 +421,50 @@ namespace CSLMusicMod.UI
             {
                 RadioContentInfo info = m_CurrentContent[value];
                 ushort contentindex = 0;
+                bool found = false;
 
                 for(int i = 0; i < mgr.m_radioContentCount; ++i)
                 {
                     RadioContentData data = mgr.m_radioContents[i];
+
+                    //Debug.Log("CC: " + data + " + " + data.Info + " == " + info);
+
                     if(data.Info == info)
                     {
                         contentindex = (ushort)i;
+                        //Debug.Log("Found content index for " + info);
+                        found = true;
                         break;
                     }
                 }
 
+                if(!found)
+                {
+                    Debug.Log("[CSLMusic] Switching to unloaded music " + info);
+
+                    if(!mgr.CreateRadioContent(out contentindex, info))
+                    {
+                        Debug.Log("[CSLMusic] ... failed to create content " + info);
+                        return;
+                    }
+                }
+
+                Debug.Log("Content index: " + contentindex);
+
                 // Next content
                 ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
 
-                if(activechannel >= 0 && activechannel < mgr.m_radioChannelCount)
+                if(activechannel >= 0)
                 {
                     RadioChannelData data = mgr.m_radioChannels[activechannel];
-                    data.m_nextContent = contentindex;
-                    data.m_playPosition = ushort.MaxValue;
+                    data.m_currentContent = contentindex;
+                    //data.m_nextContent = contentindex;
                     mgr.m_radioChannels[activechannel] = data;
+                    //mgr.m_radioChannels[activechannel].ChangeContent(activechannel);
                 }
 
-                var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
-                player.m_source.Stop();
+                //var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
+                //player.m_source.Stop();
             }
             else
             {

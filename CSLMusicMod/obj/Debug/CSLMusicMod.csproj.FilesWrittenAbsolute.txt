@@ -2,6 +2,7 @@
 /run/media/ruman/d6eb4b9c-1f53-44cb-8d6a-f783d1e24758/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.thumbnail_extra.png
 /run/media/ruman/d6eb4b9c-1f53-44cb-8d6a-f783d1e24758/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.thumbnail_package.png
 /run/media/ruman/d6eb4b9c-1f53-44cb-8d6a-f783d1e24758/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.icons.png
+/run/media/ruman/d6eb4b9c-1f53-44cb-8d6a-f783d1e24758/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.Resources.thumbnail_mix.png
 /run/media/ruman/d6eb4b9c-1f53-44cb-8d6a-f783d1e24758/ruman/Project/CSLMusicMod/CSLMusicMod/bin/Debug/CSLMusicMod.dll.mdb
 /run/media/ruman/d6eb4b9c-1f53-44cb-8d6a-f783d1e24758/ruman/Project/CSLMusicMod/CSLMusicMod/bin/Debug/CSLMusicMod.dll
 /run/media/ruman/d6eb4b9c-1f53-44cb-8d6a-f783d1e24758/ruman/Project/CSLMusicMod/CSLMusicMod/obj/Debug/CSLMusicMod.dll

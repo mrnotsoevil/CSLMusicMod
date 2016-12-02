@@ -3,6 +3,7 @@ using ICities;
 using UnityEngine;
 using System.Collections.Generic;
 using CSLMusicMod.UI;
+using System.IO;
 
 namespace CSLMusicMod
 {
@@ -21,6 +22,18 @@ namespace CSLMusicMod
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
+
+            if(!Directory.Exists("CSLMusicMod_Music"))
+            {
+                try
+                {
+                    Directory.CreateDirectory("CSLMusicMod_Music");
+                }
+                catch(Exception)
+                {
+                    
+                }
+            }
 
             if (UserRadioContainer == null)
             {

@@ -95,7 +95,11 @@ namespace CSLMusicMod
 
         private void LoadChannels()
         {
-            CreateDefaultMixChannel();
+            if(ModOptions.Instance.CreateMixChannels)
+            {
+                CreateDefaultMixChannel();
+            }
+
             CreateLegacyChannel("Userdefined", new string[] { "Userdefined" });
             LoadChannelsFromCollection(Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
 
@@ -157,8 +161,26 @@ namespace CSLMusicMod
         private void CreateDefaultMixChannel()
         {
             UserRadioChannel channel = new UserRadioChannel("CSLMusic Mix");
+            channel.m_ThumbnailFile = "thumbnail_mix.png";
             channel.m_Collections = m_Songs.Values.Select(song => song.m_Collection).ToArray(); // Default channel loads from all collections
-            m_Stations[channel.m_Name] = channel;
+
+            List<RadioContentInfo.ContentType> allowedcontent = new List<RadioContentInfo.ContentType>();
+
+            if (ModOptions.Instance.MixContentBlurb)
+                allowedcontent.Add(RadioContentInfo.ContentType.Blurb);
+            if (ModOptions.Instance.MixContentBroadcast)
+                allowedcontent.Add(RadioContentInfo.ContentType.Broadcast);
+            if (ModOptions.Instance.MixContentCommercial)
+                allowedcontent.Add(RadioContentInfo.ContentType.Commercial);
+            if (ModOptions.Instance.MixContentMusic)
+                allowedcontent.Add(RadioContentInfo.ContentType.Music);
+            if (ModOptions.Instance.MixContentTalk)
+                allowedcontent.Add(RadioContentInfo.ContentType.Talk);
+
+            channel.m_SupportedContent = allowedcontent.ToArray();
+
+            if(allowedcontent.Count != 0)
+                m_Stations[channel.m_Name] = channel;
         }
       
         private void Postprocess()
@@ -175,7 +197,7 @@ namespace CSLMusicMod
             {
                 if(channel.m_StateChain == null || channel.m_StateChain.Length == 0)
                 {
-                    channel.m_StateChain = AutoBuildStateChain(channel.m_Content);
+                    channel.m_StateChain = AutoBuildStateChain(channel.m_Content, channel.m_SupportedContent);
                 }
             }
 
@@ -200,14 +222,14 @@ namespace CSLMusicMod
         /// </summary>
         /// <returns>The build state chain.</returns>
         /// <param name="content">Content.</param>
-        private RadioChannelInfo.State[] AutoBuildStateChain(List<UserRadioContent> content)
+        private RadioChannelInfo.State[] AutoBuildStateChain(List<UserRadioContent> content, RadioContentInfo.ContentType[] allowedcontent)
         {
             if (content == null || content.Count == 0)
                 return null;
 
             content = new List<UserRadioContent>(content);
 
-            List<RadioContentInfo.ContentType> availabletypes = content.Select(song => song.m_ContentType).Distinct().ToList();
+            List<RadioContentInfo.ContentType> availabletypes = content.Select(song => song.m_ContentType).Distinct().Where(c => allowedcontent.Contains(c)).ToList();
 
             if(availabletypes.Count == 1)
             {

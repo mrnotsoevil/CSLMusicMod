@@ -18,6 +18,8 @@ namespace CSLMusicMod
 
         public RadioChannelInfo.State[] m_StateChain;
 
+        public RadioContentInfo.ContentType[] m_SupportedContent = (RadioContentInfo.ContentType[])Enum.GetValues(typeof(RadioContentInfo.ContentType));
+
         public String m_ThumbnailFile;
 
         public UserRadioChannel()

@@ -14,7 +14,17 @@ namespace CSLMusicMod
             {
                 Debug.Log("Loading Clip from " + this.m_fileName);
 
-                return new WWW("file:///" + WWW.EscapeURL(this.m_fileName));
+                // From old CSLMusicMod
+                String file = this.m_fileName;
+
+                if (Application.platform == RuntimePlatform.WindowsPlayer)
+                    file = "file:///" + file;
+                else
+                    file = "file://" + file;
+
+                file = file.Replace("#", "%23");
+
+                return new WWW(file);
             }
             else
             {

@@ -131,6 +131,71 @@ namespace CSLMusicMod
             }
         }
 
+        public bool MixContentMusic
+        {
+            get
+            {
+                return m_Options.MixContentMusic;
+            }
+            set
+            {
+                m_Options.MixContentMusic = value;
+                SaveSettings();
+            }
+        }
+
+        public bool MixContentTalk
+        {
+            get
+            {
+                return m_Options.MixContentTalk;
+            }
+            set
+            {
+                m_Options.MixContentTalk = value;
+                SaveSettings();
+            }
+        }
+
+        public bool MixContentBlurb
+        {
+            get
+            {
+                return m_Options.MixContentBlurb;
+            }
+            set
+            {
+                m_Options.MixContentBlurb = value;
+                SaveSettings();
+            }
+        }
+
+        public bool MixContentBroadcast
+        {
+            get
+            {
+                return m_Options.MixContentBroadcast;
+            }
+            set
+            {
+                m_Options.MixContentBroadcast = value;
+                SaveSettings();
+            }
+        }
+
+        public bool MixContentCommercial
+        {
+            get
+            {
+                return m_Options.MixContentCommercial;
+            }
+            set
+            {
+                m_Options.MixContentCommercial = value;
+                SaveSettings();
+            }
+        }
+
         public bool EnableCustomUI
         {
             get
@@ -205,16 +270,30 @@ namespace CSLMusicMod
             public bool CreateMixChannels { get; set; }
             public bool CreateChannelsFromLegacyPacks { get; set; }
             public bool EnableMusicPacks { get; set; }
+
             public bool AllowContentMusic { get; set; }
             public bool AllowContentBlurb { get; set; }
             public bool AllowContentTalk { get; set; }
             public bool AllowContentCommercial { get; set; }
             public bool AllowContentBroadcast { get; set; }
+
             public bool EnableCustomUI { get; set; }
+
+            public bool MixContentMusic { get; set; }
+            public bool MixContentBlurb { get; set; }
+            public bool MixContentTalk { get; set; }
+            public bool MixContentCommercial { get; set; }
+            public bool MixContentBroadcast { get; set; }
 
             public Options()
             {
                 CreateMixChannels = true;
+                MixContentBlurb = false;
+                MixContentBroadcast = false;
+                MixContentCommercial = false;
+                MixContentMusic = true;
+                MixContentTalk = false;
+
                 CreateChannelsFromLegacyPacks = true;
                 EnableMusicPacks = true;
                 AllowContentMusic = true;
