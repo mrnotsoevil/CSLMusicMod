@@ -8,6 +8,9 @@ namespace CSLMusicMod.UI
 {
     public static class SettingsUI
     {
+        private static List<String> KeyStringList = Enum.GetNames(typeof(KeyCode)).ToList();
+        private static List<KeyCode> KeyList = new List<KeyCode>((KeyCode[])Enum.GetValues(typeof(KeyCode)));
+
         public static void InitializeSettingsUI(UIHelperBase ui)
         {
             UIHelperBase group = ui.AddGroup("CSL Music Mod");
@@ -16,7 +19,28 @@ namespace CSLMusicMod.UI
 
             ModOptions options = ModOptions.Instance;
 
-            group.AddGroup("Note: Settings only take effect after reloading the map.");
+            {
+                var subgroup = group.AddGroup("User Interface");
+                subgroup.AddCheckbox("Enable playlist", 
+                    options.EnableCustomUI, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.EnableCustomUI = isChecked;
+                        }));               
+            }
+            {
+                var subgroup = group.AddGroup("Keyboard shortcuts");
+                subgroup.AddDropdown("Open playlist and settings", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.KeyOpenMusicPanel.ToString()), (selection) =>
+                    {
+                        ModOptions.Instance.KeyOpenMusicPanel = KeyList[selection];
+                    });
+                subgroup.AddDropdown("Next song", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.KeyNextTrack.ToString()), (selection) =>
+                    {
+                        ModOptions.Instance.KeyNextTrack = KeyList[selection];
+                    });
+            }
+
+            group.AddGroup("Note: Following settings may only take effect after reloading the map:");
            
             {
                 var subgroup = group.AddGroup("Music packs");
@@ -103,6 +127,14 @@ namespace CSLMusicMod.UI
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.MixContentBroadcast = isChecked;
+                        }));
+            }
+            {
+                var subgroup = group.AddGroup("Disabled content");              
+                subgroup.AddButton("Reset", new OnButtonClicked(() =>
+                        {
+                        options.DisabledContent.Clear();
+                        options.SaveSettings();
                         }));
             }
         }

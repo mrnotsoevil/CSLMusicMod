@@ -14,6 +14,7 @@ namespace CSLMusicMod
         public static ContentInitializer ContentContainer;
         public static Detours MethodDetours;
         public static MusicUI UI;
+        public static DisabledContentWatcher DisabledContentContainer;
 
         public LoadingExtension()
         {
@@ -68,10 +69,14 @@ namespace CSLMusicMod
 
                 DebugOutput();
 
-                // Build UI
+                // Build UI and other post loadtime
                 if (UI == null)
                 {
                     UI = new GameObject("CSLMusicMod_UI").AddComponent<MusicUI>();
+                }
+                if (DisabledContentContainer == null)
+                {
+                    DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<DisabledContentWatcher>();
                 }
             }
         }
@@ -83,7 +88,7 @@ namespace CSLMusicMod
             {
                 UnityEngine.Object.Destroy(UI.gameObject);
                 UI = null;
-            }
+            }           
             if (StationContainer != null)
             {
                 UnityEngine.Object.Destroy(StationContainer.gameObject);
@@ -104,36 +109,40 @@ namespace CSLMusicMod
                 UnityEngine.Object.Destroy(UserRadioContainer.gameObject);
                 UserRadioContainer = null;
             }
-
+            if (DisabledContentContainer != null)
+            {
+                UnityEngine.Object.Destroy(DisabledContentContainer.gameObject);
+                UserRadioContainer = null;
+            }
         }
 
         private void DebugOutput()
         {
             for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
             {
+                String message = "";
+
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
 
-                Debug.Log("[CSLMusic-ChannelInfo] " + info.ToString() + " | " + info.m_hasChannelData);
-                Debug.Log(info.m_prefabDataIndex + " | " + info.m_prefabInitialized);
+                message += "[CSLMusic][ChannelInfo] " + info + "\n";
+                message += "Schedule:\n";
 
                 foreach(RadioChannelInfo.State s in info.m_stateChain)
                 {
-                    Debug.Log("-> " + s.m_contentType + " | " + s.m_minCount + " | " + s.m_maxCount);
+                    message += "\t" + s.m_contentType + " " + s.m_minCount + " - " + s.m_maxCount + "\n";
                 }
-            }
 
-            for (uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
-            {
-                RadioContentInfo info = PrefabCollection<RadioContentInfo>.GetPrefab(i);
+                message += "Content:\n";
 
-                Debug.Log("[CSLMusic-ContentInfo] " + info.ToString() + ", " + info.m_contentType + ", " + info.m_folderName + ", " + info.m_fileName);
-                Debug.Log(info.m_prefabDataIndex + " | " + info.m_prefabInitialized);
-                Debug.Log(info.m_cooldown + " | " + info.m_lengthSeconds);
-
-                foreach(RadioChannelInfo rc in info.m_radioChannels)
+                for (uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
                 {
-                    Debug.Log("# ->" + rc);
+                    RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
+
+
+                    message += "\t[ContentInfo] " + content + " " + content.m_fileName + "\n";
                 }
+
+                Debug.Log(message);
             }
         }
 
@@ -143,6 +152,8 @@ namespace CSLMusicMod
         /// <param name="info">Info.</param>
         private void RemoveUnsupportedContent(RadioChannelInfo info)
         {
+            Debug.Log("[CSLMusic] Removing unsupported content from " + info);
+
             var options = ModOptions.Instance;
 
             List<RadioChannelInfo.State> states = new List<RadioChannelInfo.State>(info.m_stateChain);

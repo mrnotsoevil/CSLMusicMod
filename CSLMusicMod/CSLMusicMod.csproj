@@ -35,6 +35,11 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="bin/Release/copytomoddir.sh" workingdir="${TargetDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -86,6 +91,9 @@
     <Compile Include="UI\UIMusicListPanel.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="CustomRadioChannelInfo.cs" />
+    <Compile Include="Helpers\AudioManagerHelper.cs" />
+    <Compile Include="CustomRadioChannelData.cs" />
+    <Compile Include="DisabledContentWatcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

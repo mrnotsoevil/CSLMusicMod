@@ -24,7 +24,8 @@ namespace CSLMusicMod
                 button.pressedFgSprite = station.m_Thumbnail;
                 button.focusedFgSprite = station.m_Thumbnail;
                 button.disabledFgSprite = station.m_Thumbnail;
-                button.hoveredColor = new Color32(255, 255, 255, 200);
+                button.color = new Color32(225, 225, 225, 255);
+                button.hoveredColor = new Color32(255, 255, 255, 255);
                 button.tooltip = station.GetLocalizedTitle();
             }
             else
@@ -38,6 +39,7 @@ namespace CSLMusicMod
                 button.pressedFgSprite = station.m_Thumbnail + "Pressed";
                 button.focusedFgSprite = station.m_Thumbnail;
                 button.disabledFgSprite = station.m_Thumbnail + "Disabled";
+                button.color = new Color32(255, 255, 255, 255);
                 button.hoveredColor = new Color32(255, 255, 255, 255);
                 button.tooltip = station.GetLocalizedTitle();
             }

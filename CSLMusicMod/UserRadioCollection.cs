@@ -44,8 +44,6 @@ namespace CSLMusicMod
             LoadVanillaSongs(RadioContentInfo.ContentType.Commercial);
             LoadVanillaSongs(RadioContentInfo.ContentType.Broadcast);
 
-            LoadSongsFromCollection("Userdefined", Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
-
             HashSet<String> visitedmoddirs = new HashSet<string>();
 
             foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
@@ -65,6 +63,8 @@ namespace CSLMusicMod
                     }
                 }
             }
+
+            LoadSongsFromCollection("Userdefined", Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
         }
 
         private void LoadVanillaSongs(RadioContentInfo.ContentType type)
@@ -72,7 +72,7 @@ namespace CSLMusicMod
             String path = Path.Combine(Path.Combine(DataLocation.gameContentPath, "Radio"), type.ToString());
 
             // The content determination algorithm will always return "Music". Set it manually.
-            foreach(var content in LoadSongsFromCollection("Vanilla" ,path))
+            foreach(var content in LoadSongsFromCollection("Vanilla " + type.ToString() ,path))
             {
                 content.m_ContentType = type;
             }
@@ -100,31 +100,42 @@ namespace CSLMusicMod
                 CreateDefaultMixChannel();
             }
 
-            CreateLegacyChannel("Userdefined", new string[] { "Userdefined" });
-            LoadChannelsFromCollection(Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
-
-            HashSet<String> visitedmoddirs = new HashSet<string>();
-
-            foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
+            if (ModOptions.Instance.EnableMusicPacks)
             {
-                if (info.isEnabled)
+                HashSet<String> visitedmoddirs = new HashSet<string>();
+
+                foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
                 {
-                    String path = Path.Combine(info.modPath, "CSLMusicMod_Music");
-
-                    if (Directory.Exists(path))
+                    if (info.isEnabled)
                     {
-                        if (!visitedmoddirs.Contains(path))
-                        {
-                            // If enabled, add default collection
-                            IUserMod mod = (IUserMod)info.userModInstance;
-                            CreateLegacyChannel("MusicPack " + mod.Name, new string[] { "MusicPack " + mod.Name });
+                        String path = Path.Combine(info.modPath, "CSLMusicMod_Music");
 
-                            LoadChannelsFromCollection(path);
-                            visitedmoddirs.Add(path);
+                        if (Directory.Exists(path))
+                        {
+                            if (!visitedmoddirs.Contains(path))
+                            {
+                                // If enabled, add default collection
+                                IUserMod mod = (IUserMod)info.userModInstance;
+
+                                if (ModOptions.Instance.CreateChannelsFromLegacyPacks)
+                                {
+                                    CreateLegacyChannel("MusicPack " + mod.Name, new string[] { "MusicPack " + mod.Name });
+                                }
+
+                                LoadChannelsFromCollection(path);
+                                visitedmoddirs.Add(path);
+                            }
                         }
                     }
                 }
             }
+
+            if (ModOptions.Instance.CreateChannelsFromLegacyPacks)
+            {
+                CreateLegacyChannel("Userdefined", new string[] { "Userdefined" });
+            }
+
+            LoadChannelsFromCollection(Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
         }
 
         private void LoadChannelsFromCollection(String dir)
@@ -231,7 +242,7 @@ namespace CSLMusicMod
 
             List<RadioContentInfo.ContentType> availabletypes = content.Select(song => song.m_ContentType).Distinct().Where(c => allowedcontent.Contains(c)).ToList();
 
-            if(availabletypes.Count == 1)
+            /*if(availabletypes.Count == 1)
             {
                 List<RadioChannelInfo.State> statechain = new List<RadioChannelInfo.State>();
 
@@ -242,7 +253,7 @@ namespace CSLMusicMod
 
                 return statechain.ToArray();
             }
-            else
+            else*/
             {
                 List<RadioChannelInfo.State> statechain = new List<RadioChannelInfo.State>();
                 int rounds = CSLMusicMod.RANDOM.Next(1, 5);

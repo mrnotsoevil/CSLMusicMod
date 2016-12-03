@@ -5,6 +5,7 @@ using UnityEngine;
 using CSLMusicMod.LitJson;
 using ColossalFramework.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
@@ -209,6 +210,45 @@ namespace CSLMusicMod
             }
         }
 
+        public KeyCode KeyNextTrack
+        {
+            get
+            {
+                return m_Options.KeyNextTrack;
+            }
+            set
+            {
+                m_Options.KeyNextTrack = value;
+                SaveSettings();
+            }
+        }
+
+        public KeyCode KeyOpenMusicPanel
+        {
+            get
+            {
+                return m_Options.KeyOpenMusicPanel;
+            }
+            set
+            {
+                m_Options.KeyOpenMusicPanel = value;
+                SaveSettings();
+            }
+        }
+
+        public List<String> DisabledContent
+        {
+            get
+            {
+                return m_Options.DisabledContent;
+            }
+            set
+            {
+                m_Options.DisabledContent = value;
+                SaveSettings();
+            }
+        }
+
         public String SettingsFilename
         {
             get
@@ -243,6 +283,10 @@ namespace CSLMusicMod
             {
                 Debug.Log(ex);
             }
+            finally
+            {
+                Debug.Log("[CSLMusic] Settings saved.");
+            }
         }
 
         public void LoadSettings()
@@ -257,6 +301,10 @@ namespace CSLMusicMod
                 catch(Exception ex)
                 {
                     Debug.Log(ex);
+                }
+                finally
+                {
+                    Debug.Log("[CSLMusic] Settings loaded.");
                 }
             }
             else
@@ -285,6 +333,11 @@ namespace CSLMusicMod
             public bool MixContentCommercial { get; set; }
             public bool MixContentBroadcast { get; set; }
 
+            public KeyCode KeyNextTrack { get; set; }
+            public KeyCode KeyOpenMusicPanel { get; set; }
+
+            public List<String> DisabledContent { get; set; }
+
             public Options()
             {
                 CreateMixChannels = true;
@@ -302,6 +355,11 @@ namespace CSLMusicMod
                 AllowContentCommercial = true;
                 AllowContentBroadcast = true;
                 EnableCustomUI = true;
+
+                KeyNextTrack = KeyCode.N;
+                KeyOpenMusicPanel = KeyCode.M;
+
+                DisabledContent = new List<string>();
             }
         }
     }

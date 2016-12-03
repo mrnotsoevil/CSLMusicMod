@@ -37,6 +37,8 @@ namespace CSLMusicMod.UI
 
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
 
+        private ModOptions m_ModOptionsInstance = ModOptions.Instance;
+
         private bool Filtered
         {
             get
@@ -177,6 +179,8 @@ namespace CSLMusicMod.UI
 
             //Debug.Log("Selected active channel " + activechannel + " of " + mgr.m_radioChannelCount);
 
+            Dictionary<RadioContentInfo, String> entrytexts = new Dictionary<RadioContentInfo, string>();
+
             if(activechannel >= 0)
             {
                 RadioChannelData channeldata = mgr.m_radioChannels[activechannel];
@@ -198,7 +202,9 @@ namespace CSLMusicMod.UI
 
                     if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                     {
-                        if(!IsFiltered(GetEntryTextFor(c)))
+                        entrytexts[c] = GetEntryTextFor(c);
+
+                        if(!IsFiltered(entrytexts[c]))
                         {
                             m_CurrentContent.Add(c);
                         }
@@ -212,11 +218,11 @@ namespace CSLMusicMod.UI
                 {
                     if(m_SortAscending)
                     {
-                        return GetEntryTextFor(x).CompareTo(GetEntryTextFor(y));
+                        return entrytexts[x].CompareTo(entrytexts[y]);
                     }
                     else
                     {
-                        return -GetEntryTextFor(x).CompareTo(GetEntryTextFor(y));
+                        return entrytexts[x].CompareTo(entrytexts[y]);
                     }
                 });
 
@@ -227,6 +233,12 @@ namespace CSLMusicMod.UI
         {
             String name = String.IsNullOrEmpty(content.m_displayName) ? content.name : content.m_displayName;
             name = "[" + content.m_contentType.ToString().Substring(0,2) + "] " + name;
+
+            String id = content.m_folderName + "/" + content.m_fileName;
+            if(m_ModOptionsInstance.DisabledContent.Contains(id)) // Use optimized access
+            {
+                name = "[X]" + name;
+            }
 
             return name;
         }
@@ -412,77 +424,32 @@ namespace CSLMusicMod.UI
 
         void buttonNextTrackClicked (UIComponent component, UIMouseEventParameter eventParam)
         {
-            AudioManager mgr = Singleton<AudioManager>.instance;         
-
-            if(ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
-            {
-                var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
-                player.m_source.Stop();
-            }
-            else
-            {
-                
-            }
-            
+            AudioManagerHelper.NextTrack();           
         }
 
         void musicEntrySelected (UIComponent component, int value)
         {
-            AudioManager mgr = Singleton<AudioManager>.instance;
+            RadioContentInfo info = m_CurrentContent[value];
+            AudioManagerHelper.SwitchToContent(info);
+        }
 
-            if(ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+
+        void musicEntryEnableDisable (UIComponent component, int value)
+        {
+            RadioContentInfo info = m_CurrentContent[value];
+            String id = info.m_folderName + "/" + info.m_fileName;
+
+            if(ModOptions.Instance.DisabledContent.Contains(id))
             {
-                RadioContentInfo info = m_CurrentContent[value];
-                ushort contentindex = 0;
-                bool found = false;
-
-                for(int i = 0; i < mgr.m_radioContentCount; ++i)
-                {
-                    RadioContentData data = mgr.m_radioContents[i];
-
-                    //Debug.Log("CC: " + data + " + " + data.Info + " == " + info);
-
-                    if(data.Info == info)
-                    {
-                        contentindex = (ushort)i;
-                        //Debug.Log("Found content index for " + info);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if(!found)
-                {
-                    Debug.Log("[CSLMusic] Switching to unloaded music " + info);
-
-                    if(!mgr.CreateRadioContent(out contentindex, info))
-                    {
-                        Debug.Log("[CSLMusic] ... failed to create content " + info);
-                        return;
-                    }
-                }
-
-                Debug.Log("Content index: " + contentindex);
-
-                // Next content
-                ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
-
-                if(activechannel >= 0)
-                {
-                    RadioChannelData data = mgr.m_radioChannels[activechannel];
-                    data.m_currentContent = contentindex;
-                    //data.m_nextContent = contentindex;
-                    mgr.m_radioChannels[activechannel] = data;
-                    //mgr.m_radioChannels[activechannel].ChangeContent(activechannel);
-                }
-
-                //var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
-                //player.m_source.Stop();
+                ModOptions.Instance.DisabledContent.Remove(id);
             }
             else
             {
-
+                ModOptions.Instance.DisabledContent.Add(id);
             }
+            ModOptions.Instance.SaveSettings();
+
+            RebuildList();
         }
 
         void filterTextChanged (UIComponent component, string value)
@@ -555,10 +522,9 @@ namespace CSLMusicMod.UI
             //UpdateMusicList();
 
             panel.eventItemClicked += musicEntrySelected;
+            panel.eventItemDoubleClicked += musicEntryEnableDisable;
            
         }
-
-
 
         private bool IsFiltered(String entrytext)
         {

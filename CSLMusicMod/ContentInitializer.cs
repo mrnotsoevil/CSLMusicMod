@@ -20,6 +20,9 @@ namespace CSLMusicMod
         {
             UserRadioCollection collection = Resources.FindObjectsOfTypeAll<UserRadioCollection>().First();
 
+            var collectionnames = collection.m_Songs.Values.Select(song => song.m_Collection).Distinct().ToArray();
+            Debug.Log("[CSLMusic] Available collections: " + String.Join("\n", collectionnames));
+
             foreach(UserRadioContent content in collection.m_Songs.Values)
             {
                 CreatePrefab(content.m_Name, "aukio", new Action<RadioContentInfo>((RadioContentInfo obj) =>

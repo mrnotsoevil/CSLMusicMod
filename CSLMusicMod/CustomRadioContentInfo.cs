@@ -12,7 +12,7 @@ namespace CSLMusicMod
         {
             if(File.Exists(this.m_fileName))
             {
-                Debug.Log("Loading Clip from " + this.m_fileName);
+                Debug.Log("Loading custom clip from " + this.m_fileName);
 
                 // From old CSLMusicMod
                 String file = this.m_fileName;
