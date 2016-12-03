@@ -1,16 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/CSLMusicMod.cs">
     <Files>
+      <File FileName="CSLMusicMod/UI/UIMusicListPanel.cs" Line="483" Column="32" />
       <File FileName="CSLMusicMod/UI/MusicUI.cs" Line="104" Column="25" />
-      <File FileName="CSLMusicMod/ModOptions.cs" Line="362" Column="43" />
-      <File FileName="CSLMusicMod/LoadingExtension.cs" Line="89" Column="56" />
-      <File FileName="CSLMusicMod/UserRadioCollection.cs" Line="244" Column="13" />
-      <File FileName="CSLMusicMod/UI/UIMusicListPanel.cs" Line="434" Column="10" />
-      <File FileName="CSLMusicMod/UI/SettingsUI.cs" Line="136" Column="57" />
-      <File FileName="CSLMusicMod/Detours.cs" Line="13" Column="73" />
-      <File FileName="CSLMusicMod/CustomRadioChannelData.cs" Line="220" Column="34" />
-      <File FileName="CSLMusicMod/DisabledContentWatcher.cs" Line="58" Column="18" />
+      <File FileName="CSLMusicMod/CSLMusicMod.cs" Line="14" Column="59" />
+      <File FileName="CSLMusicMod/ModOptions.cs" Line="1" Column="1" />
+      <File FileName="CSLMusicMod/UI/SettingsUI.cs" Line="16" Column="88" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

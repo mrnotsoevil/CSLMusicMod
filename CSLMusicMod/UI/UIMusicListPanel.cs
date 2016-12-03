@@ -480,6 +480,7 @@ namespace CSLMusicMod.UI
             panel.itemHeight = 32;
             panel.itemPadding = new RectOffset(0, 0, 4, 4);
             panel.tooltip = "";
+            panel.zOrder = -50;
          
             panel.Show();
 

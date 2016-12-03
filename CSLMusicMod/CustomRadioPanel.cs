@@ -27,6 +27,7 @@ namespace CSLMusicMod
                 button.color = new Color32(225, 225, 225, 255);
                 button.hoveredColor = new Color32(255, 255, 255, 255);
                 button.tooltip = station.GetLocalizedTitle();
+                button.BringToFront();
             }
             else
             {
@@ -42,6 +43,7 @@ namespace CSLMusicMod
                 button.color = new Color32(255, 255, 255, 255);
                 button.hoveredColor = new Color32(255, 255, 255, 255);
                 button.tooltip = station.GetLocalizedTitle();
+                button.BringToFront();
             }
         }
     }

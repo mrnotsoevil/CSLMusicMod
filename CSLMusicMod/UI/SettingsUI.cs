@@ -13,7 +13,7 @@ namespace CSLMusicMod.UI
 
         public static void InitializeSettingsUI(UIHelperBase ui)
         {
-            UIHelperBase group = ui.AddGroup("CSL Music Mod");
+            UIHelperBase group = ui.AddGroup("CSL Music Mod " + CSLMusicMod.VersionName);
 
             Debug.Log("[CSLMusicMod] Populating settings menu ...");          
 
@@ -58,41 +58,46 @@ namespace CSLMusicMod.UI
                         }));
             }
             {
-                var subgroup = group.AddGroup("Allowed content");
-                subgroup.AddCheckbox("Music", 
+                var subgroup = group.AddGroup("Radio content");
+                subgroup.AddCheckbox("Enable music", 
                     options.AllowContentMusic, 
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.AllowContentMusic = isChecked;
                         }));
-                subgroup.AddCheckbox("Blurbs", 
+                subgroup.AddCheckbox("Enable blurbs", 
                     options.AllowContentBlurb, 
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.AllowContentBlurb = isChecked;
                         }));
-                subgroup.AddCheckbox("Talks", 
+                subgroup.AddCheckbox("Enable talks", 
                     options.AllowContentTalk, 
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.AllowContentTalk = isChecked;
                         }));
-                subgroup.AddCheckbox("Commercials", 
+                subgroup.AddCheckbox("Enable commercials", 
                     options.AllowContentCommercial, 
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.AllowContentCommercial = isChecked;
                         }));
-                subgroup.AddCheckbox("Broadcasts", 
+                subgroup.AddCheckbox("Enable broadcasts", 
                     options.AllowContentBroadcast, 
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.AllowContentBroadcast = isChecked;
                         }));
+                subgroup.AddButton("Reset disabled entries", new OnButtonClicked(() =>
+                    {
+                        options.DisabledContent.Clear();
+                        options.SaveSettings();
+                    }));
             }
             {
-                var subgroup = group.AddGroup("CSLMusic Mix");
-                subgroup.AddCheckbox("Create channel with all content", 
+                var subgroup = group.AddGroup("Channel with all content (CSLMusic Mix)");
+                subgroup.AddCheckbox("Create this channel", 
                     options.CreateMixChannels, 
                     new OnCheckChanged((bool isChecked) =>
                         {
@@ -128,15 +133,7 @@ namespace CSLMusicMod.UI
                         {
                             options.MixContentBroadcast = isChecked;
                         }));
-            }
-            {
-                var subgroup = group.AddGroup("Disabled content");              
-                subgroup.AddButton("Reset", new OnButtonClicked(() =>
-                        {
-                        options.DisabledContent.Clear();
-                        options.SaveSettings();
-                        }));
-            }
+            }        
         }
     }
 }
