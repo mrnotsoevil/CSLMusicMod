@@ -89,6 +89,12 @@ namespace CSLMusicMod.UI
                         {
                             options.AllowContentBroadcast = isChecked;
                         }));
+                subgroup.AddCheckbox("Content can be disabled (May affect performance)", 
+                    options.EnableDisabledContent, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.EnableDisabledContent = isChecked;
+                        }));
                 subgroup.AddButton("Reset disabled entries", new OnButtonClicked(() =>
                     {
                         options.DisabledContent.Clear();
@@ -127,7 +133,7 @@ namespace CSLMusicMod.UI
                         {
                             options.MixContentCommercial = isChecked;
                         }));
-                subgroup.AddCheckbox("Include Bbroadcasts", 
+                subgroup.AddCheckbox("Include broadcasts", 
                     options.MixContentBroadcast, 
                     new OnCheckChanged((bool isChecked) =>
                         {

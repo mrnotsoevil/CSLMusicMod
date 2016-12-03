@@ -236,6 +236,19 @@ namespace CSLMusicMod
             }
         }
 
+        public bool EnableDisabledContent
+        {
+            get
+            {
+                return m_Options.EnableDisabledContent;
+            }
+            set
+            {
+                m_Options.EnableDisabledContent = value;
+                SaveSettings();
+            }
+        }
+
         public List<String> DisabledContent
         {
             get
@@ -337,6 +350,7 @@ namespace CSLMusicMod
             public KeyCode KeyOpenMusicPanel { get; set; }
 
             public List<String> DisabledContent { get; set; }
+            public bool EnableDisabledContent { get; set; }
 
             public Options()
             {
@@ -360,6 +374,7 @@ namespace CSLMusicMod
                 KeyOpenMusicPanel = KeyCode.M;
 
                 DisabledContent = new List<string>();
+                EnableDisabledContent = true;
             }
         }
     }

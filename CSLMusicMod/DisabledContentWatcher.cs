@@ -17,16 +17,23 @@ namespace CSLMusicMod
 
         public void Start()
         {
-            InvokeRepeating("RemoveDisabledContent", 1f, 0.5f);
+            if(m_ModOptions.EnableDisabledContent)
+                InvokeRepeating("RemoveDisabledContent", 1f, 0.5f);
         }
 
         public void RemoveDisabledContent()
         {
+            if (m_ModOptions.DisabledContent.Count == 0)
+                return;
+
             AudioManager mgr = Singleton<AudioManager>.instance;
 
-            for(int i = 0; i < mgr.m_radioChannelCount; ++i)
+            ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+
+            //for(int i = 0; i < mgr.m_radioChannelCount; ++i)
+            if(activechannel >= 0)
             {
-                RadioChannelData data = mgr.m_radioChannels[i];
+                RadioChannelData data = mgr.m_radioChannels[activechannel];
 
                 if(data.m_currentContent != 0)
                 {
