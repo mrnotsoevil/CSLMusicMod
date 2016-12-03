@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 namespace CSLMusicMod
 {
@@ -34,9 +35,28 @@ namespace CSLMusicMod
             _customPrefabs = new Dictionary<string, RadioChannelInfo>();
         }
 
-        public void OnLevelWasLoaded(int level)
+        /*public void OnLevelWasLoaded(int level)
         {
             if (level == 6)
+            {
+                _customPrefabs.Clear();
+                _isInitialized = false;
+            }
+        }*/
+
+        public void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnLevelFinishedLoading;
+        }
+       
+        public void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+        }
+
+        void OnLevelFinishedLoading (Scene scene, LoadSceneMode mode)
+        {
+            if(mode == LoadSceneMode.Single)
             {
                 _customPrefabs.Clear();
                 _isInitialized = false;

@@ -152,6 +152,9 @@ namespace CSLMusicMod
         /// <param name="info">Info.</param>
         private void RemoveUnsupportedContent(RadioChannelInfo info)
         {
+            if (info == null)
+                return;
+
             Debug.Log("[CSLMusic] Removing unsupported content from " + info);
 
             var options = ModOptions.Instance;
