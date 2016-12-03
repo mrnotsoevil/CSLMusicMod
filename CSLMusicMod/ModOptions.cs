@@ -11,18 +11,17 @@ namespace CSLMusicMod
 {
     public class ModOptions : MonoBehaviour
     {
+        private static ModOptions _Instance = null;
         public static ModOptions Instance 
         {
             get
             {
-                var found = Resources.FindObjectsOfTypeAll<ModOptions>();
-
-                if(found.Length == 0)
+                if(_Instance == null)
                 {
-                    return new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
+                    _Instance = new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
                 }
 
-                return found.First();
+                return _Instance;
             }
         }
 

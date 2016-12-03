@@ -92,7 +92,6 @@
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="CustomRadioChannelInfo.cs" />
     <Compile Include="Helpers\AudioManagerHelper.cs" />
-    <Compile Include="CustomRadioChannelData.cs" />
     <Compile Include="DisabledContentWatcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

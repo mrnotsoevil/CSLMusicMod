@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ICities;
 using UnityEngine;
 using System.Collections.Generic;
@@ -138,8 +139,8 @@ namespace CSLMusicMod
                 {
                     RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
 
-
-                    message += "\t[ContentInfo] " + content + " " + content.m_fileName + "\n";
+                    if(content.m_radioChannels.Contains(info))
+                        message += "\t[ContentInfo] " + content + " " + content.m_fileName + "\n";
                 }
 
                 Debug.Log(message);

@@ -36,6 +36,7 @@ namespace CSLMusicMod.UI
             }
         }
 
+
         public MusicUI()
         {
         }

@@ -39,6 +39,24 @@ namespace CSLMusicMod.UI
 
         private ModOptions m_ModOptionsInstance = ModOptions.Instance;
 
+        private RadioPanel m_CurrentRadioPanel = null;
+
+        private RadioPanel CurrentRadioPanel
+        {
+            get
+            {
+                if (m_CurrentRadioPanel != null)
+                    return m_CurrentRadioPanel;
+                else
+                {
+                    var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
+                    m_CurrentRadioPanel = radiopanel;
+
+                    return radiopanel;
+                }
+            }
+        }
+
         private bool Filtered
         {
             get
@@ -124,7 +142,7 @@ namespace CSLMusicMod.UI
             base.OnVisibilityChanged();
 
             // Bring the radio panel to the front
-            var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
+            var radiopanel = CurrentRadioPanel;
 
             if(radiopanel != null)
             {
@@ -464,7 +482,7 @@ namespace CSLMusicMod.UI
 
         void buttonCloseClicked (UIComponent component, UIMouseEventParameter eventParam)
         {
-            var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
+            var radiopanel = CurrentRadioPanel;
             radiopanel.HideRadio();
         }
 

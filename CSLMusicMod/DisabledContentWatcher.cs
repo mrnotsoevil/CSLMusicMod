@@ -9,21 +9,19 @@ namespace CSLMusicMod
 {
     public class DisabledContentWatcher : MonoBehaviour
     {
-        private ModOptions m_ModOptions = ModOptions.Instance;
-
         public DisabledContentWatcher()
         {
         }
 
         public void Start()
         {
-            if(m_ModOptions.EnableDisabledContent)
+            if(ModOptions.Instance.EnableDisabledContent)
                 InvokeRepeating("RemoveDisabledContent", 1f, 0.5f);
         }
 
         public void RemoveDisabledContent()
         {
-            if (m_ModOptions.DisabledContent.Count == 0)
+            if (ModOptions.Instance.DisabledContent.Count == 0)
                 return;
 
             AudioManager mgr = Singleton<AudioManager>.instance;
@@ -40,7 +38,7 @@ namespace CSLMusicMod
                     var content = mgr.m_radioContents[data.m_currentContent];
                     string id = content.Info.m_folderName + "/" + content.Info.m_fileName;
 
-                    if(m_ModOptions.DisabledContent.Contains(id))
+                    if(ModOptions.Instance.DisabledContent.Contains(id))
                     {
                         //Debug.Log("Removing content " + id);
 
@@ -70,7 +68,7 @@ namespace CSLMusicMod
                 {
                     string id = content.m_folderName + "/" + content.m_fileName;
 
-                    if (!m_ModOptions.DisabledContent.Contains(id))
+                    if (!ModOptions.Instance.DisabledContent.Contains(id))
                     {
                         available.Add(content);
                     }
