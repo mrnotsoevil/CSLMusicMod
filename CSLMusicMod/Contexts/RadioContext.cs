@@ -25,7 +25,7 @@ namespace CSLMusicMod
             {
                 bool applies = true;
 
-                foreach(RadioContextCondition cond in m_Conditions)
+                foreach(RadioContextCondition cond in conj)
                 {
                     applies &= cond.Applies();
 
@@ -65,6 +65,9 @@ namespace CSLMusicMod
                             break;
                         case "mood":
                             context = MoodContextCondition.LoadFromJson(entry);
+                            break;
+                        case "disaster":
+                            context = DisasterContextCondition.LoadFromJson(entry);
                             break;
                         default:
                             Debug.Log("[CSLMusic] Error: Unknown context type!");

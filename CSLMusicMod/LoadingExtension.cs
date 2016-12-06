@@ -150,6 +150,11 @@ namespace CSLMusicMod
 
                 Debug.Log(message);
             }
+
+            for(uint i = 0; i < PrefabCollection<DisasterInfo>.PrefabCount(); ++i)
+            {
+                Debug.Log("[CSLMusic][DisasterContext] Disaster name: " + PrefabCollection<DisasterInfo>.GetPrefab(i).name);
+            }
         }
 
         /// <summary>
