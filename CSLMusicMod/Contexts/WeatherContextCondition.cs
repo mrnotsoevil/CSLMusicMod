@@ -78,8 +78,8 @@ namespace CSLMusicMod
 
             if(json.Keys.Contains("temperature"))
             {
-                context.m_TempFrom = (float)((int)json["temperature"][0]) / 10f;
-                context.m_TempTo = (float)((int)json["temperature"][1]) / 10f;
+                context.m_TempFrom = (float)((int)json["temperature"][0]);
+                context.m_TempTo = (float)((int)json["temperature"][1]);
             }
             if(json.Keys.Contains("rain"))
             {

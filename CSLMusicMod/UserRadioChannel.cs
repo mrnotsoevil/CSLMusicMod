@@ -12,7 +12,7 @@ namespace CSLMusicMod
     {
         public String m_Name;
 
-        public String[] m_Collections;
+        public HashSet<String> m_Collections;
 
         public List<UserRadioContent> m_Content;
 
@@ -31,7 +31,7 @@ namespace CSLMusicMod
         public UserRadioChannel(String name)
         {
             m_Name = name;
-            m_Collections = new string[] { name };
+            m_Collections = new HashSet<string>() { name };
         }
 
         public UITextureAtlas GetThumbnailAtlas(Material baseMaterial)
@@ -102,11 +102,11 @@ namespace CSLMusicMod
                         collections.Add((String)v);
                     }
 
-                    channel.m_Collections = collections.ToArray();
+                    channel.m_Collections = new HashSet<string>(collections);
                 }
                 else
                 {
-                    channel.m_Collections = new string[] { channel.m_Name };
+                    channel.m_Collections = new HashSet<string>(new string[] { channel.m_Name });
                 }
 
                 if(json.Keys.Contains("thumbnail"))
@@ -138,7 +138,15 @@ namespace CSLMusicMod
                         RadioContext context = RadioContext.LoadFromJson(entry);
 
                         if(context != null)
+                        {
                             channel.m_Contexts.Add(context);
+
+                            // Auto-load collections that are defined in contexts
+                            foreach(var coll in context.m_Collections)
+                            {
+                                channel.m_Collections.Add(coll);
+                            }
+                        }
                     }
                 }
 

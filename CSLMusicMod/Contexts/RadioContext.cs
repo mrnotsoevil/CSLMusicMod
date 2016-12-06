@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CSLMusicMod.LitJson;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,10 @@ namespace CSLMusicMod
     {
         public HashSet<string> m_Collections = new HashSet<string>();
 
-        public List<RadioContextCondition> m_Conditions = new List<RadioContextCondition>();
+        /// <summary>
+        /// The conditions are saved in DNF (disjunctive normal form).
+        /// </summary>
+        public List<List<RadioContextCondition>> m_Conditions = new List<List<RadioContextCondition>>();
 
         public RadioContext()
         {
@@ -17,46 +21,61 @@ namespace CSLMusicMod
 
         public bool Applies()
         {
-            foreach(RadioContextCondition cond in m_Conditions)
+            foreach(var conj in m_Conditions)
             {
-                if(!cond.Applies())
+                bool applies = true;
+
+                foreach(RadioContextCondition cond in m_Conditions)
                 {
-                    return false;
+                    applies &= cond.Applies();
+
+                    if(!applies)
+                    {
+                        break;
+                    }
                 }
+
+                if (applies)
+                    return true;
             }
 
-            return true;
+
+            return false;
         }
 
         public static RadioContext LoadFromJson(JsonData json)
         {
             RadioContext radiocontext = new RadioContext();
 
-            foreach(JsonData entry in json["conditions"])
+            foreach(JsonData conj in json["conditions"])
             {
-                RadioContextCondition context = null;
+                radiocontext.m_Conditions.Add(new List<RadioContextCondition>());
 
-                switch((String)entry["type"])
+                foreach(JsonData entry in conj)
                 {
-                    case "time":
-                        context = TimeContextCondition.LoadFromJson(entry);
-                        break;
-                    case "weather":
-                        context = WeatherContextCondition.LoadFromJson(entry);
-                        break;
-                    case "mood":
-                        context = MoodContextCondition.LoadFromJson(entry);
-                        break;
-                    default:
-                        Debug.Log("[CSLMusic] Error: Unknown context type!");
-                        break;
-                }
+                    RadioContextCondition context = null;
 
-                if(context != null)
-                {
-                    radiocontext.m_Conditions.Add(context);
-                }
+                    switch((String)entry["type"])
+                    {
+                        case "time":
+                            context = TimeContextCondition.LoadFromJson(entry);
+                            break;
+                        case "weather":
+                            context = WeatherContextCondition.LoadFromJson(entry);
+                            break;
+                        case "mood":
+                            context = MoodContextCondition.LoadFromJson(entry);
+                            break;
+                        default:
+                            Debug.Log("[CSLMusic] Error: Unknown context type!");
+                            break;
+                    }
 
+                    if(context != null)
+                    {
+                        radiocontext.m_Conditions.Last().Add(context);
+                    }
+                }
             }
 
             foreach(JsonData e in json["collections"])

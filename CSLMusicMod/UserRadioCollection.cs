@@ -168,7 +168,7 @@ namespace CSLMusicMod
         private void CreateLegacyChannel(String name, String[] collections)
         {
             UserRadioChannel channel = new UserRadioChannel(name);
-            channel.m_Collections = collections;
+            channel.m_Collections = new HashSet<string>(collections);
             channel.m_ThumbnailFile = "thumbnail_package.png";
             m_Stations[channel.m_Name] = channel;
         }
@@ -177,7 +177,7 @@ namespace CSLMusicMod
         {
             UserRadioChannel channel = new UserRadioChannel("CSLMusic Mix");
             channel.m_ThumbnailFile = "thumbnail_mix.png";
-            channel.m_Collections = m_Songs.Values.Select(song => song.m_Collection).ToArray(); // Default channel loads from all collections
+            channel.m_Collections = new HashSet<string>(m_Songs.Values.Select(song => song.m_Collection)); // Default channel loads from all collections
 
             List<RadioContentInfo.ContentType> allowedcontent = new List<RadioContentInfo.ContentType>();
 
