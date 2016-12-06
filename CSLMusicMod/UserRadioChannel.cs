@@ -142,6 +142,12 @@ namespace CSLMusicMod
                             case "time":
                                 context = TimeContext.LoadFromJson(entry);
                                 break;
+                            case "weather":
+                                context = WeatherContext.LoadFromJson(entry);
+                                break;
+                            case "mood":
+                                context = MoodContext.LoadFromJson(entry);
+                                break;
                             default:
                                 Debug.Log("[CSLMusic] Error: Unknown context type!");
                                 break;
