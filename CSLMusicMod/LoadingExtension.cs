@@ -15,7 +15,7 @@ namespace CSLMusicMod
         public static ContentInitializer ContentContainer;
         public static Detours MethodDetours;
         public static MusicUI UI;
-        public static DisabledContentWatcher DisabledContentContainer;
+        public static RadioContentWatcher DisabledContentContainer;
 
         public LoadingExtension()
         {
@@ -61,13 +61,8 @@ namespace CSLMusicMod
 
             if(mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
             {
-                // Apply filtering after loading
-                for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
-                {
-                    RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
-                    RemoveUnsupportedContent(info);
-                }
-
+                RemoveUnsupportedContent();
+                UserRadioContainer.CollectPostLoadingData();
                 DebugOutput();
 
                 // Build UI and other post loadtime
@@ -77,7 +72,7 @@ namespace CSLMusicMod
                 }
                 if (DisabledContentContainer == null)
                 {
-                    DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<DisabledContentWatcher>();
+                    DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<RadioContentWatcher>();
                 }
             }
         }
@@ -114,6 +109,16 @@ namespace CSLMusicMod
             {
                 UnityEngine.Object.Destroy(DisabledContentContainer.gameObject);
                 UserRadioContainer = null;
+            }
+        }
+
+        private void RemoveUnsupportedContent()
+        {
+            // Apply filtering after loading
+            for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
+            {
+                RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+                RemoveUnsupportedContent(info);
             }
         }
 

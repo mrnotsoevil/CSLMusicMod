@@ -95,6 +95,12 @@ namespace CSLMusicMod.UI
                         {
                             options.EnableDisabledContent = isChecked;
                         }));
+                subgroup.AddCheckbox("Context-sensitive content (May affect performance)", 
+                    options.EnableContextSensitivity, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.EnableContextSensitivity = isChecked;
+                        }));
                 subgroup.AddButton("Reset disabled entries", new OnButtonClicked(() =>
                     {
                         options.DisabledContent.Clear();

@@ -1,0 +1,128 @@
+﻿using System;
+using CSLMusicMod.LitJson;
+using ColossalFramework;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace CSLMusicMod
+{
+    public class WeatherContext : RadioContext
+    {    
+
+        public HashSet<String> m_Collections = new HashSet<string>();
+
+        public float m_TempFrom = -100;
+
+        public float m_TempTo = 100;
+
+        public float m_RainFrom = 0;
+
+        public float m_RainTo = 1;
+
+        public float m_CloudFrom = 0;
+
+        public float m_CloudTo = 1;
+
+        public float m_FogFrom = 0;
+
+        public float m_FogTo = 1;
+
+        public float m_RainbowFrom = 0;
+
+        public float m_RainbowTo = 1;
+
+        public float m_NorthernLightsFrom = 0;
+
+        public float m_NorthernLightsTo = 1;
+
+        public WeatherContext()
+        {
+        }
+
+        public bool Applies()
+        {
+            float temp = Singleton<WeatherManager>.instance.m_currentTemperature;
+
+            if (temp < m_TempFrom || temp > m_TempTo)
+                return false;
+
+            float rain = Singleton<WeatherManager>.instance.m_currentRain;
+
+            if (rain < m_RainFrom || rain > m_RainTo)
+                return false;
+
+            float cloud = Singleton<WeatherManager>.instance.m_currentCloud;
+
+            if (cloud < m_CloudFrom || cloud > m_CloudTo)
+                return false;
+            
+            float fog = Singleton<WeatherManager>.instance.m_currentFog;
+
+            if (fog < m_FogFrom || fog > m_FogTo)
+                return false;
+            
+            float rainbow = Singleton<WeatherManager>.instance.m_targetRainbow;
+
+            if (rainbow < m_RainbowFrom || rainbow > m_RainbowTo)
+                return false;
+
+            float northernlights = Singleton<WeatherManager>.instance.m_currentNorthernLights;
+
+            if (northernlights < m_NorthernLightsFrom || northernlights > m_NorthernLightsTo)
+                return false;
+
+            return true;
+        }
+
+        public HashSet<String> GetCollections()
+        {
+            return m_Collections;
+        }
+
+        public static WeatherContext LoadFromJson(JsonData json)
+        {
+            WeatherContext context = new WeatherContext();
+
+            if(json.Keys.Contains("temperature"))
+            {
+                context.m_TempFrom = (float)((int)json["temperature"][0]) / 10f;
+                context.m_TempTo = (float)((int)json["temperature"][1]) / 10f;
+            }
+            if(json.Keys.Contains("rain"))
+            {
+                context.m_RainFrom = (float)((int)json["rain"][0]) / 10f;
+                context.m_RainTo = (float)((int)json["rain"][1]) / 10f;
+            }
+            if(json.Keys.Contains("cloudy"))
+            {
+                context.m_CloudFrom = (float)((int)json["cloudy"][0]) / 10f;
+                context.m_CloudTo = (float)((int)json["cloudy"][1]) / 10f;
+            }
+            if(json.Keys.Contains("foggy"))
+            {
+                context.m_FogFrom = (float)((int)json["foggy"][0]) / 10f;
+                context.m_FogTo = (float)((int)json["foggy"][1]) / 10f;
+            }
+            if(json.Keys.Contains("rainbow"))
+            {
+                context.m_RainbowFrom = (float)((int)json["rainbow"][0]) / 10f;
+                context.m_RainbowTo = (float)((int)json["rainbow"][1]) / 10f;
+            }
+            if(json.Keys.Contains("northernlights"))
+            {
+                context.m_NorthernLightsFrom = (float)((int)json["northernlights"][0]) / 10f;
+                context.m_NorthernLightsTo = (float)((int)json["northernlights"][1]) / 10f;
+            }
+
+            foreach(JsonData e in json["collections"])
+            {
+                context.m_Collections.Add((String)e);
+            }
+
+            return context;
+        }
+
+
+    }
+}
+

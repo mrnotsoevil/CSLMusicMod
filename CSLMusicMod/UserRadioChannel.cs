@@ -16,6 +16,8 @@ namespace CSLMusicMod
 
         public List<UserRadioContent> m_Content;
 
+        public List<RadioContext> m_Contexts = new List<RadioContext>();
+
         public RadioChannelInfo.State[] m_StateChain;
 
         public RadioContentInfo.ContentType[] m_SupportedContent = (RadioContentInfo.ContentType[])Enum.GetValues(typeof(RadioContentInfo.ContentType));
@@ -56,6 +58,23 @@ namespace CSLMusicMod
                 64,
                 64,
                 new string[] { "thumbnail" });
+        }
+
+        /// <summary>
+        /// Returns the list of collections that should be active. Returns null if all collections are allowed.
+        /// </summary>
+        /// <returns>The applying content collections.</returns>
+        public HashSet<String> GetApplyingContentCollections()
+        {
+            foreach(RadioContext context in m_Contexts)
+            {
+                if(context.Applies())
+                {
+                    return context.GetCollections();
+                }
+            }
+
+            return null;
         }
 
         public bool IsValid()
@@ -110,6 +129,27 @@ namespace CSLMusicMod
                     }
 
                     channel.m_StateChain = states.ToArray();
+                }
+
+                if(json.Keys.Contains("contexts"))
+                {
+                    foreach(JsonData entry in json["contexts"])
+                    {
+                        RadioContext context = null;
+
+                        switch((String)entry["type"])
+                        {
+                            case "time":
+                                context = TimeContext.LoadFromJson(entry);
+                                break;
+                            default:
+                                Debug.Log("[CSLMusic] Error: Unknown context type!");
+                                break;
+                        }
+
+                        if(context != null)
+                            channel.m_Contexts.Add(context);
+                    }
                 }
 
                 return channel;

@@ -15,6 +15,10 @@ namespace CSLMusicMod
         public Dictionary<String, UserRadioContent> m_Songs = new Dictionary<string, UserRadioContent>();
         public Dictionary<String, UserRadioChannel> m_Stations = new Dictionary<string, UserRadioChannel>();
 
+        // Post-Launch variables
+        public Dictionary<RadioChannelInfo, UserRadioChannel> m_UserRadioDict = new Dictionary<RadioChannelInfo, UserRadioChannel>();
+        public Dictionary<RadioContentInfo, UserRadioContent> m_UserContentDict = new Dictionary<RadioContentInfo, UserRadioContent>();
+
         public UserRadioCollection()
         {
         }
@@ -313,6 +317,33 @@ namespace CSLMusicMod
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Collects information that is available after loading of the game
+        /// </summary>
+        public void CollectPostLoadingData()
+        {
+            for(uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
+            {
+                RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+                UserRadioChannel user;
+
+                if(m_Stations.TryGetValue(info.name, out user))
+                {
+                    m_UserRadioDict[info] = user;
+                }
+            }
+            for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
+            {
+                RadioContentInfo info = PrefabCollection<RadioContentInfo>.GetPrefab(i);
+                UserRadioContent user;
+
+                if(m_Songs.TryGetValue(info.name, out user))
+                {
+                    m_UserContentDict[info] = user;
+                }
+            }
         }
     }
 }
