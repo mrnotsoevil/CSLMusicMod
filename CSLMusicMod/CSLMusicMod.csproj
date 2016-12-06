@@ -93,10 +93,11 @@
     <Compile Include="CustomRadioChannelInfo.cs" />
     <Compile Include="Helpers\AudioManagerHelper.cs" />
     <Compile Include="RadioContentWatcher.cs" />
-    <Compile Include="Contexts\TimeContext.cs" />
+    <Compile Include="Contexts\MoodContextCondition.cs" />
+    <Compile Include="Contexts\RadioContextCondition.cs" />
+    <Compile Include="Contexts\TimeContextCondition.cs" />
+    <Compile Include="Contexts\WeatherContextCondition.cs" />
     <Compile Include="Contexts\RadioContext.cs" />
-    <Compile Include="Contexts\MoodContext.cs" />
-    <Compile Include="Contexts\WeatherContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

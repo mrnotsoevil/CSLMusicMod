@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
-    public class MoodContext : RadioContext
+    public class MoodContextCondition : RadioContextCondition
     {    
         public int m_HappinessFrom = 0;
 
@@ -14,7 +14,7 @@ namespace CSLMusicMod
 
         public HashSet<String> m_Collections = new HashSet<string>();
 
-        public MoodContext()
+        public MoodContextCondition()
         {
         }
 
@@ -25,22 +25,12 @@ namespace CSLMusicMod
             return finalHappiness >= m_HappinessFrom && finalHappiness <= m_HappinessTo;
         }
 
-        public HashSet<String> GetCollections()
+        public static MoodContextCondition LoadFromJson(JsonData json)
         {
-            return m_Collections;
-        }
-
-        public static MoodContext LoadFromJson(JsonData json)
-        {
-            MoodContext context = new MoodContext();
+            MoodContextCondition context = new MoodContextCondition();
 
             context.m_HappinessFrom = (int)json["from"];
             context.m_HappinessTo = (int)json["to"];
-
-            foreach(JsonData e in json["collections"])
-            {
-                context.m_Collections.Add((String)e);
-            }
 
             return context;
         }

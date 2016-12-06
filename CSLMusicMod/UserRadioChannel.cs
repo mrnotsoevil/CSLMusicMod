@@ -70,7 +70,7 @@ namespace CSLMusicMod
             {
                 if(context.Applies())
                 {
-                    return context.GetCollections();
+                    return context.m_Collections;
                 }
             }
 
@@ -135,23 +135,7 @@ namespace CSLMusicMod
                 {
                     foreach(JsonData entry in json["contexts"])
                     {
-                        RadioContext context = null;
-
-                        switch((String)entry["type"])
-                        {
-                            case "time":
-                                context = TimeContext.LoadFromJson(entry);
-                                break;
-                            case "weather":
-                                context = WeatherContext.LoadFromJson(entry);
-                                break;
-                            case "mood":
-                                context = MoodContext.LoadFromJson(entry);
-                                break;
-                            default:
-                                Debug.Log("[CSLMusic] Error: Unknown context type!");
-                                break;
-                        }
+                        RadioContext context = RadioContext.LoadFromJson(entry);
 
                         if(context != null)
                             channel.m_Contexts.Add(context);

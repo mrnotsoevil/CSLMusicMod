@@ -6,11 +6,8 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
-    public class WeatherContext : RadioContext
-    {    
-
-        public HashSet<String> m_Collections = new HashSet<string>();
-
+    public class WeatherContextCondition : RadioContextCondition
+    { 
         public float m_TempFrom = -100;
 
         public float m_TempTo = 100;
@@ -35,7 +32,7 @@ namespace CSLMusicMod
 
         public float m_NorthernLightsTo = 1;
 
-        public WeatherContext()
+        public WeatherContextCondition()
         {
         }
 
@@ -74,14 +71,10 @@ namespace CSLMusicMod
             return true;
         }
 
-        public HashSet<String> GetCollections()
-        {
-            return m_Collections;
-        }
 
-        public static WeatherContext LoadFromJson(JsonData json)
+        public static WeatherContextCondition LoadFromJson(JsonData json)
         {
-            WeatherContext context = new WeatherContext();
+            WeatherContextCondition context = new WeatherContextCondition();
 
             if(json.Keys.Contains("temperature"))
             {
@@ -112,11 +105,6 @@ namespace CSLMusicMod
             {
                 context.m_NorthernLightsFrom = (float)((int)json["northernlights"][0]) / 10f;
                 context.m_NorthernLightsTo = (float)((int)json["northernlights"][1]) / 10f;
-            }
-
-            foreach(JsonData e in json["collections"])
-            {
-                context.m_Collections.Add((String)e);
             }
 
             return context;

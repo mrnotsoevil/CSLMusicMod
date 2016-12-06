@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
-    public class TimeContext : RadioContext
+    public class TimeContextCondition : RadioContextCondition
     {
         public float m_TimeFrom = 0;
 
@@ -14,7 +14,7 @@ namespace CSLMusicMod
 
         public HashSet<String> m_Collections = new HashSet<string>();
 
-        public TimeContext()
+        public TimeContextCondition()
         {
         }
 
@@ -36,22 +36,13 @@ namespace CSLMusicMod
             }
         }
 
-        public HashSet<String> GetCollections()
+        public static TimeContextCondition LoadFromJson(JsonData json)
         {
-            return m_Collections;
-        }
-
-        public static TimeContext LoadFromJson(JsonData json)
-        {
-            TimeContext context = new TimeContext();
+            TimeContextCondition context = new TimeContextCondition();
 
             context.m_TimeFrom = (int)json["from"];
             context.m_TimeTo = (int)json["to"];
 
-            foreach(JsonData e in json["collections"])
-            {
-                context.m_Collections.Add((String)e);
-            }
 
             return context;
         }
