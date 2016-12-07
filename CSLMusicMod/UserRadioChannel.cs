@@ -12,15 +12,20 @@ namespace CSLMusicMod
     {
         public String m_Name;
 
-        public String[] m_Collections;
+        public HashSet<String> m_Collections;
 
         public List<UserRadioContent> m_Content;
+
+        public List<RadioContext> m_Contexts = new List<RadioContext>();
 
         public RadioChannelInfo.State[] m_StateChain;
 
         public RadioContentInfo.ContentType[] m_SupportedContent = (RadioContentInfo.ContentType[])Enum.GetValues(typeof(RadioContentInfo.ContentType));
 
         public String m_ThumbnailFile;
+
+        // Post-launch
+        public RadioChannelInfo m_VanillaChannelInfo;
 
         public UserRadioChannel()
         {
@@ -29,7 +34,7 @@ namespace CSLMusicMod
         public UserRadioChannel(String name)
         {
             m_Name = name;
-            m_Collections = new string[] { name };
+            m_Collections = new HashSet<string>() { name };
         }
 
         public UITextureAtlas GetThumbnailAtlas(Material baseMaterial)
@@ -58,6 +63,23 @@ namespace CSLMusicMod
                 new string[] { "thumbnail" });
         }
 
+        /// <summary>
+        /// Returns the list of collections that should be active. Returns null if all collections are allowed.
+        /// </summary>
+        /// <returns>The applying content collections.</returns>
+        public HashSet<String> GetApplyingContentCollections()
+        {
+            foreach(RadioContext context in m_Contexts)
+            {
+                if(context.Applies())
+                {
+                    return context.m_Collections;
+                }
+            }
+
+            return null;
+        }
+
         public bool IsValid()
         {
             return m_Content != null && m_Content.Count != 0 &&
@@ -83,11 +105,11 @@ namespace CSLMusicMod
                         collections.Add((String)v);
                     }
 
-                    channel.m_Collections = collections.ToArray();
+                    channel.m_Collections = new HashSet<string>(collections);
                 }
                 else
                 {
-                    channel.m_Collections = new string[] { channel.m_Name };
+                    channel.m_Collections = new HashSet<string>(new string[] { channel.m_Name });
                 }
 
                 if(json.Keys.Contains("thumbnail"))
@@ -110,6 +132,25 @@ namespace CSLMusicMod
                     }
 
                     channel.m_StateChain = states.ToArray();
+                }
+
+                if(json.Keys.Contains("contexts"))
+                {
+                    foreach(JsonData entry in json["contexts"])
+                    {
+                        RadioContext context = RadioContext.LoadFromJson(entry);
+
+                        if(context != null)
+                        {
+                            channel.m_Contexts.Add(context);
+
+                            // Auto-load collections that are defined in contexts
+                            foreach(var coll in context.m_Collections)
+                            {
+                                channel.m_Collections.Add(coll);
+                            }
+                        }
+                    }
                 }
 
                 return channel;

@@ -92,13 +92,20 @@
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="CustomRadioChannelInfo.cs" />
     <Compile Include="Helpers\AudioManagerHelper.cs" />
-    <Compile Include="DisabledContentWatcher.cs" />
+    <Compile Include="RadioContentWatcher.cs" />
+    <Compile Include="Contexts\MoodContextCondition.cs" />
+    <Compile Include="Contexts\RadioContextCondition.cs" />
+    <Compile Include="Contexts\TimeContextCondition.cs" />
+    <Compile Include="Contexts\WeatherContextCondition.cs" />
+    <Compile Include="Contexts\RadioContext.cs" />
+    <Compile Include="Contexts\DisasterContextCondition.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Compatibility\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Contexts\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\thumbnail.png" />

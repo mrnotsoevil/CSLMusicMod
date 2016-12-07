@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using CSLMusicMod.UI;
 using System.IO;
+using ColossalFramework.IO;
 
 namespace CSLMusicMod
 {
@@ -15,7 +16,7 @@ namespace CSLMusicMod
         public static ContentInitializer ContentContainer;
         public static Detours MethodDetours;
         public static MusicUI UI;
-        public static DisabledContentWatcher DisabledContentContainer;
+        public static RadioContentWatcher DisabledContentContainer;
 
         public LoadingExtension()
         {
@@ -61,13 +62,9 @@ namespace CSLMusicMod
 
             if(mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
             {
-                // Apply filtering after loading
-                for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
-                {
-                    RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
-                    RemoveUnsupportedContent(info);
-                }
-
+                RemoveUnsupportedContent();
+                UserRadioContainer.CollectPostLoadingData();
+                ExtendVanillaContent();
                 DebugOutput();
 
                 // Build UI and other post loadtime
@@ -77,7 +74,7 @@ namespace CSLMusicMod
                 }
                 if (DisabledContentContainer == null)
                 {
-                    DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<DisabledContentWatcher>();
+                    DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<RadioContentWatcher>();
                 }
             }
         }
@@ -117,6 +114,16 @@ namespace CSLMusicMod
             }
         }
 
+        private void RemoveUnsupportedContent()
+        {
+            // Apply filtering after loading
+            for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
+            {
+                RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+                RemoveUnsupportedContent(info);
+            }
+        }
+
         private void DebugOutput()
         {
             for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
@@ -124,6 +131,9 @@ namespace CSLMusicMod
                 String message = "";
 
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
 
                 message += "[CSLMusic][ChannelInfo] " + info + "\n";
                 message += "Schedule:\n";
@@ -144,6 +154,11 @@ namespace CSLMusicMod
                 }
 
                 Debug.Log(message);
+            }
+
+            for(uint i = 0; i < PrefabCollection<DisasterInfo>.PrefabCount(); ++i)
+            {
+                Debug.Log("[CSLMusic][DisasterContext] Disaster name: " + PrefabCollection<DisasterInfo>.GetPrefab(i).name);
             }
         }
 
@@ -200,6 +215,56 @@ namespace CSLMusicMod
                 });
 
             info.m_stateChain = states.ToArray();
+        }
+
+        /// <summary>
+        /// Adds music files that are placed in the vanilla directories to the vanilla channels
+        /// </summary>
+        private void ExtendVanillaContent()
+        {
+            if (!ModOptions.Instance.EnableAddingContentToVanillaStations)
+                return;
+
+            for(uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
+            {
+                RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
+
+                if(!UserRadioContainer.m_UserRadioDict.ContainsKey(info))
+                {
+                    // Collect existing radio content
+                    HashSet<string> existing = new HashSet<string>();
+
+                    for(uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
+                    {
+                        RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
+
+                        if(content.m_radioChannels.Contains(info))
+                        {
+                            string text = Path.Combine(DataLocation.gameContentPath, "Radio");
+                            text = Path.Combine(text, content.m_contentType.ToString());
+                            text = Path.Combine(text, content.m_folderName);
+                            text = Path.Combine(text, content.m_fileName);
+
+                            existing.Add(text);
+                        }
+                    }
+
+                    // Check our collection for non-existing files
+                    foreach(UserRadioContent usercontent in UserRadioContainer.m_Songs.Values)
+                    {
+                        if(!existing.Contains(usercontent.m_FileName) && usercontent.m_Collection == info.name)
+                        {
+                            Debug.Log("[CSLMusic][ExtendedVanillaContent] Adding " + usercontent.m_FileName + " to vanilla station " + info.name);
+                            List<RadioChannelInfo> v = new List<RadioChannelInfo>(usercontent.m_VanillaContentInfo.m_radioChannels);
+                            v.Add(info);
+                            usercontent.m_VanillaContentInfo.m_radioChannels = v.ToArray();
+                        }
+                    }
+                }
+            }
         }
     }
 }

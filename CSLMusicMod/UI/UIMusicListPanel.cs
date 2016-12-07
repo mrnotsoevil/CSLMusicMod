@@ -32,6 +32,7 @@ namespace CSLMusicMod.UI
         private UIButton m_ButtonSortAscending;
         private UIButton m_ButtonSortDescending;
         private UIButton m_Close;
+        private UILabel m_RadioChannelInfo;
 
         private bool m_SortAscending = true;
 
@@ -206,28 +207,33 @@ namespace CSLMusicMod.UI
 
                 m_CurrentContent.Clear();
 
-                // Only show supported content entries
-                HashSet<RadioContentInfo.ContentType> supported_content = new HashSet<RadioContentInfo.ContentType>();
-
-                foreach(var state in info.m_stateChain)
+                if(info != null)
                 {
-                    supported_content.Add(state.m_contentType);
-                }
+                    // Only show supported content entries
+                    HashSet<RadioContentInfo.ContentType> supported_content = new HashSet<RadioContentInfo.ContentType>();
 
-                for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
-                {
-                    var c = PrefabCollection<RadioContentInfo>.GetPrefab(i);
-
-                    if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
+                    foreach(var state in info.m_stateChain)
                     {
-                        entrytexts[c] = GetEntryTextFor(c);
+                        supported_content.Add(state.m_contentType);
+                    }
 
-                        if(!IsFiltered(entrytexts[c]))
+                    for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
+                    {
+                        var c = PrefabCollection<RadioContentInfo>.GetPrefab(i);
+
+                        if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                         {
-                            m_CurrentContent.Add(c);
+                            entrytexts[c] = GetEntryTextFor(c);
+
+                            if(!IsFiltered(entrytexts[c]))
+                            {
+                                m_CurrentContent.Add(c);
+                            }
                         }
                     }
                 }
+
+                m_RadioChannelInfo.isVisible = m_CurrentContent.Count == 0;
 
                 //Debug.Log(m_CurrentContent.Count + " entries ");
             }
@@ -497,10 +503,21 @@ namespace CSLMusicMod.UI
             panel.itemHover = "SubcategoriesPanel";
             panel.itemHeight = 32;
             panel.itemPadding = new RectOffset(0, 0, 4, 4);
-            panel.tooltip = "";
+            panel.tooltip = "Double-click to disable an entry";
             panel.zOrder = -50;
          
             panel.Show();
+
+            {
+                m_RadioChannelInfo = AddUIComponent<UILabel>();
+                m_RadioChannelInfo.relativePosition = new Vector3(10, 60 + 10);
+                m_RadioChannelInfo.width = panel.width;
+                m_RadioChannelInfo.height = panel.height;
+                m_RadioChannelInfo.textColor = new Color32(150, 150, 150, 255);
+                m_RadioChannelInfo.text = "This channel is not a radio-channel.\nYour custom music can be found in\n'Userdefined', 'CSLMusic Mix' and\nchannels created by music packs.";
+                m_RadioChannelInfo.wordWrap = false;
+                m_RadioChannelInfo.Show();
+            }
 
             {
                 var scroller = panel.AddUIComponent<UIScrollbar>();

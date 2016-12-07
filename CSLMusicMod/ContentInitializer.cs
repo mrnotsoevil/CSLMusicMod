@@ -18,7 +18,7 @@ namespace CSLMusicMod
 
         protected void InitializeImpl()
         {
-            UserRadioCollection collection = Resources.FindObjectsOfTypeAll<UserRadioCollection>().First();
+            UserRadioCollection collection = LoadingExtension.UserRadioContainer;
 
             var collectionnames = collection.m_Songs.Values.Select(song => song.m_Collection).Distinct().ToArray();
             Debug.Log("[CSLMusic] Available collections: " + String.Join("\n", collectionnames));

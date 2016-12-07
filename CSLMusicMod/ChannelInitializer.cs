@@ -17,7 +17,7 @@ namespace CSLMusicMod
 
         protected void InitializeImpl()
         {
-            UserRadioCollection collection = Resources.FindObjectsOfTypeAll<UserRadioCollection>().First();
+            UserRadioCollection collection = LoadingExtension.UserRadioContainer;
 
             foreach(UserRadioChannel channel in collection.m_Stations.Values)
             {

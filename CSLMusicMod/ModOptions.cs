@@ -261,6 +261,32 @@ namespace CSLMusicMod
             }
         }
 
+        public bool EnableContextSensitivity
+        {
+            get
+            {
+                return m_Options.EnableContextSensitivity;
+            }
+            set
+            {
+                m_Options.EnableContextSensitivity = value;
+                SaveSettings();
+            }
+        }
+
+        public bool EnableAddingContentToVanillaStations
+        {
+            get
+            {
+                return m_Options.EnableAddingContentToVanillaStations;
+            }
+            set
+            {
+                m_Options.EnableAddingContentToVanillaStations = value;
+                SaveSettings();
+            }
+        }
+
         public String SettingsFilename
         {
             get
@@ -351,6 +377,9 @@ namespace CSLMusicMod
             public List<String> DisabledContent { get; set; }
             public bool EnableDisabledContent { get; set; }
 
+            public bool EnableContextSensitivity { get; set; }
+            public bool EnableAddingContentToVanillaStations { get; set; }
+
             public Options()
             {
                 CreateMixChannels = true;
@@ -374,6 +403,9 @@ namespace CSLMusicMod
 
                 DisabledContent = new List<string>();
                 EnableDisabledContent = true;
+
+                EnableContextSensitivity = true;
+                EnableAddingContentToVanillaStations = true;
             }
         }
     }

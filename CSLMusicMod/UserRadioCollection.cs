@@ -15,6 +15,10 @@ namespace CSLMusicMod
         public Dictionary<String, UserRadioContent> m_Songs = new Dictionary<string, UserRadioContent>();
         public Dictionary<String, UserRadioChannel> m_Stations = new Dictionary<string, UserRadioChannel>();
 
+        // Post-Launch variables
+        public Dictionary<RadioChannelInfo, UserRadioChannel> m_UserRadioDict = new Dictionary<RadioChannelInfo, UserRadioChannel>();
+        public Dictionary<RadioContentInfo, UserRadioContent> m_UserContentDict = new Dictionary<RadioContentInfo, UserRadioContent>();
+
         public UserRadioCollection()
         {
         }
@@ -164,7 +168,7 @@ namespace CSLMusicMod
         private void CreateLegacyChannel(String name, String[] collections)
         {
             UserRadioChannel channel = new UserRadioChannel(name);
-            channel.m_Collections = collections;
+            channel.m_Collections = new HashSet<string>(collections);
             channel.m_ThumbnailFile = "thumbnail_package.png";
             m_Stations[channel.m_Name] = channel;
         }
@@ -173,7 +177,7 @@ namespace CSLMusicMod
         {
             UserRadioChannel channel = new UserRadioChannel("CSLMusic Mix");
             channel.m_ThumbnailFile = "thumbnail_mix.png";
-            channel.m_Collections = m_Songs.Values.Select(song => song.m_Collection).ToArray(); // Default channel loads from all collections
+            channel.m_Collections = new HashSet<string>(m_Songs.Values.Select(song => song.m_Collection)); // Default channel loads from all collections
 
             List<RadioContentInfo.ContentType> allowedcontent = new List<RadioContentInfo.ContentType>();
 
@@ -313,6 +317,43 @@ namespace CSLMusicMod
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Collects information that is available after loading of the game
+        /// </summary>
+        public void CollectPostLoadingData()
+        {
+            for(uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
+            {
+                RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
+
+                UserRadioChannel user;
+
+                if(m_Stations.TryGetValue(info.name, out user))
+                {
+                    m_UserRadioDict[info] = user;
+                    user.m_VanillaChannelInfo = info;
+                }
+            }
+            for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
+            {
+                RadioContentInfo info = PrefabCollection<RadioContentInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
+
+                UserRadioContent user;
+
+                if(m_Songs.TryGetValue(info.name, out user))
+                {
+                    m_UserContentDict[info] = user;
+                    user.m_VanillaContentInfo = info;
+                }
+            }
         }
     }
 }
