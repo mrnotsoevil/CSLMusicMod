@@ -12,8 +12,8 @@ namespace CSLMusicMod
         }
 
         private void CustomAssignStationToButton(UIButton button, RadioChannelInfo station)
-        {
-            UserRadioCollection collection = Resources.FindObjectsOfTypeAll<UserRadioCollection>().FirstOrDefault();
+        {            
+            UserRadioCollection collection = LoadingExtension.UserRadioContainer;
 
             button.atlas = station.m_Atlas;
 

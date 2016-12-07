@@ -17,6 +17,10 @@ namespace CSLMusicMod
 
         public UserRadioChannel[] m_Channels;
 
+        // Post-launch
+
+        public RadioContentInfo m_VanillaContentInfo;
+
         public UserRadioContent()
         {
         }

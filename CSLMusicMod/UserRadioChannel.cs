@@ -24,6 +24,9 @@ namespace CSLMusicMod
 
         public String m_ThumbnailFile;
 
+        // Post-launch
+        public RadioChannelInfo m_VanillaChannelInfo;
+
         public UserRadioChannel()
         {
         }

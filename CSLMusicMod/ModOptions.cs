@@ -274,6 +274,19 @@ namespace CSLMusicMod
             }
         }
 
+        public bool EnableAddingContentToVanillaStations
+        {
+            get
+            {
+                return m_Options.EnableAddingContentToVanillaStations;
+            }
+            set
+            {
+                m_Options.EnableAddingContentToVanillaStations = value;
+                SaveSettings();
+            }
+        }
+
         public String SettingsFilename
         {
             get
@@ -365,6 +378,7 @@ namespace CSLMusicMod
             public bool EnableDisabledContent { get; set; }
 
             public bool EnableContextSensitivity { get; set; }
+            public bool EnableAddingContentToVanillaStations { get; set; }
 
             public Options()
             {
@@ -391,6 +405,7 @@ namespace CSLMusicMod
                 EnableDisabledContent = true;
 
                 EnableContextSensitivity = true;
+                EnableAddingContentToVanillaStations = true;
             }
         }
     }

@@ -332,6 +332,7 @@ namespace CSLMusicMod
                 if(m_Stations.TryGetValue(info.name, out user))
                 {
                     m_UserRadioDict[info] = user;
+                    user.m_VanillaChannelInfo = info;
                 }
             }
             for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
@@ -342,6 +343,7 @@ namespace CSLMusicMod
                 if(m_Songs.TryGetValue(info.name, out user))
                 {
                     m_UserContentDict[info] = user;
+                    user.m_VanillaContentInfo = info;
                 }
             }
         }

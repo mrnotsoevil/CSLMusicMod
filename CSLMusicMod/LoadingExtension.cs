@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using CSLMusicMod.UI;
 using System.IO;
+using ColossalFramework.IO;
 
 namespace CSLMusicMod
 {
@@ -63,6 +64,7 @@ namespace CSLMusicMod
             {
                 RemoveUnsupportedContent();
                 UserRadioContainer.CollectPostLoadingData();
+                ExtendVanillaContent();
                 DebugOutput();
 
                 // Build UI and other post loadtime
@@ -210,6 +212,53 @@ namespace CSLMusicMod
                 });
 
             info.m_stateChain = states.ToArray();
+        }
+
+        /// <summary>
+        /// Adds music files that are placed in the vanilla directories to the vanilla channels
+        /// </summary>
+        private void ExtendVanillaContent()
+        {
+            if (!ModOptions.Instance.EnableAddingContentToVanillaStations)
+                return;
+
+            for(uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
+            {
+                RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+
+                if(!UserRadioContainer.m_UserRadioDict.ContainsKey(info))
+                {
+                    // Collect existing radio content
+                    HashSet<string> existing = new HashSet<string>();
+
+                    for(uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
+                    {
+                        RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
+
+                        if(content.m_radioChannels.Contains(info))
+                        {
+                            string text = Path.Combine(DataLocation.gameContentPath, "Radio");
+                            text = Path.Combine(text, content.m_contentType.ToString());
+                            text = Path.Combine(text, content.m_folderName);
+                            text = Path.Combine(text, content.m_fileName);
+
+                            existing.Add(text);
+                        }
+                    }
+
+                    // Check our collection for non-existing files
+                    foreach(UserRadioContent usercontent in UserRadioContainer.m_Songs.Values)
+                    {
+                        if(!existing.Contains(usercontent.m_FileName) && usercontent.m_Collection == info.name)
+                        {
+                            Debug.Log("[CSLMusic][ExtendedVanillaContent] Adding " + usercontent.m_FileName + " to vanilla station " + info.name);
+                            List<RadioChannelInfo> v = new List<RadioChannelInfo>(usercontent.m_VanillaContentInfo.m_radioChannels);
+                            v.Add(info);
+                            usercontent.m_VanillaContentInfo.m_radioChannels = v.ToArray();
+                        }
+                    }
+                }
+            }
         }
     }
 }

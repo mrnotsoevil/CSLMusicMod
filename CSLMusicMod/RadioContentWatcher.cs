@@ -9,16 +9,12 @@ namespace CSLMusicMod
 {
     public class RadioContentWatcher : MonoBehaviour
     {
-        private UserRadioCollection m_Collection = null;
-
         public RadioContentWatcher()
         {
         }
 
         public void Start()
         {
-            m_Collection = Resources.FindObjectsOfTypeAll<UserRadioCollection>().FirstOrDefault();
-
             if(ModOptions.Instance.EnableDisabledContent)
                 InvokeRepeating("RemoveDisabledContent", 1f, 0.5f);
             if (ModOptions.Instance.EnableContextSensitivity)
@@ -74,6 +70,7 @@ namespace CSLMusicMod
             AudioManager mgr = Singleton<AudioManager>.instance;
             ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
 
+
             if(activechannel >= 0)
             {
                 RadioChannelData data = mgr.m_radioChannels[activechannel];
@@ -82,13 +79,13 @@ namespace CSLMusicMod
                 {
                     UserRadioChannel userchannel;
 
-                    if(m_Collection.m_UserRadioDict.TryGetValue(data.Info, out userchannel))
+                    if(LoadingExtension.UserRadioContainer.m_UserRadioDict.TryGetValue(data.Info, out userchannel))
                     {                        
                         var content = mgr.m_radioContents[data.m_currentContent];
 
                         UserRadioContent usercontent;
 
-                        if(m_Collection.m_UserContentDict.TryGetValue(content.Info, out usercontent))
+                        if(LoadingExtension.UserRadioContainer.m_UserContentDict.TryGetValue(content.Info, out usercontent))
                         {
                             HashSet<String> allowedcollections = userchannel.GetApplyingContentCollections();
                          
@@ -118,7 +115,7 @@ namespace CSLMusicMod
             if(ModOptions.Instance.EnableContextSensitivity)
             {
                 UserRadioChannel userchannel;
-                if(m_Collection.m_Stations.TryGetValue(channel.name, out userchannel))
+                if(LoadingExtension.UserRadioContainer.m_Stations.TryGetValue(channel.name, out userchannel))
                 {
                     allowedcollections = userchannel.GetApplyingContentCollections();
                 }
@@ -141,7 +138,7 @@ namespace CSLMusicMod
                     {
                         UserRadioContent usercontent;
 
-                        if (m_Collection.m_UserContentDict.TryGetValue(content, out usercontent))
+                        if (LoadingExtension.UserRadioContainer.m_UserContentDict.TryGetValue(content, out usercontent))
                         {
                             if(!allowedcollections.Contains(usercontent.m_Collection))
                             {
