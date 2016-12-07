@@ -32,11 +32,18 @@ namespace CSLMusicMod
 
         public float m_NorthernLightsTo = 1;
 
+        public bool m_Invert = false;
+
         public WeatherContextCondition()
         {
         }
 
         public bool Applies()
+        {
+            return m_Invert ? !_Applies() : _Applies();
+        }
+
+        private bool _Applies()
         {
             float temp = Singleton<WeatherManager>.instance.m_currentTemperature;
 
@@ -105,6 +112,10 @@ namespace CSLMusicMod
             {
                 context.m_NorthernLightsFrom = (float)((int)json["northernlights"][0]) / 10f;
                 context.m_NorthernLightsTo = (float)((int)json["northernlights"][1]) / 10f;
+            }
+            if(json.Keys.Contains("not"))
+            {
+                context.m_Invert = (bool)json["not"];
             }
 
             return context;

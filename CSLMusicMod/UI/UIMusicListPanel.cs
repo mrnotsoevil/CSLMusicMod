@@ -221,6 +221,9 @@ namespace CSLMusicMod.UI
                     {
                         var c = PrefabCollection<RadioContentInfo>.GetPrefab(i);
 
+                        if (c == null)
+                            continue;
+
                         if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                         {
                             entrytexts[c] = GetEntryTextFor(c);

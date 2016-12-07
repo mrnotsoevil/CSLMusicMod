@@ -11,7 +11,7 @@ namespace CSLMusicMod
     {
         public static System.Random RANDOM = new System.Random();
 
-        public const String VersionName = "Rewrite 1.1.0.0";
+        public const String VersionName = "Rewrite 1.1.0.1";
 
         public string Name
         {
@@ -25,7 +25,7 @@ namespace CSLMusicMod
         {
             get
             {
-                return "Adds radio stations into the game";
+                return "Adds custom radio stations the game";
             }
         }
 

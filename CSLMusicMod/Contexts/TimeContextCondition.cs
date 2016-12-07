@@ -12,6 +12,8 @@ namespace CSLMusicMod
 
         public float m_TimeTo = 24;
 
+        public bool m_Invert = false;
+
         public HashSet<String> m_Collections = new HashSet<string>();
 
         public TimeContextCondition()
@@ -19,6 +21,11 @@ namespace CSLMusicMod
         }
 
         public bool Applies()
+        {
+            return m_Invert ? !_Applies() : _Applies();
+        }
+
+        private bool _Applies()
         {
             float currenttime = Singleton<SimulationManager>.instance.m_currentDayTimeHour;
 
@@ -43,6 +50,10 @@ namespace CSLMusicMod
             context.m_TimeFrom = (int)json["from"];
             context.m_TimeTo = (int)json["to"];
 
+            if(json.Keys.Contains("not"))
+            {
+                context.m_Invert = (bool)json["not"];
+            }
 
             return context;
         }

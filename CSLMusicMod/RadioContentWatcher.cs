@@ -126,6 +126,9 @@ namespace CSLMusicMod
             {
                 RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(i);
 
+                if (content == null)
+                    continue;
+
                 if(content.m_radioChannels.Contains(channel))
                 {
                     string id = content.m_folderName + "/" + content.m_fileName;

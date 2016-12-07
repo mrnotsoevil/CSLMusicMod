@@ -120,6 +120,10 @@ namespace CSLMusicMod
             for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
             {
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
+
                 RemoveUnsupportedContent(info);
             }
         }
@@ -148,6 +152,9 @@ namespace CSLMusicMod
                 for (uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
                 {
                     RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
+
+                    if (content == null)
+                        continue;
 
                     if(content.m_radioChannels.Contains(info))
                         message += "\t[ContentInfo] " + content + " " + content.m_fileName + "\n";
@@ -240,6 +247,9 @@ namespace CSLMusicMod
                     for(uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
                     {
                         RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
+
+                        if (content == null)
+                            continue;
 
                         if(content.m_radioChannels.Contains(info))
                         {

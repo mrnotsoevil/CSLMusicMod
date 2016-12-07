@@ -12,6 +12,8 @@ namespace CSLMusicMod
 
         public int m_HappinessTo = 100;
 
+        public bool m_Invert = false;
+
         public HashSet<String> m_Collections = new HashSet<string>();
 
         public MoodContextCondition()
@@ -19,6 +21,11 @@ namespace CSLMusicMod
         }
 
         public bool Applies()
+        {
+            return m_Invert ? !_Applies() : _Applies();
+        }
+
+        private bool _Applies()
         {
             int finalHappiness = (int)Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_finalHappiness;
 
@@ -31,6 +38,11 @@ namespace CSLMusicMod
 
             context.m_HappinessFrom = (int)json["from"];
             context.m_HappinessTo = (int)json["to"];
+
+            if(json.Keys.Contains("not"))
+            {
+                context.m_Invert = (bool)json["not"];
+            }
 
             return context;
         }

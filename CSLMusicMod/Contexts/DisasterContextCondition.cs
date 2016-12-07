@@ -12,6 +12,8 @@ namespace CSLMusicMod
 
         public int m_DisasterCountTo = DisasterManager.MAX_DISASTER_COUNT;
 
+        public bool m_Invert = false;
+
         public HashSet<string> m_DisasterFilter = new HashSet<string>();
 
         public HashSet<String> m_Collections = new HashSet<string>();
@@ -21,6 +23,11 @@ namespace CSLMusicMod
         }
 
         public bool Applies()
+        {
+            return m_Invert ? !_Applies() : _Applies();
+        }
+
+        private bool _Applies()
         {
             int disasterCount = Singleton<DisasterManager>.instance.m_disasterCount;
 
@@ -55,6 +62,11 @@ namespace CSLMusicMod
 
             context.m_DisasterCountFrom = (int)json["from"];
             context.m_DisasterCountTo = (int)json["to"];
+
+            if(json.Keys.Contains("not"))
+            {
+                context.m_Invert = (bool)json["not"];
+            }
 
             if (json.Keys.Contains("of"))
             {
