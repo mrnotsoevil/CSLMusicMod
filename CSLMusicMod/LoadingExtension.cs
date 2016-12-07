@@ -16,6 +16,7 @@ namespace CSLMusicMod
         public static ContentInitializer ContentContainer;
         public static Detours MethodDetours;
         public static MusicUI UI;
+        public static ShortcutHandler UIShortcutHandler;
         public static RadioContentWatcher DisabledContentContainer;
 
         public LoadingExtension()
@@ -68,9 +69,13 @@ namespace CSLMusicMod
                 DebugOutput();
 
                 // Build UI and other post loadtime
-                if (UI == null)
+                if (UI == null && ModOptions.Instance.EnableCustomUI)
                 {
                     UI = new GameObject("CSLMusicMod_UI").AddComponent<MusicUI>();
+                }
+                if(UIShortcutHandler == null && ModOptions.Instance.EnableShortcuts)
+                {
+                    UIShortcutHandler = new GameObject("CSLMusicMod_UIShortcutHandler").AddComponent<ShortcutHandler>();
                 }
                 if (DisabledContentContainer == null)
                 {
@@ -86,7 +91,12 @@ namespace CSLMusicMod
             {
                 UnityEngine.Object.Destroy(UI.gameObject);
                 UI = null;
-            }           
+            }        
+            if (UIShortcutHandler != null)
+            {
+                UnityEngine.Object.Destroy(UI.gameObject);
+                UIShortcutHandler = null;
+            }        
             if (StationContainer != null)
             {
                 UnityEngine.Object.Destroy(StationContainer.gameObject);

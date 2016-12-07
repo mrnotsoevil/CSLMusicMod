@@ -209,6 +209,19 @@ namespace CSLMusicMod
             }
         }
 
+        public bool EnableShortcuts
+        {
+            get
+            {
+                return m_Options.EnableShortcuts;
+            }
+            set
+            {
+                m_Options.EnableShortcuts = value;
+                SaveSettings();
+            }
+        }
+
         public KeyCode KeyNextTrack
         {
             get
@@ -371,6 +384,7 @@ namespace CSLMusicMod
             public bool MixContentCommercial { get; set; }
             public bool MixContentBroadcast { get; set; }
 
+            public bool EnableShortcuts { get; set; }
             public KeyCode KeyNextTrack { get; set; }
             public KeyCode KeyOpenMusicPanel { get; set; }
 
@@ -398,6 +412,7 @@ namespace CSLMusicMod
                 AllowContentBroadcast = true;
                 EnableCustomUI = true;
 
+                EnableShortcuts = true;
                 KeyNextTrack = KeyCode.N;
                 KeyOpenMusicPanel = KeyCode.M;
 

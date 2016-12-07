@@ -30,6 +30,12 @@ namespace CSLMusicMod.UI
             }
             {
                 var subgroup = group.AddGroup("Keyboard shortcuts");
+                subgroup.AddCheckbox("Enable (needs map reload)", 
+                    options.EnableShortcuts, 
+                    new OnCheckChanged((bool isChecked) =>
+                        {
+                            options.EnableShortcuts = isChecked;
+                        }));               
                 subgroup.AddDropdown("Open playlist and settings", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.KeyOpenMusicPanel.ToString()), (selection) =>
                     {
                         ModOptions.Instance.KeyOpenMusicPanel = KeyList[selection];
