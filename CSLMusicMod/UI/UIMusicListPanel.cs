@@ -207,25 +207,28 @@ namespace CSLMusicMod.UI
 
                 m_CurrentContent.Clear();
 
-                // Only show supported content entries
-                HashSet<RadioContentInfo.ContentType> supported_content = new HashSet<RadioContentInfo.ContentType>();
-
-                foreach(var state in info.m_stateChain)
+                if(info != null)
                 {
-                    supported_content.Add(state.m_contentType);
-                }
+                    // Only show supported content entries
+                    HashSet<RadioContentInfo.ContentType> supported_content = new HashSet<RadioContentInfo.ContentType>();
 
-                for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
-                {
-                    var c = PrefabCollection<RadioContentInfo>.GetPrefab(i);
-
-                    if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
+                    foreach(var state in info.m_stateChain)
                     {
-                        entrytexts[c] = GetEntryTextFor(c);
+                        supported_content.Add(state.m_contentType);
+                    }
 
-                        if(!IsFiltered(entrytexts[c]))
+                    for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
+                    {
+                        var c = PrefabCollection<RadioContentInfo>.GetPrefab(i);
+
+                        if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                         {
-                            m_CurrentContent.Add(c);
+                            entrytexts[c] = GetEntryTextFor(c);
+
+                            if(!IsFiltered(entrytexts[c]))
+                            {
+                                m_CurrentContent.Add(c);
+                            }
                         }
                     }
                 }

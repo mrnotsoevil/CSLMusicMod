@@ -132,6 +132,9 @@ namespace CSLMusicMod
 
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
 
+                if (info == null)
+                    continue;
+
                 message += "[CSLMusic][ChannelInfo] " + info + "\n";
                 message += "Schedule:\n";
 
@@ -225,6 +228,9 @@ namespace CSLMusicMod
             for(uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
             {
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
 
                 if(!UserRadioContainer.m_UserRadioDict.ContainsKey(info))
                 {

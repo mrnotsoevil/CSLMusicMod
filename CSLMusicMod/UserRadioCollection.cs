@@ -327,6 +327,10 @@ namespace CSLMusicMod
             for(uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
             {
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
+
                 UserRadioChannel user;
 
                 if(m_Stations.TryGetValue(info.name, out user))
@@ -338,6 +342,10 @@ namespace CSLMusicMod
             for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
             {
                 RadioContentInfo info = PrefabCollection<RadioContentInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
+
                 UserRadioContent user;
 
                 if(m_Songs.TryGetValue(info.name, out user))
