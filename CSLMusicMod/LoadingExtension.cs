@@ -268,7 +268,7 @@ namespace CSLMusicMod
 
                 if (info == null)
                     continue;
-
+                
                 if(!UserRadioContainer.m_UserRadioDict.ContainsKey(info))
                 {
                     // Collect existing radio content
@@ -279,6 +279,8 @@ namespace CSLMusicMod
                         RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
 
                         if (content == null)
+                            continue;
+                        if (content.m_radioChannels == null)
                             continue;
 
                         if(content.m_radioChannels.Contains(info))
@@ -298,7 +300,8 @@ namespace CSLMusicMod
                         if(!existing.Contains(usercontent.m_FileName) && usercontent.m_Collection == info.name)
                         {
                             Debug.Log("[CSLMusic][ExtendedVanillaContent] Adding " + usercontent.m_FileName + " to vanilla station " + info.name);
-                            List<RadioChannelInfo> v = new List<RadioChannelInfo>(usercontent.m_VanillaContentInfo.m_radioChannels);
+
+                            List<RadioChannelInfo> v = GenericHelper.CopyOrCreateList<RadioChannelInfo>(usercontent.m_VanillaContentInfo.m_radioChannels);
                             v.Add(info);
                             usercontent.m_VanillaContentInfo.m_radioChannels = v.ToArray();
                         }

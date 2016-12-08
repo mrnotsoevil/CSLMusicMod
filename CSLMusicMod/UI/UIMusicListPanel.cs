@@ -223,6 +223,8 @@ namespace CSLMusicMod.UI
 
                         if (c == null)
                             continue;
+                        if (c.m_radioChannels == null)
+                            continue;
 
                         if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                         {

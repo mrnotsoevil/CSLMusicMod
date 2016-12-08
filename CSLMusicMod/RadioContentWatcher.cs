@@ -42,6 +42,10 @@ namespace CSLMusicMod
                 if(data.m_currentContent != 0)
                 {
                     var content = mgr.m_radioContents[data.m_currentContent];
+
+                    if (content.Info == null)
+                        return;
+
                     string id = content.Info.m_folderName + "/" + content.Info.m_fileName;
 
                     if(ModOptions.Instance.DisabledContent.Contains(id))
@@ -127,6 +131,8 @@ namespace CSLMusicMod
                 RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(i);
 
                 if (content == null)
+                    continue;
+                if (content.m_radioChannels == null)
                     continue;
 
                 if(content.m_radioChannels.Contains(channel))
