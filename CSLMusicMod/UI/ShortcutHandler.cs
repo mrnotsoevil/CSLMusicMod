@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using CSLMusicMod.Helpers;
+using ColossalFramework.UI;
 
 namespace CSLMusicMod
 {
@@ -10,6 +11,11 @@ namespace CSLMusicMod
         // Shortcut key variables
         private bool m_OpenPanelKey_IsDown = false;
         private bool m_NextTrackKey_IsDown = false;
+        private bool m_NextStationKey_IsDown = false;
+
+        private bool m_ModifierCtrl = false;
+        private bool m_ModifierShift = false;
+        private bool m_ModiferAlt = false;
 
         private RadioPanel m_CurrentRadioPanel = null;
 
@@ -33,44 +39,90 @@ namespace CSLMusicMod
         {
         }
 
+        public void Start()
+        {
+            Debug.Log(ModOptions.Instance.ShortcutNextTrack);
+            Debug.Log(ModOptions.Instance.ShortcutNextStation);
+            Debug.Log(ModOptions.Instance.ShortcutOpenRadioPanel);
+        }
+
+        private bool ShortcutDown(ModOptions.Shortcut shortcut)
+        {
+            if (shortcut.Key == KeyCode.None)
+                return false;
+            
+            return (Input.GetKeyDown(shortcut.Key) &&
+            (shortcut.ModifierControl == m_ModifierCtrl) &&
+            (shortcut.ModifierShift == m_ModifierShift) &&
+            (shortcut.ModifierAlt == m_ModiferAlt));
+        }
+
+        private bool ShortcutUp(ModOptions.Shortcut shortcut)
+        {
+            if (shortcut.Key == KeyCode.None)
+                return true;
+
+            return Input.GetKeyUp(shortcut.Key);
+        }
+
         public void Update()
         {
-            //Next track
-            if (ModOptions.Instance.KeyNextTrack != KeyCode.None)
+            // Check if some other UI has the focus
+            if(UIView.HasInputFocus())
             {
-                if (Input.GetKeyDown(ModOptions.Instance.KeyNextTrack))
-                {
-                    m_NextTrackKey_IsDown = true;
-                }
-                else if (Input.GetKeyUp(ModOptions.Instance.KeyNextTrack) && m_NextTrackKey_IsDown)
-                {
-                    m_NextTrackKey_IsDown = false;
-
-                    AudioManagerHelper.NextTrack();
-                }
+                m_NextTrackKey_IsDown = false;
+                m_OpenPanelKey_IsDown = false;
+                m_NextStationKey_IsDown = false;
+                return;
             }
 
-            //Settings panel
-            if (ModOptions.Instance.KeyOpenMusicPanel != KeyCode.None)
+            m_ModifierCtrl = (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl));
+            m_ModifierShift = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+            m_ModiferAlt = (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt));         
+
+            //Next track
+            if(ShortcutDown(ModOptions.Instance.ShortcutNextTrack))
             {
-                if (Input.GetKeyDown(ModOptions.Instance.KeyOpenMusicPanel))
-                {
-                    m_OpenPanelKey_IsDown = true;
-                }
-                else if (Input.GetKeyUp(ModOptions.Instance.KeyOpenMusicPanel) && m_OpenPanelKey_IsDown)
-                {
-                    m_OpenPanelKey_IsDown = false;
+                m_NextTrackKey_IsDown = true;
+            }
+            else if(m_NextTrackKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextTrack))
+            {
+                m_NextTrackKey_IsDown = false;
+                Debug.Log("[CSLMusic] Pressed shortcut for next track");
+                AudioManagerHelper.NextTrack();
+            }
 
-                    var radiopanel = CurrentRadioPanel;
-                    if(radiopanel != null)
-                    {
-                        var visible = ReflectionHelper.GetPrivateField<bool>(radiopanel, "m_isVisible");
+            //Next station
+            if(ShortcutDown(ModOptions.Instance.ShortcutNextStation))
+            {
+                m_NextStationKey_IsDown = true;
+            }
+            else if(m_NextStationKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextStation))
+            {
+                Debug.Log("[CSLMusic] Pressed shortcut for next station");
+                m_NextStationKey_IsDown = false;
+                AudioManagerHelper.NextStation();
+            }
 
-                        if (visible)
-                            radiopanel.HideRadio();
-                        else
-                            radiopanel.ShowRadio();
-                    }
+            //Panel
+            if(ShortcutDown(ModOptions.Instance.ShortcutOpenRadioPanel))
+            {
+                m_OpenPanelKey_IsDown = true;
+            }
+            else if(m_OpenPanelKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutOpenRadioPanel))
+            {                
+                m_OpenPanelKey_IsDown = false;
+                Debug.Log("[CSLMusic] Pressed shortcut for hide/show panel");
+
+                var radiopanel = CurrentRadioPanel;
+                if(radiopanel != null)
+                {
+                    var visible = ReflectionHelper.GetPrivateField<bool>(radiopanel, "m_isVisible");
+
+                    if (visible)
+                        radiopanel.HideRadio();
+                    else
+                        radiopanel.ShowRadio();
                 }
             }
         }

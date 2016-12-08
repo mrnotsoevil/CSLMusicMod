@@ -52,6 +52,16 @@ namespace CSLMusicMod.Helpers
             type.GetField(name, BindingFlags.NonPublic | BindingFlags.Static).
                 SetValue(null, value);
         }
+
+        public static T InvokePrivateMethod<T>(object instance, String method, params object[] parameters)
+        {
+            return (T)instance.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance, parameters);
+        }
+
+        public static void InvokePrivateVoidMethod(object instance, String method, params object[] parameters)
+        {
+            instance.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance, parameters);
+        }
     }
 }
 

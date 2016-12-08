@@ -222,28 +222,41 @@ namespace CSLMusicMod
             }
         }
 
-        public KeyCode KeyNextTrack
+        public Shortcut ShortcutNextTrack
         {
             get
             {
-                return m_Options.KeyNextTrack;
+                return m_Options.ShortcutNextTrack;
             }
             set
             {
-                m_Options.KeyNextTrack = value;
+                m_Options.ShortcutNextTrack = value;
                 SaveSettings();
             }
         }
 
-        public KeyCode KeyOpenMusicPanel
+        public Shortcut ShortcutNextStation
         {
             get
             {
-                return m_Options.KeyOpenMusicPanel;
+                return m_Options.ShortcutNextStation;
             }
             set
             {
-                m_Options.KeyOpenMusicPanel = value;
+                m_Options.ShortcutNextStation = value;
+                SaveSettings();
+            }
+        }
+
+        public Shortcut ShortcutOpenRadioPanel
+        {
+            get
+            {
+                return m_Options.ShortcutOpenRadioPanel;
+            }
+            set
+            {
+                m_Options.ShortcutOpenRadioPanel = value;
                 SaveSettings();
             }
         }
@@ -364,6 +377,27 @@ namespace CSLMusicMod
             }
         }
 
+        public class Shortcut
+        {
+            public KeyCode Key { get; set; }
+            public bool ModifierControl { get; set; }
+            public bool ModifierAlt { get; set; }
+            public bool ModifierShift { get; set; }
+           
+            public Shortcut(KeyCode key, bool ctrl, bool alt, bool shift)
+            {
+                Key = key;
+                ModifierAlt = alt;
+                ModifierControl = ctrl;
+                ModifierShift = shift;
+            }
+
+            public override string ToString()
+            {
+                return string.Format("[Shortcut: Key={0}, ModifierControl={1}, ModifierAlt={2}, ModifierShift={3}]", Key, ModifierControl, ModifierAlt, ModifierShift);
+            }
+        }
+
         public class Options
         {
             public bool CreateMixChannels { get; set; }
@@ -385,8 +419,9 @@ namespace CSLMusicMod
             public bool MixContentBroadcast { get; set; }
 
             public bool EnableShortcuts { get; set; }
-            public KeyCode KeyNextTrack { get; set; }
-            public KeyCode KeyOpenMusicPanel { get; set; }
+            public Shortcut ShortcutNextTrack { get; set; }
+            public Shortcut ShortcutNextStation { get; set; }
+            public Shortcut ShortcutOpenRadioPanel { get; set; }
 
             public List<String> DisabledContent { get; set; }
             public bool EnableDisabledContent { get; set; }
@@ -413,8 +448,9 @@ namespace CSLMusicMod
                 EnableCustomUI = true;
 
                 EnableShortcuts = true;
-                KeyNextTrack = KeyCode.N;
-                KeyOpenMusicPanel = KeyCode.M;
+                ShortcutNextTrack = new Shortcut(KeyCode.N, false, false, false);
+                ShortcutNextStation = new Shortcut(KeyCode.N, true, false, false);
+                ShortcutOpenRadioPanel = new Shortcut(KeyCode.M, false, false, false);
 
                 DisabledContent = new List<string>();
                 EnableDisabledContent = true;

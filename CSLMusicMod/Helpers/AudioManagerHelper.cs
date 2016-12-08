@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using System.Linq;
 using ColossalFramework;
 using UnityEngine;
 
@@ -6,6 +8,35 @@ namespace CSLMusicMod.Helpers
 {
     public static class AudioManagerHelper
     {
+        public static bool NextStation()
+        {
+            var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
+
+            if(radiopanel != null)
+            {
+                RadioChannelInfo current = ReflectionHelper.GetPrivateField<RadioChannelInfo>(radiopanel, "m_selectedStation");
+                RadioChannelInfo[] stations = ReflectionHelper.GetPrivateField<RadioChannelInfo[]>(radiopanel, "m_stations");
+
+                if(stations != null && stations.Length != 0)
+                {
+                    int index = current != null ? Array.IndexOf(stations, current) : 0;
+                    if (index == -1)
+                        index = 0;
+                    else
+                        index = (index + 1) % stations.Length;
+
+                    RadioChannelInfo next = stations[index];
+
+                    if(next != null)
+                    {
+                        ReflectionHelper.InvokePrivateVoidMethod(radiopanel, "SelectStation", next);
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public static bool NextTrack()
         {
             AudioManager mgr = Singleton<AudioManager>.instance;         
@@ -15,7 +46,9 @@ namespace CSLMusicMod.Helpers
                 Debug.Log("[CSLMusic] Radio switches to next track");
 
                 var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
-                player.m_source.Stop();
+
+                if(player != null)
+                    player.m_source.Stop();
 
                 return true;
             }

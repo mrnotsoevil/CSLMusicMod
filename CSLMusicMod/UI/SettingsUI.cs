@@ -35,15 +35,77 @@ namespace CSLMusicMod.UI
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.EnableShortcuts = isChecked;
-                        }));               
-                subgroup.AddDropdown("Open playlist and settings", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.KeyOpenMusicPanel.ToString()), (selection) =>
-                    {
-                        ModOptions.Instance.KeyOpenMusicPanel = KeyList[selection];
-                    });
-                subgroup.AddDropdown("Next song", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.KeyNextTrack.ToString()), (selection) =>
-                    {
-                        ModOptions.Instance.KeyNextTrack = KeyList[selection];
-                    });
+                        }));   
+
+                {
+                    var gr = subgroup.AddGroup("Open playlist and settings");
+                    gr.AddDropdown("Key", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.ShortcutOpenRadioPanel.Key.ToString()), (selection) =>
+                        {
+                            ModOptions.Instance.ShortcutOpenRadioPanel.Key = KeyList[selection];
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Ctrl", ModOptions.Instance.ShortcutOpenRadioPanel.ModifierControl, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutOpenRadioPanel.ModifierControl = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Shift", ModOptions.Instance.ShortcutOpenRadioPanel.ModifierShift, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutOpenRadioPanel.ModifierShift = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Alt", ModOptions.Instance.ShortcutOpenRadioPanel.ModifierAlt, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutOpenRadioPanel.ModifierAlt = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                }
+                {
+                    var gr = subgroup.AddGroup("Next track");
+                    gr.AddDropdown("Key", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.ShortcutNextTrack.Key.ToString()), (selection) =>
+                        {
+                            ModOptions.Instance.ShortcutNextTrack.Key = KeyList[selection];
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Ctrl", ModOptions.Instance.ShortcutNextTrack.ModifierControl, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutNextTrack.ModifierControl = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Shift", ModOptions.Instance.ShortcutNextTrack.ModifierShift, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutNextTrack.ModifierShift = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Alt", ModOptions.Instance.ShortcutNextTrack.ModifierAlt, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutNextTrack.ModifierAlt = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                }
+                {
+                    var gr = subgroup.AddGroup("Next station");
+                    gr.AddDropdown("Key", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.ShortcutNextStation.Key.ToString()), (selection) =>
+                        {
+                            ModOptions.Instance.ShortcutNextStation.Key = KeyList[selection];
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Ctrl", ModOptions.Instance.ShortcutNextStation.ModifierControl, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutNextStation.ModifierControl = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Shift", ModOptions.Instance.ShortcutNextStation.ModifierShift, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutNextStation.ModifierShift = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                    gr.AddCheckbox("Alt", ModOptions.Instance.ShortcutNextStation.ModifierAlt, (bool isChecked) =>
+                        {
+                            ModOptions.Instance.ShortcutNextStation.ModifierAlt = isChecked;
+                            ModOptions.Instance.SaveSettings();
+                        });
+                }
             }
 
             group.AddGroup("Note: Following settings may only take effect after reloading the map:");
