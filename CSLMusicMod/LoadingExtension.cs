@@ -66,7 +66,6 @@ namespace CSLMusicMod
                 RemoveUnsupportedContent();
                 UserRadioContainer.CollectPostLoadingData();
                 ExtendVanillaContent();
-                DebugOutput();
 
                 // Build UI and other post loadtime
                 if (UI == null && ModOptions.Instance.EnableCustomUI)
@@ -80,6 +79,15 @@ namespace CSLMusicMod
                 if (DisabledContentContainer == null)
                 {
                     DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<RadioContentWatcher>();
+                }
+
+                try
+                {
+                    DebugOutput();
+                }
+                catch(Exception ex)
+                {
+                    Debug.Log("[CSLMusic] DebugOutput Error: " + ex);
                 }
             }
         }
@@ -152,9 +160,12 @@ namespace CSLMusicMod
                 message += "[CSLMusic][ChannelInfo] " + info + "\n";
                 message += "Schedule:\n";
 
-                foreach(RadioChannelInfo.State s in info.m_stateChain)
+                if(info.m_stateChain != null)
                 {
-                    message += "\t" + s.m_contentType + " " + s.m_minCount + " - " + s.m_maxCount + "\n";
+                    foreach(RadioChannelInfo.State s in info.m_stateChain)
+                    {
+                        message += "\t" + s.m_contentType + " " + s.m_minCount + " - " + s.m_maxCount + "\n";
+                    }
                 }
 
                 message += "Content:\n";
@@ -165,9 +176,11 @@ namespace CSLMusicMod
 
                     if (content == null)
                         continue;
-
-                    if(content.m_radioChannels.Contains(info))
-                        message += "\t[ContentInfo] " + content + " " + content.m_fileName + "\n";
+                    if( content.m_radioChannels != null)
+                    {
+                        if(content.m_radioChannels.Contains(info))
+                            message += "\t[ContentInfo] " + content + " " + content.m_fileName + "\n";
+                    }
                 }
 
                 Debug.Log(message);
@@ -175,7 +188,12 @@ namespace CSLMusicMod
 
             for(uint i = 0; i < PrefabCollection<DisasterInfo>.PrefabCount(); ++i)
             {
-                Debug.Log("[CSLMusic][DisasterContext] Disaster name: " + PrefabCollection<DisasterInfo>.GetPrefab(i).name);
+                DisasterInfo info = PrefabCollection<DisasterInfo>.GetPrefab(i);
+
+                if (info == null)
+                    continue;
+
+                Debug.Log("[CSLMusic][DisasterContext] Disaster name: " + info.name);
             }
         }
 
@@ -186,6 +204,8 @@ namespace CSLMusicMod
         private void RemoveUnsupportedContent(RadioChannelInfo info)
         {
             if (info == null)
+                return;
+            if (info.m_stateChain == null)
                 return;
 
             Debug.Log("[CSLMusic] Removing unsupported content from " + info);
