@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System.IO;
 using System.Reflection;
+using CSLMusicMod.UI;
 
 namespace CSLMusicMod
 {
@@ -11,7 +12,9 @@ namespace CSLMusicMod
     {
         public static System.Random RANDOM = new System.Random();
 
-        public const String VersionName = "Rewrite 1.1.2.0";
+        public const String VersionName = "Rewrite 1.1.3.0";
+
+        private SettingsUI m_SettingsUI;
 
         public string Name
         {
@@ -36,7 +39,8 @@ namespace CSLMusicMod
 
         public void OnSettingsUI(UIHelperBase helper)
         {
-            UI.SettingsUI.InitializeSettingsUI(helper);
+            m_SettingsUI = new SettingsUI();
+            m_SettingsUI.InitializeSettingsUI(helper);
         }
     }
 }
