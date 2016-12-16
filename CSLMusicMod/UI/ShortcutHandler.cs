@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-using CSLMusicMod.Helpers;
 using ColossalFramework.UI;
 
 namespace CSLMusicMod

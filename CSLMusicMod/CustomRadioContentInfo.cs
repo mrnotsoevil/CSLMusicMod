@@ -13,16 +13,7 @@ namespace CSLMusicMod
             if(File.Exists(this.m_fileName))
             {
                 Debug.Log("Loading custom clip from " + this.m_fileName);
-
-                // From old CSLMusicMod
-                String file = this.m_fileName;
-
-                if (Application.platform == RuntimePlatform.WindowsPlayer)
-                    file = "file:///" + file;
-                else
-                    file = "file://" + file;
-
-                file = file.Replace("#", "%23");
+                String file = Uri.EscapeUriString("file:///" + this.m_fileName);
 
                 return new WWW(file);
             }

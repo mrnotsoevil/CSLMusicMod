@@ -4,7 +4,7 @@ using System.Linq;
 using ColossalFramework;
 using UnityEngine;
 
-namespace CSLMusicMod.Helpers
+namespace CSLMusicMod
 {
     public static class AudioManagerHelper
     {

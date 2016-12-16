@@ -11,6 +11,7 @@ namespace CSLMusicMod
         private RedirectCallsState m_RedirectObtainMusicClip;
         private RedirectCallsState m_RedirectStationName;
         private RedirectCallsState m_RedirectRadioPanelButtonGeneration;
+        private RedirectCallsState m_RedirectAudioManagerQueueBroadcast;
 
         public Detours()
         {
@@ -40,6 +41,8 @@ namespace CSLMusicMod
                 typeof(CustomRadioChannelInfo).GetMethod("CustomGetLocalizedTitle", BindingFlags.Instance | BindingFlags.Public));
             m_RedirectRadioPanelButtonGeneration = RedirectionHelper.RedirectCalls(typeof(RadioPanel).GetMethod("AssignStationToButton", BindingFlags.Instance | BindingFlags.NonPublic),
                 typeof(CustomRadioPanel).GetMethod("CustomAssignStationToButton", BindingFlags.Instance | BindingFlags.NonPublic));
+            m_RedirectAudioManagerQueueBroadcast = RedirectionHelper.RedirectCalls(typeof(AudioManager).GetMethod("QueueBroadcast", BindingFlags.Instance | BindingFlags.Public),
+                typeof(CustomAudioManager).GetMethod("CustomQueueBroadcast", BindingFlags.Instance | BindingFlags.Public));
         }
 
         public void Uninstall()
@@ -48,6 +51,7 @@ namespace CSLMusicMod
             RedirectionHelper.RevertRedirect(m_RedirectObtainMusicClip);
             RedirectionHelper.RevertRedirect(m_RedirectStationName);
             RedirectionHelper.RevertRedirect(m_RedirectRadioPanelButtonGeneration);
+            RedirectionHelper.RevertRedirect(m_RedirectAudioManagerQueueBroadcast);
         }
     }
 }

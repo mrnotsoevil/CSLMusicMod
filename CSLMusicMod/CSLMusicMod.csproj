@@ -101,6 +101,7 @@
     <Compile Include="Contexts\DisasterContextCondition.cs" />
     <Compile Include="UI\ShortcutHandler.cs" />
     <Compile Include="Helpers\GenericHelper.cs" />
+    <Compile Include="CustomAudioManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
