@@ -12,10 +12,12 @@ namespace CSLMusicMod
         {
             if(File.Exists(this.m_fileName))
             {
-                Debug.Log("Loading custom clip from " + this.m_fileName);
-                String file = Uri.EscapeUriString("file:///" + this.m_fileName);
+                var uri = new Uri(this.m_fileName);
+                var uristring = uri.AbsoluteUri;
 
-                return new WWW(file);
+                Debug.Log("Loading custom clip from " + this.m_fileName + " (" + uristring + ")");
+
+                return new WWW(uristring);
             }
             else
             {

@@ -2,8 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench>
     <Files>
-      <File FileName="CSLMusicMod/UI/SettingsUI.cs" Line="217" Column="50" />
-      <File FileName="CSLMusicMod/CSLMusicMod.cs" Line="43" Column="55" />
+      <File FileName="CSLMusicMod/CustomRadioContentInfo.cs" Line="16" Column="81" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
