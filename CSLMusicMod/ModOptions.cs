@@ -383,6 +383,11 @@ namespace CSLMusicMod
             public bool ModifierControl { get; set; }
             public bool ModifierAlt { get; set; }
             public bool ModifierShift { get; set; }
+
+            public Shortcut()
+            {
+                
+            }
            
             public Shortcut(KeyCode key, bool ctrl, bool alt, bool shift)
             {
