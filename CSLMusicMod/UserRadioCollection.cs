@@ -61,14 +61,14 @@ namespace CSLMusicMod
                         if (!visitedmoddirs.Contains(path))
                         {
                             IUserMod mod = (IUserMod)info.userModInstance;
-                            LoadSongsFromCollection("MusicPack " + mod.Name, path);
+                            LoadSongsFromCollection("MusicPack " + mod.Name, "", path);
                             visitedmoddirs.Add(path);
                         }
                     }
                 }
             }
 
-            LoadSongsFromCollection("Userdefined", Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
+            LoadSongsFromCollection("Userdefined", "", Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
         }
 
         private void LoadVanillaSongs(RadioContentInfo.ContentType type)
@@ -76,22 +76,22 @@ namespace CSLMusicMod
             String path = Path.Combine(Path.Combine(DataLocation.gameContentPath, "Radio"), type.ToString());
 
             // The content determination algorithm will always return "Music". Set it manually.
-            foreach(var content in LoadSongsFromCollection("Vanilla " + type.ToString() ,path))
+            foreach(var content in LoadSongsFromCollection("Vanilla Legacy " + type.ToString(), type.ToString() + ": " ,path))
             {
                 content.m_ContentType = type;
             }
         }
 
-        private  List<UserRadioContent> LoadSongsFromCollection(String collection, String dir)
+        private  List<UserRadioContent> LoadSongsFromCollection(String legacycollection, String collectionprefix, String dir)
         {
             List<UserRadioContent> result = new List<UserRadioContent>();
             Debug.Log("[CSLMusic] Looking for songs in " + dir);
 
-            LoadSongsFromFolder(collection, dir);
+            LoadSongsFromFolder(legacycollection, dir);
 
             foreach(String d in Directory.GetDirectories(dir))
             {
-                result.AddRange(LoadSongsFromFolder(Path.GetFileNameWithoutExtension(d), d));
+                result.AddRange(LoadSongsFromFolder(collectionprefix + Path.GetFileNameWithoutExtension(d), d));
             }
 
             return result;
@@ -302,7 +302,7 @@ namespace CSLMusicMod
         private List<UserRadioContent> LoadSongsFromFolder(String collection, String folder)
         {
             List<UserRadioContent> result = new List<UserRadioContent>();
-            Debug.Log("[CSLMusic] Loading content from " + folder);
+            Debug.Log("[CSLMusic] Loading content from " + folder + " into collection " + collection);
 
             foreach(String filename in Directory.GetFiles(folder))
             {
