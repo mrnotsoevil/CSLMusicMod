@@ -1,8 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="CSLMusicMod/CustomRadioContentInfo.cs">
     <Files>
-      <File FileName="CSLMusicMod/CustomRadioContentInfo.cs" Line="16" Column="81" />
+      <File FileName="CSLMusicMod/CustomRadioContentInfo.cs" Line="12" Column="10" />
+      <File FileName="CSLMusicMod/CSLMusicMod.cs" Line="15" Column="59" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

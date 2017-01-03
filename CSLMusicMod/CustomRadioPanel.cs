@@ -12,10 +12,10 @@ namespace CSLMusicMod
         }
 
         private void CustomAssignStationToButton(UIButton button, RadioChannelInfo station)
-        {            
+        {       
             UserRadioCollection collection = LoadingExtension.UserRadioContainer;
-
             button.atlas = station.m_Atlas;
+
 
             if(collection != null && collection.m_Stations.ContainsKey(station.name))
             {                
@@ -44,6 +44,18 @@ namespace CSLMusicMod
                 button.hoveredColor = new Color32(255, 255, 255, 255);
                 button.tooltip = station.GetLocalizedTitle();
                 button.BringToFront();
+            }
+
+            if(button.parent != null && button.parent.name == "StationsList")
+            {
+                if(ModOptions.Instance.DisabledRadioStations.Contains(station.name))
+                {
+                    button.isVisible = false;
+                }
+                else
+                {
+                    button.isVisible = true;
+                }
             }
         }
     }

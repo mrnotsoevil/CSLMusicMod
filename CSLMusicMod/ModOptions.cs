@@ -313,6 +313,19 @@ namespace CSLMusicMod
             }
         }
 
+        public List<String> DisabledRadioStations
+        {
+            get
+            {
+                return m_Options.DisabledRadioStations;
+            }
+            set
+            {
+                m_Options.DisabledRadioStations = value;
+                SaveSettings();
+            }
+        }
+
         public String SettingsFilename
         {
             get
@@ -434,6 +447,8 @@ namespace CSLMusicMod
             public bool EnableContextSensitivity { get; set; }
             public bool EnableAddingContentToVanillaStations { get; set; }
 
+            public List<String> DisabledRadioStations { get; set; }
+
             public Options()
             {
                 CreateMixChannels = true;
@@ -462,6 +477,8 @@ namespace CSLMusicMod
 
                 EnableContextSensitivity = true;
                 EnableAddingContentToVanillaStations = true;
+
+                DisabledRadioStations = new List<string>();
             }
         }
     }

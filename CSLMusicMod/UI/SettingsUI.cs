@@ -4,6 +4,8 @@ using UnityEngine;
 using ICities;
 using System.Collections.Generic;
 using ColossalFramework.UI;
+using System.IO;
+using ColossalFramework.IO;
 
 namespace CSLMusicMod.UI
 {
@@ -165,6 +167,53 @@ namespace CSLMusicMod.UI
         {
             ModOptions options = ModOptions.Instance;
 
+            {
+                List<string> vanillastations = new List<string>();
+
+                foreach(RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
+                {
+                    // They are no real channels
+                    if (type == RadioContentInfo.ContentType.Broadcast)
+                        continue;
+
+                    String path = Path.Combine(Path.Combine(DataLocation.gameContentPath, "Radio"), type.ToString());
+
+                    foreach (String d in Directory.GetDirectories(path))
+                    {
+                        if(Directory.GetFiles(d).Length != 0)
+                        {
+                            String station = Path.GetFileNameWithoutExtension(d);
+
+                            if(!vanillastations.Contains(station))
+                            {
+                                vanillastations.Add(station);
+                            }
+                        }
+                    }
+                }
+
+                vanillastations.Sort();
+                var subgroup = helper.AddGroup("Enabled vanilla channels");
+
+                foreach(String station in vanillastations)
+                {
+                    subgroup.AddCheckbox(station, 
+                        !options.DisabledRadioStations.Contains(station), 
+                        new OnCheckChanged((bool isChecked) =>
+                            {
+                                if(isChecked)
+                                {
+                                    options.DisabledRadioStations.Remove(station);
+                                }
+                                else
+                                {
+                                    options.DisabledRadioStations.Add(station);
+                                }
+
+                                options.SaveSettings();
+                            }));              
+                }
+            }
             {
                 var subgroup = helper.AddGroup("Music packs (Needs reload)");
                 subgroup.AddCheckbox("Use music from music packs", 
