@@ -76,7 +76,7 @@ namespace CSLMusicMod
             String path = Path.Combine(Path.Combine(DataLocation.gameContentPath, "Radio"), type.ToString());
 
             // The content determination algorithm will always return "Music". Set it manually.
-            foreach(var content in LoadSongsFromCollection("Vanilla Legacy " + type.ToString(), type.ToString() + ": " ,path))
+            foreach(var content in LoadSongsFromCollection("Vanilla Legacy " + type.ToString(), type.ToString() + ": " ,path)) //!! Breaks adding custom songs to vanilla content if changed!
             {
                 content.m_ContentType = type;
             }

@@ -294,10 +294,16 @@ namespace CSLMusicMod
                         }
                     }
 
+                    HashSet<string> validcollectionnames = new HashSet<string>();
+                    foreach(RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
+                    {
+                        validcollectionnames.Add(type + ": " + info.name);
+                    }
+
                     // Check our collection for non-existing files
                     foreach(UserRadioContent usercontent in UserRadioContainer.m_Songs.Values)
                     {
-                        if(!existing.Contains(usercontent.m_FileName) && usercontent.m_Collection == info.name)
+                        if(!existing.Contains(usercontent.m_FileName) && validcollectionnames.Contains(usercontent.m_Collection))
                         {
                             Debug.Log("[CSLMusic][ExtendedVanillaContent] Adding " + usercontent.m_FileName + " to vanilla station " + info.name);
 
