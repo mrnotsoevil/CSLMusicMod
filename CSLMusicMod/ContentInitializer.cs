@@ -25,6 +25,9 @@ namespace CSLMusicMod
 
             foreach(UserRadioContent content in collection.m_Songs.Values)
             {
+                try
+                {                    
+                
                 CreatePrefab(content.m_Name, "aukio", new Action<RadioContentInfo>((RadioContentInfo obj) =>
                     {
                         obj.m_fileName = content.m_FileName;
@@ -41,6 +44,11 @@ namespace CSLMusicMod
 
                         obj.m_radioChannels = channels.ToArray();
                     }));
+                }
+                catch(Exception e)
+                {
+                    Debug.Log("[CSLMusic] Error while initializing prefab in " + content.m_Name + "! Exception: " + e.ToString());
+                }
             }
         }
 

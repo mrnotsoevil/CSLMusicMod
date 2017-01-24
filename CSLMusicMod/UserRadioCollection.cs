@@ -144,7 +144,13 @@ namespace CSLMusicMod
 
         private void LoadChannelsFromCollection(String dir)
         {
-            Debug.Log("[CSLMusic] Looking for channels in " + dir);         
+            Debug.Log("[CSLMusic] Looking for channels in " + dir);    
+
+            if(!Directory.Exists(dir))
+            {
+                Debug.Log("[CSLMusic] Skipping: Directory does not exist.");
+                return;
+            }
 
             // Load json channel configuration
             foreach(String filename in Directory.GetFiles(dir))
@@ -303,6 +309,12 @@ namespace CSLMusicMod
         {
             List<UserRadioContent> result = new List<UserRadioContent>();
             Debug.Log("[CSLMusic] Loading content from " + folder + " into collection " + collection);
+
+            if(!Directory.Exists(folder))
+            {
+                Debug.Log("[CSLMusic] Skipping: Folder does not exist.");
+                return new List<UserRadioContent>();
+            }
 
             foreach(String filename in Directory.GetFiles(folder))
             {
