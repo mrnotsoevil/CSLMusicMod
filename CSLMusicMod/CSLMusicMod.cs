@@ -12,7 +12,7 @@ namespace CSLMusicMod
     {
         public static System.Random RANDOM = new System.Random();
 
-        public const String VersionName = "Rewrite 1.1.4.2";
+        public const String VersionName = "Rewrite 1.1.4.3";
 
         private SettingsUI m_SettingsUI;
 
@@ -34,7 +34,7 @@ namespace CSLMusicMod
 
         public CSLMusicMod()
         {
-
+            Debug.Log("[CSLMusic] Version " + VersionName);
         }
 
         public void OnSettingsUI(UIHelperBase helper)

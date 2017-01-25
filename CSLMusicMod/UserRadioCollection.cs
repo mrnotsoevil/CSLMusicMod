@@ -87,11 +87,18 @@ namespace CSLMusicMod
             List<UserRadioContent> result = new List<UserRadioContent>();
             Debug.Log("[CSLMusic] Looking for songs in " + dir);
 
-            LoadSongsFromFolder(legacycollection, dir);
-
-            foreach(String d in Directory.GetDirectories(dir))
+            if(Directory.Exists(dir))
             {
-                result.AddRange(LoadSongsFromFolder(collectionprefix + Path.GetFileNameWithoutExtension(d), d));
+                LoadSongsFromFolder(legacycollection, dir);
+
+                foreach(String d in Directory.GetDirectories(dir))
+                {
+                    result.AddRange(LoadSongsFromFolder(collectionprefix + Path.GetFileNameWithoutExtension(d), d));
+                }
+            }
+            else
+            {
+                Debug.Log("Skipped: Directory does not exist!");
             }
 
             return result;
