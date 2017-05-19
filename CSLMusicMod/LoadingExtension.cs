@@ -33,9 +33,9 @@ namespace CSLMusicMod
                 {
                     Directory.CreateDirectory("CSLMusicMod_Music");
                 }
-                catch(Exception)
+                catch(Exception e)
                 {
-                    
+                    Debug.Log("Could not create CSLMusicMod_Music directory: " + e);
                 }
             }
 
@@ -61,8 +61,12 @@ namespace CSLMusicMod
         {
             base.OnLevelLoaded(mode);
 
-            if(mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
+            Debug.Log("[CSLMusic] Got OnLevelLoaded: " + mode);
+
+            if(mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
             {
+                Debug.Log("[CSLMusic] Level loaded. Loading mod components.");
+
                 RemoveUnsupportedContent();
                 UserRadioContainer.CollectPostLoadingData();
                 ExtendVanillaContent();

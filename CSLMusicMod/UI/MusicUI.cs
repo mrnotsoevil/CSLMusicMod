@@ -59,6 +59,8 @@ namespace CSLMusicMod.UI
             m_ListPanel.Hide();
 
             m_Initialized = true;
+
+            Debug.Log("[CSLMusic] Initialized music UI");
         }
 
         public void Update()
@@ -78,9 +80,9 @@ namespace CSLMusicMod.UI
                 {
                     Initialize();
                 }
-                catch(Exception)
+                catch(Exception e)
                 {
-                    
+                    Debug.Log("[CSLMusic] Error while initializing music UI: " + e);
                 }
             }
 
