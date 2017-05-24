@@ -5,12 +5,23 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
-    public class CustomRadioPanel : RadioPanel
+	/// <summary>
+	/// Used for detours of RadioPanel. See Detours class for the detour code.
+	/// </summary>
+	public class CustomRadioPanel : RadioPanel
     {
         public CustomRadioPanel()
         {
         }
 
+        /// <summary>
+        /// Radio station buttons in vanilla game have multiple sprites (one for normal state,
+        /// another one for if the button is pressed, ...). Custom stations only have a thumbnail.
+        /// This detour method overwrites the vanilla behavior and makes is possible for
+        /// music pack creators to only provide a thumbnail.
+        /// </summary>
+        /// <param name="button">Button.</param>
+        /// <param name="station">Station.</param>
         private void CustomAssignStationToButton(UIButton button, RadioChannelInfo station)
         {       
             UserRadioCollection collection = LoadingExtension.UserRadioContainer;

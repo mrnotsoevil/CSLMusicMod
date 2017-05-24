@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace CSLMusicMod.UI
 {
+    /// <summary>
+    /// UI of the music list panel
+    /// </summary>
     public class UIMusicListPanel : UIPanel
     {
         private bool m_Initialized = false;

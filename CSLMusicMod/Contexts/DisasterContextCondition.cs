@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// This condition handles if a disaster is currently in your city
+    /// </summary>
     public class DisasterContextCondition : RadioContextCondition
     {    
         public int m_DisasterCountFrom = 0;

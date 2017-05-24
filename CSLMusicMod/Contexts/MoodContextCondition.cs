@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// This condition handles the mood of a city (the happiness)
+    /// </summary>
     public class MoodContextCondition : RadioContextCondition
     {    
         public int m_HappinessFrom = 0;

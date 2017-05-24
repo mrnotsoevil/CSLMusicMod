@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Allows conditions based on the current weather
+    /// </summary>
     public class WeatherContextCondition : RadioContextCondition
     { 
         public float m_TempFrom = -100;

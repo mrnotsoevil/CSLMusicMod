@@ -8,6 +8,9 @@ using CSLMusicMod.LitJson;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Class that contains a custom radio channel.
+    /// </summary>
     public class UserRadioChannel
     {
         public String m_Name;

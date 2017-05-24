@@ -5,6 +5,9 @@ using ColossalFramework.UI;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Behavior that handles all shortcuts
+    /// </summary>
     public class ShortcutHandler : MonoBehaviour
     {
         // Shortcut key variables
@@ -16,9 +19,18 @@ namespace CSLMusicMod
         private bool m_ModifierShift = false;
         private bool m_ModiferAlt = false;
 
-        private RadioPanel m_CurrentRadioPanel = null;
+		/// <summary>
+		/// The current radio panel (from vanilla UI)
+		/// Used as cache to prevent expensive FindObjectOfTypeAll calls 
+		/// </summary>
+		private RadioPanel m_CurrentRadioPanel = null;
 
-        private RadioPanel CurrentRadioPanel
+		/// <summary>
+		/// Gets the current radio panel.
+		/// This function is expensive. Only call if necessary!
+		/// </summary>
+		/// <value>The current radio panel.</value>
+		private RadioPanel CurrentRadioPanel
         {
             get
             {

@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Allows to make a condition based on the current daytime
+    /// </summary>
     public class TimeContextCondition : RadioContextCondition
     {
         public float m_TimeFrom = 0;

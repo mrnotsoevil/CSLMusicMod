@@ -9,6 +9,9 @@ using ColossalFramework.IO;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// The main class for loading the mod.
+    /// </summary>
     public class LoadingExtension : LoadingExtensionBase
     {
         public static UserRadioCollection UserRadioContainer;

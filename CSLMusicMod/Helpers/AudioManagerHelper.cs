@@ -6,8 +6,15 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Contains some helper functions that work the AudioManager class of the game
+    /// </summary>
     public static class AudioManagerHelper
     {
+        /// <summary>
+        /// Switches to the next station
+        /// </summary>
+        /// <returns><c>true</c>, if it was possible to switch to the next station, <c>false</c> otherwise.</returns>
         public static bool NextStation()
         {
             var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
@@ -37,6 +44,10 @@ namespace CSLMusicMod
             return false;
         }
 
+        /// <summary>
+        /// Switches to the next track.
+        /// </summary>
+        /// <returns><c>true</c>, if it was possible to switch to the next track, <c>false</c> otherwise.</returns>
         public static bool NextTrack()
         {
             AudioManager mgr = Singleton<AudioManager>.instance;         
@@ -58,6 +69,11 @@ namespace CSLMusicMod
             }
         }
 
+        /// <summary>
+        /// Switches to a specific radio content (music)
+        /// </summary>
+        /// <returns><c>true</c>, if the switch was successful, <c>false</c> otherwise.</returns>
+        /// <param name="info">Info.</param>
         public static bool SwitchToContent(RadioContentInfo info)
         {
             AudioManager mgr = Singleton<AudioManager>.instance;

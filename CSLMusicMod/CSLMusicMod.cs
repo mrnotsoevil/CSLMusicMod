@@ -8,6 +8,9 @@ using CSLMusicMod.UI;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Main mod class
+    /// </summary>
     public class CSLMusicMod : IUserMod
     {
         public static System.Random RANDOM = new System.Random();

@@ -7,6 +7,10 @@ using ColossalFramework.IO;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Class that initializes the custom music tracks.
+    /// Those are separate from the radio channels.
+    /// </summary>
     public class ContentInitializer : MonoBehaviour
     {
         private bool _isInitialized;
@@ -16,6 +20,9 @@ namespace CSLMusicMod
         {
         }
 
+        /// <summary>
+        /// Initializes the custom songs
+        /// </summary>
         protected void InitializeImpl()
         {
             UserRadioCollection collection = LoadingExtension.UserRadioContainer;
@@ -28,22 +35,24 @@ namespace CSLMusicMod
                 try
                 {                    
                 
-                CreatePrefab(content.m_Name, "aukio", new Action<RadioContentInfo>((RadioContentInfo obj) =>
-                    {
-                        obj.m_fileName = content.m_FileName;
-                        obj.m_displayName = content.m_DisplayName;
-                        obj.m_contentType = content.m_ContentType;
+                    // Bases all music on vanilla "Aukio" song. 
+	                CreatePrefab(content.m_Name, "aukio", new Action<RadioContentInfo>((RadioContentInfo obj) =>
+	                    {
+	                        obj.m_fileName = content.m_FileName;
+	                        obj.m_displayName = content.m_DisplayName;
+	                        obj.m_contentType = content.m_ContentType;
 
-                        List<RadioChannelInfo> channels = new List<RadioChannelInfo>();
+                            // Add the channels this song is playing in into the song.
+	                        List<RadioChannelInfo> channels = new List<RadioChannelInfo>();
 
-                        foreach(UserRadioChannel uchannel in content.m_Channels)
-                        {
-                            var channel = FindChannelPrefab(uchannel.m_Name);
-                            channels.Add(channel);
-                        }
+	                        foreach(UserRadioChannel uchannel in content.m_Channels)
+	                        {
+	                            var channel = FindChannelPrefab(uchannel.m_Name);
+	                            channels.Add(channel);
+	                        }
 
-                        obj.m_radioChannels = channels.ToArray();
-                    }));
+	                        obj.m_radioChannels = channels.ToArray();
+	                    }));
                 }
                 catch(Exception e)
                 {

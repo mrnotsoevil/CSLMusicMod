@@ -9,6 +9,9 @@ using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Class that wraps the options of the mod.
+    /// </summary>
     public class ModOptions : MonoBehaviour
     {
         private static ModOptions _Instance = null;

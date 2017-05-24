@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// This class initializes the custom music stations when the game is loading.
+    /// </summary>
     public class ChannelInitializer : MonoBehaviour
     {
         private bool _isInitialized;
@@ -15,12 +18,16 @@ namespace CSLMusicMod
         {
         }
 
+        /// <summary>
+        /// Initializes the custom radio channels
+        /// </summary>
         protected void InitializeImpl()
         {
             UserRadioCollection collection = LoadingExtension.UserRadioContainer;
 
             foreach(UserRadioChannel channel in collection.m_Stations.Values)
             {
+                // Creates the actual radio station object that the games uses.
                 CreatePrefab(channel.m_Name, "Default", new Action<RadioChannelInfo>((RadioChannelInfo obj) => {                    
                     obj.m_stateChain = channel.m_StateChain;
                     obj.m_Atlas = channel.GetThumbnailAtlas(obj.m_Atlas.material);
@@ -67,6 +74,8 @@ namespace CSLMusicMod
         {          
             if (!_isInitialized)
             {
+                // Wait until the game got its radio channels.
+                // Then we can inject our custom channels.
                 RadioChannelCollection collection = Resources.FindObjectsOfTypeAll<RadioChannelCollection>().FirstOrDefault();
 
                 if (collection != null && collection.isActiveAndEnabled)

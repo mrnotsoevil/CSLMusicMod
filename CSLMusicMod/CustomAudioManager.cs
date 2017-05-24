@@ -3,12 +3,19 @@ using System.Threading;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Used for detouring methods from AudioManger. See Detours class for the detour code.
+    /// </summary>
     public class CustomAudioManager
     {
         public CustomAudioManager()
         {
         }
 
+        /// <summary>
+        /// Allows custom playback of broadcasts.
+        /// </summary>
+        /// <param name="info">The content to be played</param>
         public void CustomQueueBroadcast(RadioContentInfo info)
         {
             if (!ModOptions.Instance.AllowContentBroadcast)

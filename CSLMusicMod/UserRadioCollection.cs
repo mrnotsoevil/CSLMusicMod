@@ -10,6 +10,9 @@ using ICities;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Class that contains all custom stations and songs.
+    /// </summary>
     public class UserRadioCollection : MonoBehaviour
     {
         public Dictionary<String, UserRadioContent> m_Songs = new Dictionary<string, UserRadioContent>();

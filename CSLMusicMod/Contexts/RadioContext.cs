@@ -6,12 +6,16 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Allows context-sensitive music to be played.
+    /// This is specific to a radio station.
+    /// </summary>
     public class RadioContext
     {
         public HashSet<string> m_Collections = new HashSet<string>();
 
         /// <summary>
-        /// The conditions are saved in DNF (disjunctive normal form).
+        /// Stores the literals (radio context conditions) in disjunctive normal form.
         /// </summary>
         public List<List<RadioContextCondition>> m_Conditions = new List<List<RadioContextCondition>>();
 
@@ -19,6 +23,10 @@ namespace CSLMusicMod
         {
         }
 
+        /// <summary>
+        /// Returns if there is one of the station defined conditions that apply.
+        /// </summary>
+        /// <returns>true if one set of conditions apply</returns>
         public bool Applies()
         {
             foreach(var conj in m_Conditions)
@@ -43,6 +51,11 @@ namespace CSLMusicMod
             return false;
         }
 
+        /// <summary>
+        /// Loads the context definition from JSON formatted data
+        /// </summary>
+        /// <returns>The RadioContext loaded from JSON</returns>
+        /// <param name="json">JSON data</param>
         public static RadioContext LoadFromJson(JsonData json)
         {
             RadioContext radiocontext = new RadioContext();

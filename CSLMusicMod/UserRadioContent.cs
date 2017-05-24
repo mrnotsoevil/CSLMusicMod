@@ -3,6 +3,9 @@ using System.IO;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Class that describes a custom song.
+    /// </summary>
     public class UserRadioContent
     {
         public RadioContentInfo.ContentType m_ContentType;

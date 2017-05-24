@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace CSLMusicMod
 {
-    /**
-     * THIS CLASS IS DEPRECATED AND EXISTS ONLY FOR COMPATIBILITY REASONS
-     * 
-     * */
+    /// <summary>
+    /// Class that exists for compatibility reasons with very old CSLMusicMod versions.
+    /// It is not used anywhere.
+    /// </summary>
     public class CSLMusicChirperMessage : MessageBase
     {
         public enum MusicMessageType

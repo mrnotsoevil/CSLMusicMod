@@ -26,6 +26,7 @@ namespace CSLMusicMod.UI
 
             AddOptionsInfo(AddTab("Info"));
             AddOptionsChannels(AddTab("Channels"));
+            AddOptionsChannelEditor(AddTab("Editor"));
             AddOptionsContent(AddTab("Content"));
             AddOptionsShortcuts(AddTab("Shortcuts"));
             AddOptionsUI(AddTab("User Interface"));
@@ -65,6 +66,11 @@ namespace CSLMusicMod.UI
             UIHelper stripHelper = new UIHelper(stripRoot);
 
             return stripHelper;
+        }
+
+        private void AddOptionsChannelEditor(UIHelperBase helper) 
+        {
+            
         }
 
         private void AddOptionsInfo(UIHelperBase helper)

@@ -5,10 +5,18 @@ using ColossalFramework.IO;
 using ColossalFramework;
 
 namespace CSLMusicMod
-{    
-    public class CustomRadioContentInfo : RadioContentInfo
+{
+	/// <summary>
+	/// Used for detours of RadioContentInfo. See Detours class for the detour code.
+	/// </summary>
+	public class CustomRadioContentInfo : RadioContentInfo
     {	
-
+        /// <summary>
+        /// The game usually loads its music from its data directories. This is not compatible with
+        /// custom music. This detour method loads vanilla music the vanilla way and 
+        /// custom music from absolute paths.
+        /// </summary>
+        /// <returns>The obtained clip.</returns>
         public WWW CustomObtainClip()
         {
             if(File.Exists(this.m_fileName))

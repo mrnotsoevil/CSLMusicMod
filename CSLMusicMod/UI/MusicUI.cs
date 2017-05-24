@@ -7,14 +7,29 @@ using System.Reflection;
 
 namespace CSLMusicMod.UI
 {
+    /// <summary>
+    /// Behavior that handles all UI
+    /// </summary>
     public class MusicUI : MonoBehaviour
     {  
+        /// <summary>
+        /// The list panel that appears if the radio button is extended
+        /// </summary>
         private UIMusicListPanel m_ListPanel;
 
         private bool m_Initialized = false;
      
+        /// <summary>
+        /// The current radio panel (from vanilla UI)
+        /// Used as cache to prevent expensive FindObjectOfTypeAll calls 
+        /// </summary>
         private RadioPanel m_CurrentRadioPanel = null;
 
+        /// <summary>
+        /// Gets the current radio panel.
+        /// This function is expensive. Only call if necessary!
+        /// </summary>
+        /// <value>The current radio panel.</value>
         private RadioPanel CurrentRadioPanel
         {
             get

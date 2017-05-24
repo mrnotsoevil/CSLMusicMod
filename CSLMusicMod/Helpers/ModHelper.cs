@@ -4,13 +4,16 @@ using System.IO;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Helper methods for interacting with other mods
+    /// </summary>
 	public static class ModHelper
 	{
-		/**
-         * 
-         * Gets the mod by the specified folder
-         * 
-         * */
+		/// <summary>
+		/// Gets the mod by the specified folder
+		/// </summary>
+		/// <returns>The PluginInfo of the mod in folder.</returns>
+		/// <param name="folder">Folder of the mod</param>
 		public static PluginManager.PluginInfo GetSourceModFromFolder(String folder)
 		{
 			foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())
@@ -22,9 +25,11 @@ namespace CSLMusicMod
 			return null;
 		}
 
-		/**
-		 * Does the mod ID exist?
-		 * */
+		/// <summary>
+        /// Checks if a mod with given ID exists
+        /// </summary>
+        /// <returns><c>true</c>, if the mod exists, <c>false</c> otherwise.</returns>
+        /// <param name="id">ID of the mod</param>
 		public static bool PluginIdExists(String id)
 		{
 			foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo())

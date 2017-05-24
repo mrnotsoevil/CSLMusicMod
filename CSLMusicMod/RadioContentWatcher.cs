@@ -6,6 +6,10 @@ using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// A behavior that periodically checks the currently played radio content.
+    /// This is used for disabling, context sensitive etc content.
+    /// </summary>
     public class RadioContentWatcher : MonoBehaviour
     {
         public RadioContentWatcher()

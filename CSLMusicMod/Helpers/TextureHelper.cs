@@ -5,12 +5,23 @@ using System.IO;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Helpers for all texture related things
+    /// </summary>
     public static class TextureHelper
     {
-        /**
-         * All credits to Craxy, authour of Toggle Traffic Lights
-         * */
-        public static UITextureAtlas CreateAtlas(string file, string name, Material baseMaterial, int spriteWidth, int spriteHeight, string[] spriteNames)
+		/// <summary>
+		/// Creates an texture atlas.
+		/// All credits to Craxy, authour of Toggle Traffic Lights
+		/// </summary>
+		/// <returns>The atlas.</returns>
+		/// <param name="file">File.</param>
+		/// <param name="name">Name.</param>
+		/// <param name="baseMaterial">Base material.</param>
+		/// <param name="spriteWidth">Sprite width.</param>
+		/// <param name="spriteHeight">Sprite height.</param>
+		/// <param name="spriteNames">Sprite names.</param>
+		public static UITextureAtlas CreateAtlas(string file, string name, Material baseMaterial, int spriteWidth, int spriteHeight, string[] spriteNames)
         {
             var tex = new Texture2D(spriteWidth * spriteNames.Length, spriteHeight, TextureFormat.ARGB32, false)
                 {

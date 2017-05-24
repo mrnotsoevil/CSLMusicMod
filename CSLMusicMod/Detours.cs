@@ -6,6 +6,10 @@ using System.IO;
 
 namespace CSLMusicMod
 {
+    /// <summary>
+    /// Behavior containing all method detours that are done if vanilla method
+    /// behavior must be overwritten.
+    /// </summary>
     public class Detours : MonoBehaviour
     {
         private RedirectCallsState m_RedirectObtainMusicClip;
