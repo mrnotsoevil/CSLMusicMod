@@ -28,7 +28,7 @@ namespace CSLMusicMod
             UserRadioCollection collection = LoadingExtension.UserRadioContainer;
 
             var collectionnames = collection.m_Songs.Values.Select(song => song.m_Collection).Distinct().ToArray();
-            Debug.Log("[CSLMusic] Available collections: " + String.Join("\n", collectionnames));
+            CSLMusicMod.Log("Available collections: " + String.Join("\n", collectionnames));
 
             foreach(UserRadioContent content in collection.m_Songs.Values)
             {
@@ -56,7 +56,7 @@ namespace CSLMusicMod
                 }
                 catch(Exception e)
                 {
-                    Debug.Log("[CSLMusic] Error while initializing prefab in " + content.m_Name + "! Exception: " + e.ToString());
+                    Debug.LogError("[CSLMusic] Error while initializing prefab in " + content.m_Name + "! Exception: " + e.ToString());
                 }
             }
         }

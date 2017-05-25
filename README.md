@@ -1,4 +1,4 @@
-![Logo](./Readme_Resources/Logo_800.png)
+![Logo](./Readme_Resources/logo.png)
 
 With CSL Music Mod you can add custom music to Cities: Skylines.
 
@@ -23,6 +23,5 @@ You can find information how to add your custom music and how to create music pa
 # Acknowledgements
 
 - Cities: Skylines developers and publisher for this great game
-- NVorbis \- I hope you are not mad that I include your code
 - KDE Breeze project - Great icons !
 - Add more

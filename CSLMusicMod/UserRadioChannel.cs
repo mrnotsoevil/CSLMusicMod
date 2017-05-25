@@ -67,20 +67,28 @@ namespace CSLMusicMod
         }
 
         /// <summary>
-        /// Returns the list of collections that should be active. Returns null if all collections are allowed.
+        /// Returns the list of collections that should be active.
         /// </summary>
         /// <returns>The applying content collections.</returns>
         public HashSet<String> GetApplyingContentCollections()
         {
+            // If we have no contexts, all collections can be used.
+            if(m_Contexts.Count == 0)
+            {
+                return m_Collections;
+            }
+
+            HashSet<String> collections = new HashSet<string>();
+
             foreach(RadioContext context in m_Contexts)
             {
                 if(context.Applies())
                 {
-                    return context.m_Collections;
+                    collections.UnionWith(context.m_Collections);
                 }
             }
 
-            return null;
+            return collections;
         }
 
         public bool IsValid()
@@ -160,7 +168,7 @@ namespace CSLMusicMod
             }
             catch(Exception ex)
             {
-                Debug.Log(ex);
+                Debug.LogError(ex);
                 return null;
             }
         }

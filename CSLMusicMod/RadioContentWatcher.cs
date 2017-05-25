@@ -12,162 +12,158 @@ namespace CSLMusicMod
     /// </summary>
     public class RadioContentWatcher : MonoBehaviour
     {
+        public static Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>> AllowedContent = 
+            new Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>>();
+
+        /// <summary>
+        /// Counts how many times the watcher was updated.
+        /// </summary>
+        private int m_WatcherUpdateTicker = 0;
+
         public RadioContentWatcher()
         {
         }
 
         public void Start()
         {
-            if(ModOptions.Instance.EnableDisabledContent)
-                InvokeRepeating("RemoveDisabledContent", 1f, 0.5f);
-            if (ModOptions.Instance.EnableContextSensitivity)
-                InvokeRepeating("ApplyContextRules", 1f, 5f);
-                
+            InvokeRepeating("ApplyAllowedContentRestrictions", 1f, (float)ModOptions.Instance.ContentWatcherInterval);
         }
 
         /// <summary>
-        /// Disables radio content that is currently disabled
+        /// Rebuilds the allowed content for a channel.
         /// </summary>
-        public void RemoveDisabledContent()
+        /// <param name="channel">Channel.</param>
+        private void RebuildAllowedContentForChannel(RadioChannelData channel)
         {
-            if (!ModOptions.Instance.EnableDisabledContent)
-                return;
-            if (ModOptions.Instance.DisabledContent.Count == 0)
-                return;
+			HashSet<RadioContentInfo> allowed;
+			if (!AllowedContent.TryGetValue(channel.Info, out allowed))
+			{
+				allowed = new HashSet<RadioContentInfo>();
+				AllowedContent[channel.Info] = allowed;
+			}
+			else
+			{
+				allowed.Clear();
+			}
 
-            AudioManager mgr = Singleton<AudioManager>.instance;
-            ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+			UserRadioChannel userchannel = AudioManagerHelper.GetUserChannelInfo(channel.Info);
 
-            if(activechannel >= 0)
+			if (userchannel != null)
+			{
+				// If the channel is a custom channel, we can check for context and for content disabling
+				var allowedcollections = userchannel.GetApplyingContentCollections();
+
+				foreach (UserRadioContent usercontent in userchannel.m_Content)
+				{
+					if (usercontent.m_VanillaContentInfo != null &&
+					   allowedcollections.Contains(usercontent.m_Collection) &&
+					   ContentIsEnabled(usercontent.m_VanillaContentInfo))
+					{
+						allowed.Add(usercontent.m_VanillaContentInfo);
+					}
+				}
+			}
+			else
+			{
+				// If the channel is a vanilla channel, we can still disable content
+				AudioManager mgr = Singleton<AudioManager>.instance;
+
+				if (mgr.m_radioContents.m_size > 0)
+				{
+					for (int i = 0; i < mgr.m_radioContents.m_size; ++i)
+					{
+						var content = mgr.m_radioContents[i];
+						if (content.Info.m_radioChannels.Contains(channel.Info))
+						{
+							if (ContentIsEnabled(content.Info))
+							{
+								allowed.Add(content.Info);
+							}
+						}
+					}
+				}
+			}
+        }
+
+        /// <summary>
+        /// Rebuilds the list of allowed content
+        /// </summary>
+        public void RebuildAllowedContent()
+        {
+            if(m_WatcherUpdateTicker++ % 10 == 0)
             {
-                RadioChannelData data = mgr.m_radioChannels[activechannel];
+                AudioManager mgr = Singleton<AudioManager>.instance;
 
-                if(data.m_currentContent != 0)
+                for (int i = 0; i < mgr.m_radioChannels.m_size; ++i)
                 {
-                    var content = mgr.m_radioContents[data.m_currentContent];
-
-                    if (content.Info == null)
-                        return;
-
-                    string id = content.Info.m_folderName + "/" + content.Info.m_fileName;
-
-                    if(ModOptions.Instance.DisabledContent.Contains(id))
-                    {
-                        var newcontent = FindNewContent(data.Info);
-
-                        // If no alternatives are existing, ignore
-                        if(newcontent != null)
-                        {
-                            AudioManagerHelper.SwitchToContent(newcontent);
-                        }
-                    }
-
+                    RebuildAllowedContentForChannel(mgr.m_radioChannels[i]);
                 }
+            }
+            else
+            {
+				RadioChannelData? currentchannel = AudioManagerHelper.GetActiveChannelData();
+
+				if (currentchannel != null)
+				{
+					RebuildAllowedContentForChannel(currentchannel.Value);
+				}
             }
         }
 
         /// <summary>
-        /// Disables radio content that is not in the current radio context
+        /// Applies the content sensitivity
         /// </summary>
-        public void ApplyContextRules()
+        public void ApplyAllowedContentRestrictions()
         {
             if (!ModOptions.Instance.EnableContextSensitivity)
                 return;
 
-            AudioManager mgr = Singleton<AudioManager>.instance;
-            ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+            RebuildAllowedContent();
 
+            // Find the current content and check if it is in the list of allowed content
+            // Otherwise trigger radio content rebuild and stop playback
+            RadioChannelData? currentchannel = AudioManagerHelper.GetActiveChannelData();
 
-            if(activechannel >= 0)
+            if(currentchannel != null)
             {
-                RadioChannelData data = mgr.m_radioChannels[activechannel];
+                RadioContentData? currentcontent = AudioManagerHelper.GetActiveContentInfo();
 
-                if(data.m_currentContent != 0)
+                if(currentcontent != null)
                 {
-                    UserRadioChannel userchannel;
+                    HashSet<RadioContentInfo> allowed;
 
-                    if(LoadingExtension.UserRadioContainer.m_UserRadioDict.TryGetValue(data.Info, out userchannel))
-                    {                        
-                        var content = mgr.m_radioContents[data.m_currentContent];
+                    if(AllowedContent.TryGetValue(currentchannel.Value.Info, out allowed))
+                    {
+                        // Special case: allowed content is null or empty: Then just play everything
+                        if (!allowed.Contains(currentcontent.Value.Info))
+						{							
+							AudioManagerHelper.TriggerRebuildInternalSongList();
 
-                        UserRadioContent usercontent;
-
-                        if(LoadingExtension.UserRadioContainer.m_UserContentDict.TryGetValue(content.Info, out usercontent))
-                        {
-                            HashSet<String> allowedcollections = userchannel.GetApplyingContentCollections();
-                         
-                            // Check if the current content's collection is supported
-                            if(allowedcollections != null && !allowedcollections.Contains(usercontent.m_Collection))
+                            if(allowed != null && allowed.Count != 0)
                             {
-                                var newcontent = FindNewContent(data.Info);
-
-                                // If no alternatives are existing, ignore
-                                if(newcontent != null)
-                                {
-                                    AudioManagerHelper.SwitchToContent(newcontent);
-                                }
-                            }
-                        }
-                    }
+                                CSLMusicMod.Log("Wrong context for " + currentcontent.Value.Info.m_fileName);
+                                AudioManagerHelper.NextTrack();
+                            }							
+						}
+                    }					
                 }
             }
         }
 
-        public RadioContentInfo FindNewContent(RadioChannelInfo channel)
+        /// <summary>
+        /// Returns true if a radio content info is disabled.
+        /// </summary>
+        /// <returns><c>true</c>, if is marked as disabled, <c>false</c> otherwise.</returns>
+        /// <param name="info">Info.</param>
+        public static bool ContentIsEnabled(RadioContentInfo info)
         {
-            List<RadioContentInfo> available = new List<RadioContentInfo>();
-            HashSet<string> allowedcollections = null; //O(logn) HashSet
+            if (info == null)
+                return true;
 
-            // Handle context-sensitivity
-            if(ModOptions.Instance.EnableContextSensitivity)
-            {
-                UserRadioChannel userchannel;
-                if(LoadingExtension.UserRadioContainer.m_Stations.TryGetValue(channel.name, out userchannel))
-                {
-                    allowedcollections = userchannel.GetApplyingContentCollections();
-                }
-            }
-
-            // Look for a matching content
-            for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
-            {
-                RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(i);
-
-                if (content == null)
-                    continue;
-                if (content.m_radioChannels == null)
-                    continue;
-
-                if(content.m_radioChannels.Contains(channel))
-                {
-                    string id = content.m_folderName + "/" + content.m_fileName;
-
-                    if (ModOptions.Instance.EnableDisabledContent && ModOptions.Instance.DisabledContent.Contains(id))
-                    {
-                        continue;
-                    }
-                    if(allowedcollections != null)
-                    {
-                        UserRadioContent usercontent;
-
-                        if (LoadingExtension.UserRadioContainer.m_UserContentDict.TryGetValue(content, out usercontent))
-                        {
-                            if(!allowedcollections.Contains(usercontent.m_Collection))
-                            {
-                                continue;
-                            }
-                        }
-                    }
-
-                    available.Add(content);
-                }
-            }
-
-            if (available.Count == 0)
-                return null;
-
-            return available[CSLMusicMod.RANDOM.Next(available.Count)];
+			string id = info.m_folderName + "/" + info.m_fileName;
+            return !ModOptions.Instance.DisabledContent.Contains(id);			
         }
+
     }
 }
 

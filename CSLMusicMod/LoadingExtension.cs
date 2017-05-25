@@ -38,7 +38,7 @@ namespace CSLMusicMod
                 }
                 catch(Exception e)
                 {
-                    Debug.Log("Could not create CSLMusicMod_Music directory: " + e);
+                    Debug.LogError("Could not create CSLMusicMod_Music directory: " + e);
                 }
             }
 
@@ -64,11 +64,11 @@ namespace CSLMusicMod
         {
             base.OnLevelLoaded(mode);
 
-            Debug.Log("[CSLMusic] Got OnLevelLoaded: " + mode);
+            CSLMusicMod.Log("Got OnLevelLoaded: " + mode);
 
             if(mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
             {
-                Debug.Log("[CSLMusic] Level loaded. Loading mod components.");
+                CSLMusicMod.Log("Level loaded. Loading mod components.");
 
                 RemoveUnsupportedContent();
                 UserRadioContainer.CollectPostLoadingData();
@@ -94,7 +94,7 @@ namespace CSLMusicMod
                 }
                 catch(Exception ex)
                 {
-                    Debug.Log("[CSLMusic] DebugOutput Error: " + ex);
+                    Debug.LogError("[CSLMusic] DebugOutput Error: " + ex);
                 }
             }
         }
@@ -164,7 +164,7 @@ namespace CSLMusicMod
                 if (info == null)
                     continue;
 
-                message += "[CSLMusic][ChannelInfo] " + info + "\n";
+                message += "[ChannelInfo] " + info + "\n";
                 message += "Schedule:\n";
 
                 if(info.m_stateChain != null)
@@ -190,7 +190,7 @@ namespace CSLMusicMod
                     }
                 }
 
-                Debug.Log(message);
+                CSLMusicMod.Log(message);
             }
 
             for(uint i = 0; i < PrefabCollection<DisasterInfo>.PrefabCount(); ++i)
@@ -200,7 +200,7 @@ namespace CSLMusicMod
                 if (info == null)
                     continue;
 
-                Debug.Log("[CSLMusic][DisasterContext] Disaster name: " + info.name);
+                CSLMusicMod.Log("[DisasterContext] Disaster name: " + info.name);
             }
         }
 
@@ -215,7 +215,7 @@ namespace CSLMusicMod
             if (info.m_stateChain == null)
                 return;
 
-            Debug.Log("[CSLMusic] Removing unsupported content from " + info);
+            CSLMusicMod.Log("Removing unsupported content from " + info);
 
             var options = ModOptions.Instance;
 
@@ -312,7 +312,7 @@ namespace CSLMusicMod
                     {
                         if(!existing.Contains(usercontent.m_FileName) && validcollectionnames.Contains(usercontent.m_Collection))
                         {
-                            Debug.Log("[CSLMusic][ExtendedVanillaContent] Adding " + usercontent.m_FileName + " to vanilla station " + info.name);
+                            CSLMusicMod.Log("[ExtendedVanillaContent] Adding " + usercontent.m_FileName + " to vanilla station " + info.name);
 
                             List<RadioChannelInfo> v = GenericHelper.CopyOrCreateList<RadioChannelInfo>(usercontent.m_VanillaContentInfo.m_radioChannels);
                             v.Add(info);

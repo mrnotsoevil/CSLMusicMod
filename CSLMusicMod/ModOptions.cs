@@ -12,7 +12,7 @@ namespace CSLMusicMod
     /// <summary>
     /// Class that wraps the options of the mod.
     /// </summary>
-    public class ModOptions : MonoBehaviour
+    public class ModOptions
     {
         private static ModOptions _Instance = null;
         public static ModOptions Instance 
@@ -21,7 +21,10 @@ namespace CSLMusicMod
             {
                 if(_Instance == null)
                 {
-                    _Instance = new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
+                    //_Instance = new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
+                    _Instance = new ModOptions();
+                    _Instance.LoadSettings();
+
                 }
 
                 return _Instance;
@@ -303,6 +306,19 @@ namespace CSLMusicMod
             }
         }
 
+		public double ContentWatcherInterval
+		{
+			get
+			{
+                return Math.Max(1, m_Options.ContentWatcherInterval);
+			}
+			set
+			{
+                m_Options.ContentWatcherInterval = Math.Max(1, value);
+				SaveSettings();
+			}
+		}
+
         public bool EnableAddingContentToVanillaStations
         {
             get
@@ -329,6 +345,19 @@ namespace CSLMusicMod
             }
         }
 
+        public bool EnableDebugInfo
+		{
+			get
+			{
+				return m_Options.EnableDebugInfo;
+			}
+			set
+			{
+				m_Options.EnableDebugInfo = value;
+				SaveSettings();
+			}
+		}
+
         public String SettingsFilename
         {
             get
@@ -341,17 +370,17 @@ namespace CSLMusicMod
         {
         }
 
-        public void Awake()
-        {
-            DontDestroyOnLoad(this);
-            LoadSettings();
-        }
+        //public void Awake()
+        //{
+        //    DontDestroyOnLoad(this);
+        //    LoadSettings();
+        //}
 
         public void SaveSettings()
         {
             try
             {
-                StringBuilder json = new StringBuilder();
+                StringWriter json = new StringWriter();
                 JsonWriter f = new JsonWriter(json);
                 f.PrettyPrint = true;
 
@@ -361,11 +390,11 @@ namespace CSLMusicMod
             }
             catch(Exception ex)
             {
-                Debug.Log(ex);
+                Debug.LogError(ex);
             }
             finally
             {
-                Debug.Log("[CSLMusic] Settings saved.");
+                CSLMusicMod.Log("Settings saved.");
             }
         }
 
@@ -380,11 +409,11 @@ namespace CSLMusicMod
                 }
                 catch(Exception ex)
                 {
-                    Debug.Log(ex);
+                    Debug.LogError(ex);
                 }
                 finally
                 {
-                    Debug.Log("[CSLMusic] Settings loaded.");
+                    CSLMusicMod.Log("Settings loaded.");
                 }
             }
             else
@@ -448,9 +477,13 @@ namespace CSLMusicMod
             public bool EnableDisabledContent { get; set; }
 
             public bool EnableContextSensitivity { get; set; }
+            public double ContentWatcherInterval { get; set; }
+
             public bool EnableAddingContentToVanillaStations { get; set; }
 
             public List<String> DisabledRadioStations { get; set; }
+
+            public bool EnableDebugInfo { get; set; }
 
             public Options()
             {
@@ -479,9 +512,13 @@ namespace CSLMusicMod
                 EnableDisabledContent = true;
 
                 EnableContextSensitivity = true;
+                ContentWatcherInterval = 5;
+
                 EnableAddingContentToVanillaStations = true;
 
                 DisabledRadioStations = new List<string>();
+
+                EnableDebugInfo = false;
             }
         }
     }
