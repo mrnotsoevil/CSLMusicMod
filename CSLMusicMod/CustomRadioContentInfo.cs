@@ -26,7 +26,7 @@ namespace CSLMusicMod
 				uristring = uristring.Replace ("%20", " ");
 				//var uristring = "file://" + this.m_fileName.Replace("\\","/").Replace("#", "%23");
 
-                Debug.Log("Loading custom clip from " + this.m_fileName + " (" + uristring + ")");
+                CSLMusicMod.Log("Loading custom clip from " + this.m_fileName + " (" + uristring + ")");
 
                 return new WWW(uristring);
             }
@@ -37,7 +37,7 @@ namespace CSLMusicMod
                 text = Path.Combine(text, this.m_folderName);
                 text = Path.Combine(text, this.m_fileName);
 
-                Debug.Log("Loading Clip from " + text);
+                CSLMusicMod.Log("Loading Clip from " + text);
                 return new WWW("file:///" + text);
             }
         }

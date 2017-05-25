@@ -99,7 +99,7 @@ namespace CSLMusicMod
             else if(m_NextTrackKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextTrack))
             {
                 m_NextTrackKey_IsDown = false;
-                Debug.Log("[CSLMusic] Pressed shortcut for next track");
+                CSLMusicMod.Log("Pressed shortcut for next track");
                 AudioManagerHelper.NextTrack();
             }
 
@@ -110,7 +110,7 @@ namespace CSLMusicMod
             }
             else if(m_NextStationKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextStation))
             {
-                Debug.Log("[CSLMusic] Pressed shortcut for next station");
+                CSLMusicMod.Log("Pressed shortcut for next station");
                 m_NextStationKey_IsDown = false;
                 AudioManagerHelper.NextStation();
             }
@@ -123,7 +123,7 @@ namespace CSLMusicMod
             else if(m_OpenPanelKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutOpenRadioPanel))
             {                
                 m_OpenPanelKey_IsDown = false;
-                Debug.Log("[CSLMusic] Pressed shortcut for hide/show panel");
+                CSLMusicMod.Log("Pressed shortcut for hide/show panel");
 
                 var radiopanel = CurrentRadioPanel;
                 if(radiopanel != null)

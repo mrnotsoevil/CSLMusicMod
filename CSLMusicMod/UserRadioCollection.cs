@@ -88,7 +88,7 @@ namespace CSLMusicMod
         private  List<UserRadioContent> LoadSongsFromCollection(String legacycollection, String collectionprefix, String dir)
         {
             List<UserRadioContent> result = new List<UserRadioContent>();
-            Debug.Log("[CSLMusic] Looking for songs in " + dir);
+            CSLMusicMod.Log("Looking for songs in " + dir);
 
             if(Directory.Exists(dir))
             {
@@ -101,7 +101,7 @@ namespace CSLMusicMod
             }
             else
             {
-                Debug.Log("Skipped: Directory does not exist!");
+                CSLMusicMod.Log("Skipped: Directory does not exist!");
             }
 
             return result;
@@ -154,11 +154,11 @@ namespace CSLMusicMod
 
         private void LoadChannelsFromCollection(String dir)
         {
-            Debug.Log("[CSLMusic] Looking for channels in " + dir);    
+            CSLMusicMod.Log("Looking for channels in " + dir);    
 
             if(!Directory.Exists(dir))
             {
-                Debug.Log("[CSLMusic] Skipping: Directory does not exist.");
+                CSLMusicMod.Log("Skipping: Directory does not exist.");
                 return;
             }
 
@@ -175,7 +175,7 @@ namespace CSLMusicMod
                     }
                     else
                     {
-                        Debug.Log("[CSLMusic] Error: Cannot load channel from " + filename);
+                        Debug.LogError("[CSLMusic] Error: Cannot load channel from " + filename);
                     }
                 }
             }
@@ -318,11 +318,11 @@ namespace CSLMusicMod
         private List<UserRadioContent> LoadSongsFromFolder(String collection, String folder)
         {
             List<UserRadioContent> result = new List<UserRadioContent>();
-            Debug.Log("[CSLMusic] Loading content from " + folder + " into collection " + collection);
+            CSLMusicMod.Log("Loading content from " + folder + " into collection " + collection);
 
             if(!Directory.Exists(folder))
             {
-                Debug.Log("[CSLMusic] Skipping: Folder does not exist.");
+                CSLMusicMod.Log("Skipping: Folder does not exist.");
                 return new List<UserRadioContent>();
             }
 
@@ -332,7 +332,7 @@ namespace CSLMusicMod
                 {
                     UserRadioContent content = new UserRadioContent(collection, filename);
                     m_Songs[content.m_Name] = content;
-                    Debug.Log("[CSLMusic] Found content " + content.m_Name + ", path: " + filename);
+                    CSLMusicMod.Log("Found content " + content.m_Name + ", path: " + filename);
 
                     result.Add(content);
                 }

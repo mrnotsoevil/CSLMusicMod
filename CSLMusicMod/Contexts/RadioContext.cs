@@ -83,7 +83,7 @@ namespace CSLMusicMod
                             context = DisasterContextCondition.LoadFromJson(entry);
                             break;
                         default:
-                            Debug.Log("[CSLMusic] Error: Unknown context type!");
+                            Debug.LogError("[CSLMusic] Error: Unknown context type!");
                             break;
                     }
 

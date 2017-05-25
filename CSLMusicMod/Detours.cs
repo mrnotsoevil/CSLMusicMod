@@ -16,6 +16,7 @@ namespace CSLMusicMod
         private RedirectCallsState m_RedirectStationName;
         private RedirectCallsState m_RedirectRadioPanelButtonGeneration;
         private RedirectCallsState m_RedirectAudioManagerQueueBroadcast;
+        private RedirectCallsState m_RedirectAudioManagerCollectRadioContentInfo;
 
         public Detours()
         {
@@ -38,7 +39,7 @@ namespace CSLMusicMod
 
         public void Install()
         {
-            Debug.Log("[CSLMusic] Installing detours ...");
+            CSLMusicMod.Log("[CSLMusic] Installing detours ...");
             m_RedirectObtainMusicClip = RedirectionHelper.RedirectCalls(typeof(RadioContentInfo).GetMethod("ObtainClip", BindingFlags.Instance | BindingFlags.Public),
                 typeof(CustomRadioContentInfo).GetMethod("CustomObtainClip", BindingFlags.Instance | BindingFlags.Public));
             m_RedirectStationName = RedirectionHelper.RedirectCalls(typeof(RadioChannelInfo).GetMethod("GetLocalizedTitle", BindingFlags.Instance | BindingFlags.Public),
@@ -47,15 +48,18 @@ namespace CSLMusicMod
                 typeof(CustomRadioPanel).GetMethod("CustomAssignStationToButton", BindingFlags.Instance | BindingFlags.NonPublic));
             m_RedirectAudioManagerQueueBroadcast = RedirectionHelper.RedirectCalls(typeof(AudioManager).GetMethod("QueueBroadcast", BindingFlags.Instance | BindingFlags.Public),
                 typeof(CustomAudioManager).GetMethod("CustomQueueBroadcast", BindingFlags.Instance | BindingFlags.Public));
+			m_RedirectAudioManagerCollectRadioContentInfo = RedirectionHelper.RedirectCalls(typeof(AudioManager).GetMethod("CollectRadioContentInfo", BindingFlags.Instance | BindingFlags.Public),
+				typeof(CustomAudioManager).GetMethod("CustomCollectRadioContentInfo", BindingFlags.Instance | BindingFlags.Public));
         }
 
         public void Uninstall()
         {
-            Debug.Log("[CSLMusic] Uninstalling detours ...");
+            CSLMusicMod.Log("[CSLMusic] Uninstalling detours ...");
             RedirectionHelper.RevertRedirect(m_RedirectObtainMusicClip);
             RedirectionHelper.RevertRedirect(m_RedirectStationName);
             RedirectionHelper.RevertRedirect(m_RedirectRadioPanelButtonGeneration);
             RedirectionHelper.RevertRedirect(m_RedirectAudioManagerQueueBroadcast);
+            RedirectionHelper.RevertRedirect(m_RedirectAudioManagerCollectRadioContentInfo);
         }
     }
 }

@@ -119,7 +119,7 @@ namespace CSLMusicMod.UI
             if (m_IconAtlas == null)
             {
 
-                Debug.Log("[CSLMusicMod] Creating icon atlases ...");
+                CSLMusicMod.Log("Creating icon atlases ...");
                 m_IconAtlas = TextureHelper.CreateAtlas("icons.png", "CSLMusicModUI", UIView.Find<UITabstrip>("ToolMode").atlas.material, 31, 31, new string[]
                     {
                         "OptionBase",

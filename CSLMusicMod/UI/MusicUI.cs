@@ -75,7 +75,7 @@ namespace CSLMusicMod.UI
 
             m_Initialized = true;
 
-            Debug.Log("[CSLMusic] Initialized music UI");
+            CSLMusicMod.Log("Initialized music UI");
         }
 
         public void Update()
@@ -97,7 +97,7 @@ namespace CSLMusicMod.UI
                 }
                 catch(Exception e)
                 {
-                    Debug.Log("[CSLMusic] Error while initializing music UI: " + e);
+                    Debug.LogError("[CSLMusic] Error while initializing music UI: " + e);
                 }
             }
 

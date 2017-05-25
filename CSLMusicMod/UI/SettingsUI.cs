@@ -88,6 +88,18 @@ namespace CSLMusicMod.UI
                     "files into the CSLMusicMod_Music folder or into the\n" +
                     "folder containing vanilla radio content.");
             }
+            {
+                ModOptions options = ModOptions.Instance;
+                var subgroup = helper.AddGroup("Troubleshooting");
+                subgroup.AddGroup("You can find information in the CSLMusicMod wiki and the Steam workshop entry." +
+                                  "Don't forget to enable debugging info if you want to provide a log.");
+                subgroup.AddCheckbox("Enable debugging info",
+                                     options.EnableDebugInfo,
+                                     (isChecked) =>
+                {
+                    options.EnableDebugInfo = isChecked;
+                });
+            }
 
         }
 

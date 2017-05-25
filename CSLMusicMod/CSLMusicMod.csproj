@@ -22,7 +22,11 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="bin/Debug/copytomoddir.sh" workingdir="${TargetDir}" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>bin/Debug/copytomoddir.sh</command>
+          <workingdir>${TargetDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -37,7 +41,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="bin/Release/copytomoddir.sh" workingdir="${TargetDir}" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>bin/Release/copytomoddir.sh</command>
+          <workingdir>${TargetDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

@@ -329,6 +329,19 @@ namespace CSLMusicMod
             }
         }
 
+        public bool EnableDebugInfo
+		{
+			get
+			{
+				return m_Options.EnableDebugInfo;
+			}
+			set
+			{
+				m_Options.EnableDebugInfo = value;
+				SaveSettings();
+			}
+		}
+
         public String SettingsFilename
         {
             get
@@ -361,11 +374,11 @@ namespace CSLMusicMod
             }
             catch(Exception ex)
             {
-                Debug.Log(ex);
+                Debug.LogError(ex);
             }
             finally
             {
-                Debug.Log("[CSLMusic] Settings saved.");
+                CSLMusicMod.Log("Settings saved.");
             }
         }
 
@@ -380,11 +393,11 @@ namespace CSLMusicMod
                 }
                 catch(Exception ex)
                 {
-                    Debug.Log(ex);
+                    Debug.LogError(ex);
                 }
                 finally
                 {
-                    Debug.Log("[CSLMusic] Settings loaded.");
+                    CSLMusicMod.Log("Settings loaded.");
                 }
             }
             else
@@ -452,6 +465,8 @@ namespace CSLMusicMod
 
             public List<String> DisabledRadioStations { get; set; }
 
+            public bool EnableDebugInfo { get; set; }
+
             public Options()
             {
                 CreateMixChannels = true;
@@ -482,6 +497,8 @@ namespace CSLMusicMod
                 EnableAddingContentToVanillaStations = true;
 
                 DisabledRadioStations = new List<string>();
+
+                EnableDebugInfo = false;
             }
         }
     }

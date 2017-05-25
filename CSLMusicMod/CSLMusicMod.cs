@@ -45,6 +45,19 @@ namespace CSLMusicMod
             m_SettingsUI = new SettingsUI();
             m_SettingsUI.InitializeSettingsUI(helper);
         }
+
+        /// <summary>
+        /// Logs into the debug log if enabled.
+        /// </summary>
+        /// <returns>The log.</returns>
+        /// <param name="message">Message.</param>
+        public static void Log(string message)
+        {
+            if(ModOptions.Instance.EnableDebugInfo)
+            {
+                Debug.Log("[CSLMusicMod] " + message);
+            }
+        }
     }
 }
 
