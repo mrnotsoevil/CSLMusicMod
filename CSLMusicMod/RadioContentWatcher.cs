@@ -21,8 +21,7 @@ namespace CSLMusicMod
 
         public void Start()
         {
-            if (ModOptions.Instance.EnableContextSensitivity)
-                InvokeRepeating("ApplyContextRules", 1f, 5f);
+            InvokeRepeating("ApplyContextRules", 1f, 5f);
         }
 
         /// <summary>
@@ -67,6 +66,9 @@ namespace CSLMusicMod
         /// </summary>
         public void ApplyContextRules()
         {
+            if (!ModOptions.Instance.EnableContextSensitivity)
+                return;
+
             RebuildContextRulesAllowedContent();
 
             // Find the current content and check if it is in the list of allowed content

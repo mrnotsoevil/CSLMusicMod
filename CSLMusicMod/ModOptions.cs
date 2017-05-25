@@ -12,7 +12,7 @@ namespace CSLMusicMod
     /// <summary>
     /// Class that wraps the options of the mod.
     /// </summary>
-    public class ModOptions : MonoBehaviour
+    public class ModOptions
     {
         private static ModOptions _Instance = null;
         public static ModOptions Instance 
@@ -21,7 +21,10 @@ namespace CSLMusicMod
             {
                 if(_Instance == null)
                 {
-                    _Instance = new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
+                    //_Instance = new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
+                    _Instance = new ModOptions();
+                    _Instance.LoadSettings();
+
                 }
 
                 return _Instance;
@@ -354,11 +357,11 @@ namespace CSLMusicMod
         {
         }
 
-        public void Awake()
-        {
-            DontDestroyOnLoad(this);
-            LoadSettings();
-        }
+        //public void Awake()
+        //{
+        //    DontDestroyOnLoad(this);
+        //    LoadSettings();
+        //}
 
         public void SaveSettings()
         {

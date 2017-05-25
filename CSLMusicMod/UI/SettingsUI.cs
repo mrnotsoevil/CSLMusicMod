@@ -91,8 +91,10 @@ namespace CSLMusicMod.UI
             {
                 ModOptions options = ModOptions.Instance;
                 var subgroup = helper.AddGroup("Troubleshooting");
-                subgroup.AddGroup("You can find information in the CSLMusicMod wiki and the Steam workshop entry." +
-                                  "Don't forget to enable debugging info if you want to provide a log.");
+                subgroup.AddGroup("You can find information in the CSLMusicMod wiki and" +
+                                  "the Steam workshop entry.\n" +
+                                  "Don't forget to enable debugging info if\n" +
+                                  "you want to provide a log.");
                 subgroup.AddCheckbox("Enable debugging info",
                                      options.EnableDebugInfo,
                                      (isChecked) =>
@@ -122,13 +124,13 @@ namespace CSLMusicMod.UI
             {
                 var subgroup = helper.AddGroup("Additional features");
 
-                subgroup.AddCheckbox("Content can be disabled* (Needs reload)", 
+                subgroup.AddCheckbox("Content can be disabled", 
                     options.EnableDisabledContent, 
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.EnableDisabledContent = isChecked;
                         }));
-                subgroup.AddCheckbox("Context-sensitive content* (Needs reload)", 
+                subgroup.AddCheckbox("Context-sensitive content", 
                     options.EnableContextSensitivity, 
                     new OnCheckChanged((bool isChecked) =>
                         {
