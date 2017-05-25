@@ -74,7 +74,7 @@ namespace CSLMusicMod
 
             // Get the allowed radio content
             HashSet<RadioContentInfo> allowed_content;
-            RadioContentWatcher.AllowedContent_ContextSensitivity.TryGetValue(channel, out allowed_content);
+            RadioContentWatcher.AllowedContent.TryGetValue(channel, out allowed_content);
 
             int prefabDataIndex = channel.m_prefabDataIndex;
             if (prefabDataIndex != -1)
