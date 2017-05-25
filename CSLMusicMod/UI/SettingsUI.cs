@@ -26,7 +26,6 @@ namespace CSLMusicMod.UI
 
             AddOptionsInfo(AddTab("Info"));
             AddOptionsChannels(AddTab("Channels"));
-            AddOptionsChannelEditor(AddTab("Editor"));
             AddOptionsContent(AddTab("Content"));
             AddOptionsShortcuts(AddTab("Shortcuts"));
             AddOptionsUI(AddTab("User Interface"));
@@ -68,11 +67,6 @@ namespace CSLMusicMod.UI
             return stripHelper;
         }
 
-        private void AddOptionsChannelEditor(UIHelperBase helper) 
-        {
-            
-        }
-
         private void AddOptionsInfo(UIHelperBase helper)
         {
             helper.AddGroup("CSL Music Mod version " + CSLMusicMod.VersionName);
@@ -91,10 +85,10 @@ namespace CSLMusicMod.UI
             {
                 ModOptions options = ModOptions.Instance;
                 var subgroup = helper.AddGroup("Troubleshooting");
-                subgroup.AddGroup("You can find information in the CSLMusicMod wiki and" +
-                                  "the Steam workshop entry.\n" +
-                                  "Don't forget to enable debugging info if\n" +
-                                  "you want to provide a log.");
+                subgroup.AddGroup("You can find information in the CSLMusicMod wiki\n" +
+                                  "and the Steam workshop entry.\n" +
+                                  "Don't forget to enable debugging info if you want\n" +
+                                  "to provide a log.");
                 subgroup.AddCheckbox("Enable debugging info",
                                      options.EnableDebugInfo,
                                      (isChecked) =>
@@ -136,6 +130,15 @@ namespace CSLMusicMod.UI
                         {
                             options.EnableContextSensitivity = isChecked;
                         }));
+                //subgroup.AddSlider("Context-sensitivity update interval (Needs reload)",
+                        //           1,
+                        //           60,
+                        //           1,
+                        //           options.ContentWatcherInterval,
+                        //           new OnValueChanged((float v) =>
+                        //{
+                        //    options.ContentWatcherInterval = v;
+                        //}));
                 subgroup.AddCheckbox("Extend vanilla stations with custom content (Needs reload)", 
                     options.EnableAddingContentToVanillaStations, 
                     new OnCheckChanged((bool isChecked) =>

@@ -15,72 +15,98 @@ namespace CSLMusicMod
         public static Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>> AllowedContent = 
             new Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>>();
 
+        /// <summary>
+        /// Counts how many times the watcher was updated.
+        /// </summary>
+        private int m_WatcherUpdateTicker = 0;
+
         public RadioContentWatcher()
         {
         }
 
         public void Start()
         {
-            InvokeRepeating("ApplyAllowedContentRestrictions", 1f, 5f);
+            InvokeRepeating("ApplyAllowedContentRestrictions", 1f, (float)ModOptions.Instance.ContentWatcherInterval);
         }
 
         /// <summary>
-        /// Rebuilds the list of allowed content based on the currently selected channel and the current context
+        /// Rebuilds the allowed content for a channel.
+        /// </summary>
+        /// <param name="channel">Channel.</param>
+        private void RebuildAllowedContentForChannel(RadioChannelData channel)
+        {
+			HashSet<RadioContentInfo> allowed;
+			if (!AllowedContent.TryGetValue(channel.Info, out allowed))
+			{
+				allowed = new HashSet<RadioContentInfo>();
+				AllowedContent[channel.Info] = allowed;
+			}
+			else
+			{
+				allowed.Clear();
+			}
+
+			UserRadioChannel userchannel = AudioManagerHelper.GetUserChannelInfo(channel.Info);
+
+			if (userchannel != null)
+			{
+				// If the channel is a custom channel, we can check for context and for content disabling
+				var allowedcollections = userchannel.GetApplyingContentCollections();
+
+				foreach (UserRadioContent usercontent in userchannel.m_Content)
+				{
+					if (usercontent.m_VanillaContentInfo != null &&
+					   allowedcollections.Contains(usercontent.m_Collection) &&
+					   ContentIsEnabled(usercontent.m_VanillaContentInfo))
+					{
+						allowed.Add(usercontent.m_VanillaContentInfo);
+					}
+				}
+			}
+			else
+			{
+				// If the channel is a vanilla channel, we can still disable content
+				AudioManager mgr = Singleton<AudioManager>.instance;
+
+				if (mgr.m_radioContents.m_size > 0)
+				{
+					for (int i = 0; i < mgr.m_radioContents.m_size; ++i)
+					{
+						var content = mgr.m_radioContents[i];
+						if (content.Info.m_radioChannels.Contains(channel.Info))
+						{
+							if (ContentIsEnabled(content.Info))
+							{
+								allowed.Add(content.Info);
+							}
+						}
+					}
+				}
+			}
+        }
+
+        /// <summary>
+        /// Rebuilds the list of allowed content
         /// </summary>
         public void RebuildAllowedContent()
-        {           
-            RadioChannelData? currentchannel = AudioManagerHelper.GetActiveChannelData();
-
-            if(currentchannel != null)
+        {
+            if(m_WatcherUpdateTicker++ % 10 == 0)
             {
-                HashSet<RadioContentInfo> allowed;
-                if(!AllowedContent.TryGetValue(currentchannel.Value.Info, out allowed))
-                {
-                    allowed = new HashSet<RadioContentInfo>();
-                    AllowedContent[currentchannel.Value.Info] = allowed;
-                }
-                else
-                {
-                    allowed.Clear();
-                }
+                AudioManager mgr = Singleton<AudioManager>.instance;
 
-                UserRadioChannel userchannel = AudioManagerHelper.GetUserChannelInfo(currentchannel.Value.Info);
-
-                if(userchannel != null)
+                for (int i = 0; i < mgr.m_radioChannels.m_size; ++i)
                 {
-                    // If the channel is a custom channel, we can check for context and for content disabling
-                    var allowedcollections = userchannel.GetApplyingContentCollections();
-
-                    foreach(UserRadioContent usercontent in userchannel.m_Content)
-                    {
-                        if(usercontent.m_VanillaContentInfo != null && 
-                           allowedcollections.Contains(usercontent.m_Collection) && 
-                           ContentIsEnabled(usercontent.m_VanillaContentInfo))
-                        {
-                            allowed.Add(usercontent.m_VanillaContentInfo);
-                        }
-                    }
+                    RebuildAllowedContentForChannel(mgr.m_radioChannels[i]);
                 }
-                else
-                {
-                    // If the channel is a vanilla channel, we can still disable content
-                    AudioManager mgr = Singleton<AudioManager>.instance;
+            }
+            else
+            {
+				RadioChannelData? currentchannel = AudioManagerHelper.GetActiveChannelData();
 
-                    if(mgr.m_radioContents.m_size > 0)
-                    {
-                        for (int i = 0; i < mgr.m_radioContents.m_size; ++i)
-                        {
-                            var content = mgr.m_radioContents[i];
-                            if (content.Info.m_radioChannels.Contains(currentchannel.Value.Info))
-                            {
-                                if(ContentIsEnabled(content.Info))
-                                {
-                                    allowed.Add(content.Info);
-                                }
-                            }
-                        }
-                    }
-                }
+				if (currentchannel != null)
+				{
+					RebuildAllowedContentForChannel(currentchannel.Value);
+				}
             }
         }
 
