@@ -304,20 +304,7 @@ namespace CSLMusicMod
                 m_Options.EnableContextSensitivity = value;
                 SaveSettings();
             }
-        }
-
-		public double ContentWatcherInterval
-		{
-			get
-			{
-                return Math.Max(1, m_Options.ContentWatcherInterval);
-			}
-			set
-			{
-                m_Options.ContentWatcherInterval = Math.Max(1, value);
-				SaveSettings();
-			}
-		}
+        }	
 
         public bool EnableAddingContentToVanillaStations
         {
@@ -512,7 +499,6 @@ namespace CSLMusicMod
                 EnableDisabledContent = true;
 
                 EnableContextSensitivity = true;
-                ContentWatcherInterval = 5;
 
                 EnableAddingContentToVanillaStations = true;
 

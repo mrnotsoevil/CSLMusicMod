@@ -26,7 +26,7 @@ namespace CSLMusicMod
 
         public void Start()
         {
-            InvokeRepeating("ApplyAllowedContentRestrictions", 1f, (float)ModOptions.Instance.ContentWatcherInterval);
+            InvokeRepeating("ApplyAllowedContentRestrictions", 1f, 5f);
         }
 
         /// <summary>
