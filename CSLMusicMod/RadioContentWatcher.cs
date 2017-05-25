@@ -66,9 +66,9 @@ namespace CSLMusicMod
                     // If the channel is a vanilla channel, we can still disable content
                     AudioManager mgr = Singleton<AudioManager>.instance;
 
-                    if(mgr.m_radioContentInfoCount > 0)
+                    if(mgr.m_radioContents.m_size > 0)
                     {
-                        for (int i = 0; i < mgr.m_radioContentInfoCount; ++i)
+                        for (int i = 0; i < mgr.m_radioContents.m_size; ++i)
                         {
                             var content = mgr.m_radioContents[i];
                             if (content.Info.m_radioChannels.Contains(currentchannel.Value.Info))
@@ -109,11 +109,15 @@ namespace CSLMusicMod
                     if(AllowedContent.TryGetValue(currentchannel.Value.Info, out allowed))
                     {
                         // Special case: allowed content is null or empty: Then just play everything
-                        if (allowed != null && allowed.Count != 0 && !allowed.Contains(currentcontent.Value.Info))
-						{
-							CSLMusicMod.Log("Wrong context for " + currentcontent.Value.Info.m_fileName);
+                        if (!allowed.Contains(currentcontent.Value.Info))
+						{							
 							AudioManagerHelper.TriggerRebuildInternalSongList();
-							AudioManagerHelper.NextTrack();
+
+                            if(allowed != null && allowed.Count != 0)
+                            {
+                                CSLMusicMod.Log("Wrong context for " + currentcontent.Value.Info.m_fileName);
+                                AudioManagerHelper.NextTrack();
+                            }							
 						}
                     }					
                 }

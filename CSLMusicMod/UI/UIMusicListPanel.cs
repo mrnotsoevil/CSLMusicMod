@@ -342,7 +342,7 @@ namespace CSLMusicMod.UI
                     //I use x100 because it failed with 0..1?
                     value = value / 100f;
 
-                    if (m_MusicAudioVolume.value != value)
+                    if (Math.Abs(m_MusicAudioVolume.value - value) > 0.01)
                     {
                         m_MusicAudioVolume.value = value;                   
                     }
@@ -388,7 +388,7 @@ namespace CSLMusicMod.UI
                 m_ButtonSortDescending.height = 36;
                 m_ButtonSortDescending.relativePosition = new Vector3(130 + 40 * 2, 10);
                 m_ButtonSortDescending.normalBgSprite = "GenericPanel";
-                m_ButtonSortDescending.tooltip = "Sort ascending";
+                m_ButtonSortDescending.tooltip = "Sort descending";
 
                 m_ButtonSortDescending.atlas = m_IconAtlas;
                 m_ButtonSortDescending.hoveredBgSprite = "OptionBaseFocused";
