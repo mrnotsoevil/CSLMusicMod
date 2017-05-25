@@ -171,7 +171,10 @@ namespace CSLMusicMod
                 var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
 
                 if(player != null)
+                {
                     player.m_source.Stop();
+                }
+                    
 
                 return true;
             }
@@ -180,6 +183,41 @@ namespace CSLMusicMod
                 return false;
             }
         }
+
+   //     /// <summary>
+   //     /// Switches to the next track, but smooth NOTE: Not working as intended, as the game loads its default music between this and the next song.
+   //     /// </summary>
+   //     /// <returns><c>true</c>, if track smooth was nexted, <c>false</c> otherwise.</returns>
+   //     public static bool NextTrack()
+   //     {
+			//AudioManager mgr = Singleton<AudioManager>.instance;
+
+    //        // musicFileIsRadio is false if no radio channel is active. We cannot
+    //        // do anything in this case.
+    //        if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+    //        {
+				//ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+
+				//if (activechannel >= 0)
+				//{
+				//	RadioChannelData data = mgr.m_radioChannels[activechannel];
+				//	data.m_currentContent = 0;
+				//	//data.m_nextContent = contentindex;
+				//	mgr.m_radioChannels[activechannel] = data;
+				//	//mgr.m_radioChannels[activechannel].ChangeContent(activechannel);
+
+				//	return true;
+				//}
+        //        else
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return true;
+        //    }
+        //}
 
         /// <summary>
         /// Switches to a specific radio content (music)

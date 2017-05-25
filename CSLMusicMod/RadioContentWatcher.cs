@@ -55,11 +55,15 @@ namespace CSLMusicMod
 
 				foreach (UserRadioContent usercontent in userchannel.m_Content)
 				{
-					if (usercontent.m_VanillaContentInfo != null &&
-					   allowedcollections.Contains(usercontent.m_Collection) &&
-					   ContentIsEnabled(usercontent.m_VanillaContentInfo))
+					if (usercontent.m_VanillaContentInfo != null)
 					{
-						allowed.Add(usercontent.m_VanillaContentInfo);
+                        bool isincontext = (!ModOptions.Instance.EnableContextSensitivity || allowedcollections.Contains(usercontent.m_Collection));
+                        bool isenabled = (!ModOptions.Instance.EnableDisabledContent || ContentIsEnabled(usercontent.m_VanillaContentInfo));
+
+                        if(isincontext && isenabled)
+                        {
+                            allowed.Add(usercontent.m_VanillaContentInfo);   
+                        }						
 					}
 				}
 			}
@@ -115,7 +119,7 @@ namespace CSLMusicMod
         /// </summary>
         public void ApplyAllowedContentRestrictions()
         {
-            if (!ModOptions.Instance.EnableContextSensitivity)
+            if (!ModOptions.Instance.EnableContextSensitivity && !ModOptions.Instance.EnableDisabledContent)
                 return;
 
             RebuildAllowedContent();

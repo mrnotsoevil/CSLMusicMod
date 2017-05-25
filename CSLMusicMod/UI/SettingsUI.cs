@@ -118,13 +118,13 @@ namespace CSLMusicMod.UI
             {
                 var subgroup = helper.AddGroup("Additional features");
 
-                subgroup.AddCheckbox("Content can be disabled", 
+                subgroup.AddCheckbox("Content can be disabled*", 
                     options.EnableDisabledContent, 
                     new OnCheckChanged((bool isChecked) =>
                         {
                             options.EnableDisabledContent = isChecked;
                         }));
-                subgroup.AddCheckbox("Context-sensitive content", 
+                subgroup.AddCheckbox("Context-sensitive content*", 
                     options.EnableContextSensitivity, 
                     new OnCheckChanged((bool isChecked) =>
                         {
