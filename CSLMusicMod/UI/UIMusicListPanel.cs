@@ -37,7 +37,7 @@ namespace CSLMusicMod.UI
         private UILabel m_RadioChannelInfo;
 
         // Experimental new UI
-        private UIScrollablePanel m_MusicListScrollable;
+        private UIScrollablePanel m_MusicList;
 
         private bool m_SortAscending = true;
 
@@ -137,9 +137,15 @@ namespace CSLMusicMod.UI
                         "SortAscending",
                         "SortDescending",
                         "Search",
-                        "Clear"
-                    });  
-
+                        "Clear",
+                        "Talk",
+                        "Broadcast",
+                        "Commercial",
+                        "Blurb",
+                        "MoveUp",
+                        "MoveDown",
+                        "Disable"
+                    });
             }
         }
 
@@ -546,7 +552,7 @@ namespace CSLMusicMod.UI
         {
             var scroller = AddUIComponent<UIScrollbar>();
             scroller.width = 15;
-            scroller.height = m_MusicListScrollable.height;
+            scroller.height = m_MusicList.height;
             scroller.relativePosition = new Vector3(width - 15 - 7.5f, 60 + 10);
             scroller.orientation = UIOrientation.Vertical;
 
@@ -574,7 +580,7 @@ namespace CSLMusicMod.UI
                 }
             }
 
-            m_MusicListScrollable.verticalScrollbar = scroller;
+            m_MusicList.verticalScrollbar = scroller;
 
             scroller.isVisible = true;
         }
@@ -583,20 +589,21 @@ namespace CSLMusicMod.UI
         {
             initializeRadioChannelInfo();
 
-            m_MusicListScrollable = AddUIComponent<UIScrollablePanel>();
-            m_MusicListScrollable.autoLayout = true;
-            m_MusicListScrollable.autoLayoutDirection = LayoutDirection.Vertical;
-            m_MusicListScrollable.width = width - 34;
-            m_MusicListScrollable.height = height - 60 - 20;
-            m_MusicListScrollable.relativePosition = new Vector3(10, 60 + 10);
-            m_MusicListScrollable.backgroundSprite = "ScrollbarTrack";
-            m_MusicListScrollable.clipChildren = true;
-            m_MusicListScrollable.Show();
+            m_MusicList = AddUIComponent<UIScrollablePanel>();
+            m_MusicList.autoLayout = true;
+            m_MusicList.autoLayoutDirection = LayoutDirection.Vertical;
+            m_MusicList.width = width - 34;
+            m_MusicList.height = height - 60 - 20;
+            m_MusicList.relativePosition = new Vector3(10, 60 + 10);
+            m_MusicList.clipChildren = true;
+            m_MusicList.autoLayoutPadding = new RectOffset(3, 3, 3, 3);
+            m_MusicList.Show();
 
             for (int i = 0; i < 30; ++i)
             {
-                var p = m_MusicListScrollable.AddUIComponent<UIMusicListEntry>();
-                p.width = m_MusicListScrollable.width;
+                var p = m_MusicList.AddUIComponent<UIMusicListEntry>();
+                p.m_IconAtlas = m_IconAtlas;
+                p.width = m_MusicList.width - 10;
                 p.height = 32;
                 p.Show();
             }
