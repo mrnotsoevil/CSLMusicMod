@@ -73,22 +73,23 @@ namespace CSLMusicMod.UI
 
             {
                 var subgroup = helper.AddGroup("Performance");
-                subgroup.AddGroup("If you have performance problems, you can try\nto disable features marked with an asterisk (*).");
+                //subgroup.AddGroup("If you have performance problems, you can try\nto disable features marked with an asterisk (*).");
+                subgroup.AddGroup(StringHelper.Wrap("If you have performance problems, you can try to disable features marked with an asterisk (*).", 40));
             }
             {
                 var subgroup = helper.AddGroup("Channels & content");
-                subgroup.AddGroup("You can add your own channels or music by installing\n" +
-                    "music packs, putting station configurations or music\n" +
-                    "files into the CSLMusicMod_Music folder or into the\n" +
-                    "folder containing vanilla radio content.");
+                subgroup.AddGroup(StringHelper.Wrap("You can add your own channels or music by installing " +
+                    "music packs, putting station configurations or music " +
+                    "files into the CSLMusicMod_Music folder or into the " +
+                                                    "folder containing vanilla radio content.", 40));
             }
             {
                 ModOptions options = ModOptions.Instance;
                 var subgroup = helper.AddGroup("Troubleshooting");
-                subgroup.AddGroup("You can find information in the CSLMusicMod wiki\n" +
-                                  "and the Steam workshop entry.\n" +
-                                  "Don't forget to enable debugging info if you want\n" +
-                                  "to provide a log.");
+                subgroup.AddGroup(StringHelper.Wrap("You can find information in the CSLMusicMod wiki " +
+                                  "and the Steam workshop entry." +
+                                  "Don't forget to enable debugging info if you want " +
+                                                    "to provide a log.", 40));
                 subgroup.AddCheckbox("Enable debugging info",
                                      options.EnableDebugInfo,
                                      (isChecked) =>

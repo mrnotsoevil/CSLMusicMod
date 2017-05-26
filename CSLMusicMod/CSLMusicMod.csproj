@@ -110,6 +110,8 @@
     <Compile Include="UI\ShortcutHandler.cs" />
     <Compile Include="Helpers\GenericHelper.cs" />
     <Compile Include="CustomAudioManager.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="UI\UIMusicListEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
