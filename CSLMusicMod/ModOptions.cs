@@ -319,6 +319,19 @@ namespace CSLMusicMod
             }
         }
 
+        public bool EnableSmoothTransitions
+        {
+            get
+            {
+                return m_Options.EnableSmoothTransitions;
+            }
+            set
+            {
+                m_Options.EnableSmoothTransitions = value;
+                SaveSettings();
+            }
+        }
+
         public List<String> DisabledRadioStations
         {
             get
@@ -468,6 +481,8 @@ namespace CSLMusicMod
 
             public bool EnableAddingContentToVanillaStations { get; set; }
 
+            public bool EnableSmoothTransitions { get; set; }
+
             public List<String> DisabledRadioStations { get; set; }
 
             public bool EnableDebugInfo { get; set; }
@@ -501,6 +516,8 @@ namespace CSLMusicMod
                 EnableContextSensitivity = true;
 
                 EnableAddingContentToVanillaStations = true;
+
+                EnableSmoothTransitions = true;
 
                 DisabledRadioStations = new List<string>();
 

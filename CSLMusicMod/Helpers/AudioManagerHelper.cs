@@ -159,8 +159,17 @@ namespace CSLMusicMod
         /// <summary>
         /// Switches to the next track.
         /// </summary>
-        /// <returns><c>true</c>, if it was possible to switch to the next track, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c>, if track was nexted, <c>false</c> otherwise.</returns>
         public static bool NextTrack()
+        {
+            return ModOptions.Instance.EnableSmoothTransitions ? NextTrack_Smooth() : NextTrack_Hard();
+        }
+
+        /// <summary>
+        /// Switches to the next track. This abruptly stops the current song.
+        /// </summary>
+        /// <returns><c>true</c>, if it was possible to switch to the next track, <c>false</c> otherwise.</returns>
+        public static bool NextTrack_Hard()
         {
             AudioManager mgr = Singleton<AudioManager>.instance;         
 
@@ -184,40 +193,41 @@ namespace CSLMusicMod
             }
         }
 
-   //     /// <summary>
-   //     /// Switches to the next track, but smooth NOTE: Not working as intended, as the game loads its default music between this and the next song.
-   //     /// </summary>
-   //     /// <returns><c>true</c>, if track smooth was nexted, <c>false</c> otherwise.</returns>
-   //     public static bool NextTrack()
-   //     {
-			//AudioManager mgr = Singleton<AudioManager>.instance;
+        /// <summary>
+        /// Switches to the next track, but smooth 
+        /// This does NOT work as intended without RadioContentWatcher's ApplySmoothTransition!
+        /// </summary>
+        /// <returns><c>true</c>, if track smooth was nexted, <c>false</c> otherwise.</returns>
+        public static bool NextTrack_Smooth()
+        {
+			AudioManager mgr = Singleton<AudioManager>.instance;
 
-    //        // musicFileIsRadio is false if no radio channel is active. We cannot
-    //        // do anything in this case.
-    //        if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
-    //        {
-				//ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+            // musicFileIsRadio is false if no radio channel is active. We cannot
+            // do anything in this case.
+            if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+            {
+				ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
 
-				//if (activechannel >= 0)
-				//{
-				//	RadioChannelData data = mgr.m_radioChannels[activechannel];
-				//	data.m_currentContent = 0;
-				//	//data.m_nextContent = contentindex;
-				//	mgr.m_radioChannels[activechannel] = data;
-				//	//mgr.m_radioChannels[activechannel].ChangeContent(activechannel);
+				if (activechannel >= 0)
+				{
+					RadioChannelData data = mgr.m_radioChannels[activechannel];
+					data.m_currentContent = 0;
+					mgr.m_radioChannels[activechannel] = data;
 
-				//	return true;
-				//}
-        //        else
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return true;
-        //    }
-        //}
+
+
+					return true;
+				}
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// Switches to a specific radio content (music)

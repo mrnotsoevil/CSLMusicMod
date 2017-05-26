@@ -13,12 +13,15 @@ namespace CSLMusicMod
     public class RadioContentWatcher : MonoBehaviour
     {
         public static Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>> AllowedContent = 
-            new Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>>();
+            new Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>>();       
 
         /// <summary>
         /// Counts how many times the watcher was updated.
         /// </summary>
         private int m_WatcherUpdateTicker = 0;
+
+        private ushort m_currentChannel = 0;
+        private string[] m_musicFileBackup = null;
 
         public RadioContentWatcher()
         {
@@ -27,6 +30,26 @@ namespace CSLMusicMod
         public void Start()
         {
             InvokeRepeating("ApplyAllowedContentRestrictions", 1f, 5f);
+
+            if (ModOptions.Instance.EnableSmoothTransitions)
+            {
+                InvokeRepeating("ApplySmoothTransition", 1f, 0.5f);
+            }
+
+            if (m_musicFileBackup == null)
+            {
+                AudioManager mgr = Singleton<AudioManager>.instance;
+                m_musicFileBackup = ReflectionHelper.GetPrivateField<string[]>(mgr, "m_musicFiles");
+            }
+        }
+
+        public void OnDestroy()
+        {
+            if (m_musicFileBackup != null)
+            {
+                AudioManager mgr = Singleton<AudioManager>.instance;
+                ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", m_musicFileBackup);
+            }
         }
 
         /// <summary>
@@ -150,6 +173,35 @@ namespace CSLMusicMod
                             }							
 						}
                     }					
+                }
+            }
+        }
+
+        public void ApplySmoothTransition ()
+        {
+            RadioChannelData? channel = AudioManagerHelper.GetActiveChannelData ();
+
+            if (channel != null)
+            {
+                ushort index = channel.Value.m_infoIndex;
+
+                if (m_currentChannel == index)
+                    return;
+
+                m_currentChannel = index;
+
+                if (index == 0)
+                {
+                    if (m_musicFileBackup != null)
+                    {
+                        AudioManager mgr = Singleton<AudioManager>.instance;
+                        ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", m_musicFileBackup);
+                    }
+                }
+                else
+                {
+                    AudioManager mgr = Singleton<AudioManager>.instance;
+                    ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", null);
                 }
             }
         }

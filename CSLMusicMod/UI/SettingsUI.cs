@@ -130,6 +130,12 @@ namespace CSLMusicMod.UI
                         {
                             options.EnableContextSensitivity = isChecked;
                         }));
+                subgroup.AddCheckbox("Smooth transitions* (needs reload)",
+                                     options.EnableSmoothTransitions,
+                   new OnCheckChanged((bool isChecked) =>
+                       {
+                           options.EnableSmoothTransitions = isChecked;
+                       }));
                 //subgroup.AddSlider("Context-sensitivity update interval (Needs reload)",
                         //           1,
                         //           60,
