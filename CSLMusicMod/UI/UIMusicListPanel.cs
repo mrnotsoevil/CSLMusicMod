@@ -38,8 +38,7 @@ namespace CSLMusicMod.UI
 
         // Experimental new UI
         private UIScrollablePanel m_MusicList;
-
-        private bool m_SortAscending = true;
+        private UIScrollbar m_MusicListScroll;
 
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
 
@@ -207,10 +206,6 @@ namespace CSLMusicMod.UI
 
             ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
 
-            //Debug.Log("Selected active channel " + activechannel + " of " + mgr.m_radioChannelCount);
-
-            Dictionary<RadioContentInfo, String> entrytexts = new Dictionary<RadioContentInfo, string>();
-
             if(activechannel >= 0)
             {
                 RadioChannelData channeldata = mgr.m_radioChannels[activechannel];
@@ -239,12 +234,7 @@ namespace CSLMusicMod.UI
 
                         if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                         {
-                            entrytexts[c] = GetEntryTextFor(c);
-
-                            if(!IsFiltered(entrytexts[c]))
-                            {
-                                m_CurrentContent.Add(c);
-                            }
+                            m_CurrentContent.Add(c);
                         }
                     }
                 }
@@ -252,52 +242,43 @@ namespace CSLMusicMod.UI
                 m_RadioChannelInfo.isVisible = m_CurrentContent.Count == 0;
 
                 //Debug.Log(m_CurrentContent.Count + " entries ");
-            }
-
-            m_CurrentContent.Sort((RadioContentInfo x, RadioContentInfo y) =>
-                {
-                    if(m_SortAscending)
-                    {
-                        return string.Compare(entrytexts[x], entrytexts[y], StringComparison.CurrentCulture);
-                    }
-                    else
-                    {
-                        return string.Compare(entrytexts[y], entrytexts[x], StringComparison.CurrentCulture);
-                    }
-                });
+            }           
 
             RefreshListWidget();
         }
 
-        private String GetEntryTextFor(RadioContentInfo content)
-        {
-            String name = String.IsNullOrEmpty(content.m_displayName) ? content.name : content.m_displayName;
-            name = "[" + content.m_contentType.ToString().Substring(0,2) + "] " + name;
-
-            String id = content.m_folderName + "/" + content.m_fileName;
-            if(m_ModOptionsInstance.DisabledContent.Contains(id)) // Use optimized access
-            {
-                name = "[X]" + name;
-            }
-
-            return name;
-        }
 
         private void RefreshListWidget()
         {
-            /*float scroll = m_MusicList.scrollPosition;
+            float scroll = m_MusicListScroll.value;
 
-            m_MusicList.items = m_CurrentContent.Select(content => GetEntryTextFor(content)).ToArray();
+            // Rebuild the UI
+            while(m_MusicList.components.Count > 0)
+            {
+                m_MusicList.RemoveUIComponent(m_MusicList.components[0]);
+            }
+            foreach(var content in m_CurrentContent)
+            {
+                var entry = m_MusicList.AddUIComponent<UIMusicListEntry>();
+                entry.m_IconAtlas = m_IconAtlas;
+                entry.width = m_MusicList.width - 10;
+                entry.height = 32;
+                entry.Show();
 
+                // Must be called after Show()
+                entry.SetName(String.IsNullOrEmpty(content.m_displayName) ? content.name : content.m_displayName);
+                entry.SetContentType(content.m_contentType);
+                entry.SetContentEnabled(AudioManagerHelper.ContentIsEnabled(content));
+            }
 
             //Restore the scroll position
             try
             {
-                m_MusicList.scrollPosition = scroll;
+                m_MusicListScroll.value = scroll;
             }
             catch (Exception)
             {
-            }*/
+            }
         }
 
         private void UpdateValues()
@@ -382,7 +363,6 @@ namespace CSLMusicMod.UI
 
             m_ButtonSortAscending.eventClick += delegate (UIComponent component, UIMouseEventParameter eventParam)
             {
-                m_SortAscending = true;
                 RebuildList();
             };
         }
@@ -403,7 +383,6 @@ namespace CSLMusicMod.UI
 
             m_ButtonSortDescending.eventClick += delegate (UIComponent component, UIMouseEventParameter eventParam)
             {
-                m_SortAscending = false;
                 RebuildList();
             };
         }
@@ -550,21 +529,21 @@ namespace CSLMusicMod.UI
         /// </summary>
         private void initializeMusicListScroller()
         {
-            var scroller = AddUIComponent<UIScrollbar>();
-            scroller.width = 15;
-            scroller.height = m_MusicList.height;
-            scroller.relativePosition = new Vector3(width - 15 - 7.5f, 60 + 10);
-            scroller.orientation = UIOrientation.Vertical;
+            m_MusicListScroll = AddUIComponent<UIScrollbar>();
+            m_MusicListScroll.width = 15;
+            m_MusicListScroll.height = m_MusicList.height;
+            m_MusicListScroll.relativePosition = new Vector3(width - 15 - 7.5f, 60 + 10);
+            m_MusicListScroll.orientation = UIOrientation.Vertical;
 
             //All credits to https://github.com/justacid/Skylines-ExtendedPublicTransport
             {
-                var track = scroller.AddUIComponent<UISlicedSprite>();
+                var track = m_MusicListScroll.AddUIComponent<UISlicedSprite>();
                 track.relativePosition = Vector2.zero;
                 track.autoSize = true;
                 track.size = track.parent.size;
                 track.fillDirection = UIFillDirection.Vertical;
                 track.spriteName = "ScrollbarTrack";
-                scroller.trackObject = track;
+                m_MusicListScroll.trackObject = track;
 
                 {
                     UISlicedSprite thumbSprite = track.AddUIComponent<UISlicedSprite>();
@@ -576,13 +555,13 @@ namespace CSLMusicMod.UI
                     thumbSprite.color = new Color32(255, 255, 255, 128);
                     //thumbSprite.color = new Color32(0, 100, 180, 255);
 
-                    scroller.thumbObject = thumbSprite;
+                    m_MusicListScroll.thumbObject = thumbSprite;
                 }
             }
 
-            m_MusicList.verticalScrollbar = scroller;
+            m_MusicList.verticalScrollbar = m_MusicListScroll;
 
-            scroller.isVisible = true;
+            m_MusicListScroll.isVisible = true;
         }
 
         private void InitializeMusicList()
@@ -598,15 +577,7 @@ namespace CSLMusicMod.UI
             m_MusicList.clipChildren = true;
             m_MusicList.autoLayoutPadding = new RectOffset(3, 3, 3, 3);
             m_MusicList.Show();
-
-            for (int i = 0; i < 30; ++i)
-            {
-                var p = m_MusicList.AddUIComponent<UIMusicListEntry>();
-                p.m_IconAtlas = m_IconAtlas;
-                p.width = m_MusicList.width - 10;
-                p.height = 32;
-                p.Show();
-            }
+           
 
             initializeMusicListScroller();
 

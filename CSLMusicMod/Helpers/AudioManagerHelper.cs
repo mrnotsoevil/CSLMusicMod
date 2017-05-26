@@ -299,6 +299,45 @@ namespace CSLMusicMod
                 return false;
             }
         }
+
+        /// <summary>
+        /// Returns true if a radio content info is disabled.
+        /// </summary>
+        /// <returns><c>true</c>, if is marked as disabled, <c>false</c> otherwise.</returns>
+        /// <param name="info">Info.</param>
+        public static bool ContentIsEnabled(RadioContentInfo info)
+        {
+            if (info == null)
+                return true;
+
+            string id = info.m_folderName + "/" + info.m_fileName;
+            return !ModOptions.Instance.DisabledContent.Contains(id);
+        }
+
+        /// <summary>
+        /// Enables or disables a radio content info
+        /// </summary>
+        /// <param name="info">Info.</param>
+        /// <param name="enabled">If set to <c>true</c> enabled.</param>
+        public static void SetContentEnabled(RadioContentInfo info, bool enabled)
+        {
+            if (info == null)
+                return;
+            if (ContentIsEnabled(info) == enabled)
+                return;
+
+            string id = info.m_folderName + "/" + info.m_fileName;
+
+            if (enabled)
+            {
+                ModOptions.Instance.DisabledContent.Remove(id);
+            }
+            else
+            {
+                ModOptions.Instance.DisabledContent.Add(id);
+            }
+
+        }
     }
 }
 
