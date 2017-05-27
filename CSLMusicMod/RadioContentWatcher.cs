@@ -58,6 +58,11 @@ namespace CSLMusicMod
         /// <param name="channel">Channel.</param>
         private void RebuildAllowedContentForChannel(RadioChannelData channel)
         {
+            if(channel.Info == null)
+            {
+                return;
+            }
+
 			HashSet<RadioContentInfo> allowed;
 			if (!AllowedContent.TryGetValue(channel.Info, out allowed))
 			{
@@ -155,7 +160,7 @@ namespace CSLMusicMod
             {
                 RadioContentData? currentcontent = AudioManagerHelper.GetActiveContentInfo();
 
-                if(currentcontent != null)
+                if(currentcontent != null && currentcontent.Value.Info != null)
                 {
                     HashSet<RadioContentInfo> allowed;
 
