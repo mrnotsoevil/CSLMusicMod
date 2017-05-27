@@ -7,24 +7,11 @@ namespace CSLMusicMod
 {
     public static class StringHelper
     {
-        public static string CutoffAfter(string text, UIFontRenderer renderer, float size)
+        public static string CutoffAfter(string text, int characters)
         {
-            if(renderer.MeasureString(text).x > size)
+            if(text.Length >  characters)
             {
-                StringBuilder b = new StringBuilder(text.Length);
-
-                float current_width = 0;
-                float[] char_widths = renderer.GetCharacterWidths(text);
-
-                for (int i = 0; i < char_widths.Length && current_width < size; ++i)
-                {
-                    b.Append(text[i]);
-                    current_width += char_widths[i];
-                }
-
-                b.Append(" ...");
-
-                return b.ToString();
+                return text.Substring(0, characters - 4) + " ...";
             }
             else
             {

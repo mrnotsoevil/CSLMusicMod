@@ -5,6 +5,7 @@ using ColossalFramework.UI;
 using ColossalFramework;
 using System.IO;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace CSLMusicMod.UI
 {
@@ -43,6 +44,11 @@ namespace CSLMusicMod.UI
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
 
         private ModOptions m_ModOptionsInstance = ModOptions.Instance;
+
+        /// <summary>
+        /// Stores the Info of the current radio channel
+        /// </summary>
+        private RadioChannelInfo m_CurrentRadioChannel = null;
 
         private RadioPanel m_CurrentRadioPanel = null;
 
@@ -106,7 +112,16 @@ namespace CSLMusicMod.UI
 
         void RadioContentChanged ()
         {
-            RebuildList();
+            Debug.Log("Radio content changed");
+
+            var currentchannel = AudioManagerHelper.GetActiveChannelData();
+            if(currentchannel != null)
+            {
+                if (m_CurrentRadioChannel == null || m_CurrentRadioChannel != currentchannel.Value.Info)
+                {
+                    RebuildList();
+                }
+            }
         }
 
         public override void OnDestroy()
@@ -242,14 +257,17 @@ namespace CSLMusicMod.UI
                 m_RadioChannelInfo.isVisible = m_CurrentContent.Count == 0;
 
                 //Debug.Log(m_CurrentContent.Count + " entries ");
-            }           
+            }
 
-            RefreshListWidget();
+            //RefreshListWidget();
+            StartCoroutine(RefreshListWidget());
         }
 
 
-        private void RefreshListWidget()
+        IEnumerator RefreshListWidget()
         {
+            m_MusicListScroll.Disable();
+            m_MusicList.Disable();
             float scroll = m_MusicListScroll.value;
 
             // Rebuild the UI           
@@ -259,6 +277,8 @@ namespace CSLMusicMod.UI
                 m_MusicList.RemoveUIComponent(component);
                 MonoBehaviour.Destroy(component);
             }
+            yield return null;
+
             foreach(var content in m_CurrentContent)
             {
                 var entry = m_MusicList.AddUIComponent<UIMusicListEntry>();
@@ -271,6 +291,9 @@ namespace CSLMusicMod.UI
                 entry.SetName(String.IsNullOrEmpty(content.m_displayName) ? content.name : content.m_displayName);
                 entry.SetContentType(content.m_contentType);
                 entry.SetContentEnabled(AudioManagerHelper.ContentIsEnabled(content));
+
+                if(m_CurrentContent.Count % 5 == 0)
+                    yield return null;
             }
 
             //Restore the scroll position
@@ -281,6 +304,8 @@ namespace CSLMusicMod.UI
             catch (Exception)
             {
             }
+            m_MusicListScroll.Enable();
+            m_MusicList.Enable();
         }
 
         private void UpdateValues()

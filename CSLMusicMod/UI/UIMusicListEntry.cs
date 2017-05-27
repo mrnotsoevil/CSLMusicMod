@@ -7,6 +7,8 @@ namespace CSLMusicMod
 {
     public class UIMusicListEntry : UIPanel
     {
+        private readonly int m_NameCutoff = 36;
+
         private UISprite m_Icon;
         private UILabel m_Name;
         private UIButton m_MoveUp;
@@ -31,6 +33,7 @@ namespace CSLMusicMod
         {
             this.backgroundSprite = "TextFieldPanel";
             this.color = new Color32(60, 60, 60, 255);
+            this.disabledColor = new Color32(40, 40, 40, 255);
             this.canFocus = false;
             initializeIcon();
             initializeSongLabel();
@@ -38,7 +41,7 @@ namespace CSLMusicMod
 
             if(m_valueName != null)
             {
-                m_Name.text = StringHelper.CutoffAfter(m_valueName, m_Name.ObtainRenderer(), width - 36 * 5);
+                m_Name.text = StringHelper.CutoffAfter(m_valueName, m_NameCutoff);
             }
             if(m_valueIcon != null)
             {
@@ -62,7 +65,7 @@ namespace CSLMusicMod
             if (m_Name == null)
                 m_valueName = name;
             else
-                m_Name.text = StringHelper.CutoffAfter(name, m_Name.ObtainRenderer(), width);
+                m_Name.text = StringHelper.CutoffAfter(name, m_NameCutoff);
         }
 
         public void SetContentType(RadioContentInfo.ContentType type)
