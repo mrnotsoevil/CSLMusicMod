@@ -252,10 +252,12 @@ namespace CSLMusicMod.UI
         {
             float scroll = m_MusicListScroll.value;
 
-            // Rebuild the UI
+            // Rebuild the UI           
             while(m_MusicList.components.Count > 0)
             {
-                m_MusicList.RemoveUIComponent(m_MusicList.components[0]);
+                var component = m_MusicList.components[0];
+                m_MusicList.RemoveUIComponent(component);
+                MonoBehaviour.Destroy(component);
             }
             foreach(var content in m_CurrentContent)
             {
