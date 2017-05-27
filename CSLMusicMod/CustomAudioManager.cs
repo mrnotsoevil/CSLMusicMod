@@ -9,7 +9,7 @@ namespace CSLMusicMod
     /// <summary>
     /// Used for detouring methods from AudioManger. See Detours class for the detour code.
     /// </summary>
-    public class CustomAudioManager : AudioManager
+    public class CustomAudioManager
     {
         public CustomAudioManager()
         {
@@ -23,6 +23,8 @@ namespace CSLMusicMod
         {
             if (!ModOptions.Instance.AllowContentBroadcast)
                 return;
+
+            var mgr = Singleton<AudioManager>.instance;
 
             var broadcastQueue = ReflectionHelper.GetPrivateField<FastList<RadioContentInfo>>(this, "m_broadcastQueue"); //Why does CO make everything private, so you can't access it ??
 
@@ -57,26 +59,27 @@ namespace CSLMusicMod
         /// <param name="channel">Channel.</param>
         public FastList<ushort> CustomCollectRadioContentInfo(RadioContentInfo.ContentType type, RadioChannelInfo channel)
         {
+            var mgr = Singleton<AudioManager>.instance;
             //Debug.Log("[CSLMusic][Internal] Rebuilding the radio content of channel " + channel.GetLocalizedTitle());
 
             // CO makes some things public and other things private. This is completely insane.
-            var m_tempRadioContentBuffer = new FastList<ushort>(); // This variable is being worked on
-            var m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(this, "m_radioContentTable");
+            var m_tempRadioContentBuffer = ReflectionHelper.GetPrivateField<FastList<ushort>>(mgr, "m_tempRadioContentBuffer"); // This variable is being worked on
+            var m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(mgr, "m_radioContentTable");
 
-            //m_tempRadioContentBuffer.Clear(); // Not needed. We make a new one.
+            m_tempRadioContentBuffer.Clear(); 
 
             if (m_radioContentTable == null)
             {
                 // Let's all sing the "Expensive Song!" ♬Expensive, Expensive♬ ♩OMG it's so expensive♩ (Rest of lyrics didn't load, yet)
-				ReflectionHelper.InvokePrivateVoidMethod(this, "RefreshRadioContentTable");
-                m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(this, "m_radioContentTable");
+				ReflectionHelper.InvokePrivateVoidMethod(mgr, "RefreshRadioContentTable");
+                m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(mgr, "m_radioContentTable");
             }
 
             // Get the allowed radio content
-            HashSet<RadioContentInfo> allowed_content = null;
+            HashSet<RadioContentInfo> disallowed_content = null;
             if(channel != null)
             {
-                RadioContentWatcher.AllowedContent.TryGetValue(channel, out allowed_content);
+                RadioContentWatcher.DisallowedContent.TryGetValue(channel, out disallowed_content);
             }
 
             //Debug.Log("[update]" + channel.GetLocalizedTitle() + " | " + allowed_content);
@@ -102,7 +105,7 @@ namespace CSLMusicMod
                             if (prefab != null && Singleton<UnlockManager>.instance.Unlocked(prefab.m_UnlockMilestone))
                             {
                                 // Filter only content info that should be kept
-                                if(allowed_content == null || allowed_content.Count ==  0 || allowed_content.Contains(prefab))
+                                if( disallowed_content == null || disallowed_content.Count ==  0 || !disallowed_content.Contains(prefab))
                                 {
 									prefab.m_cooldown = 1000000;
 									m_tempRadioContentBuffer.Add(num2);
@@ -113,21 +116,19 @@ namespace CSLMusicMod
                 }
             }
 
-            for (int j = 0; j < this.m_radioContents.m_size; j++)
+            for (int j = 0; j < mgr.m_radioContents.m_size; j++)
             {
-                RadioContentData.Flags flags = this.m_radioContents.m_buffer[j].m_flags;
+                RadioContentData.Flags flags = mgr.m_radioContents.m_buffer[j].m_flags;
                 if ((flags & RadioContentData.Flags.Created) != RadioContentData.Flags.None)
                 {
-                    RadioContentInfo info = this.m_radioContents.m_buffer[j].Info;
+                    RadioContentInfo info = mgr.m_radioContents.m_buffer[j].Info;
                     if (info != null)
                     {
-                        info.m_cooldown = Mathf.Min(info.m_cooldown, (int)this.m_radioContents.m_buffer[j].m_cooldown);
+                        info.m_cooldown = Mathf.Min(info.m_cooldown, (int)mgr.m_radioContents.m_buffer[j].m_cooldown);
                     }
                 }
             }
 
-            // Set borrowed variables in the actual class instance.
-            ReflectionHelper.SetPrivateField(this, "m_tempRadioContentBuffer", m_tempRadioContentBuffer);
             return m_tempRadioContentBuffer;
 
         }
