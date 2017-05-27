@@ -42,6 +42,7 @@ namespace CSLMusicMod.UI
         private UIScrollbar m_MusicListScroll;
 
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
+        private int m_CurrentContentVisible = 0;
 
         private ModOptions m_ModOptionsInstance = ModOptions.Instance;
 
@@ -112,13 +113,12 @@ namespace CSLMusicMod.UI
 
         void RadioContentChanged ()
         {
-            Debug.Log("Radio content changed");
-
             var currentchannel = AudioManagerHelper.GetActiveChannelData();
             if(currentchannel != null)
             {
                 if (m_CurrentRadioChannel == null || m_CurrentRadioChannel != currentchannel.Value.Info)
                 {
+                    m_CurrentRadioChannel = currentchannel.Value.Info;
                     RebuildList();
                 }
             }
@@ -211,7 +211,9 @@ namespace CSLMusicMod.UI
                 if (Math.Abs(m_VolumeSlider.value / 100f - m_MusicAudioVolume.value) > 0.01)
                 {
                     m_VolumeSlider.value = m_MusicAudioVolume.value * 100f;
-                }            
+                }
+
+                UpdateListWidgetStreamLoading();
             }           
         }
 
@@ -260,27 +262,32 @@ namespace CSLMusicMod.UI
             }
 
             //RefreshListWidget();
+            ClearListWidget();
             StartCoroutine(RefreshListWidget());
         }
 
-
-        IEnumerator RefreshListWidget()
+        private void ClearListWidget()
         {
-            m_MusicListScroll.Disable();
-            m_MusicList.Disable();
-            float scroll = m_MusicListScroll.value;
-
-            // Rebuild the UI           
-            while(m_MusicList.components.Count > 0)
+            m_CurrentContentVisible = 0;
+            while (m_MusicList.components.Count > 0)
             {
                 var component = m_MusicList.components[0];
                 m_MusicList.RemoveUIComponent(component);
                 MonoBehaviour.Destroy(component);
             }
-            yield return null;
+        }
 
-            foreach(var content in m_CurrentContent)
+        private IEnumerator RefreshListWidget()
+        {
+            Debug.Log("Refresh list widget");
+
+            m_MusicListScroll.Disable();
+            m_MusicList.Disable();
+
+            for (int i = m_CurrentContentVisible; i < m_CurrentContent.Count; ++i)
             {
+                var content = m_CurrentContent[i];
+
                 var entry = m_MusicList.AddUIComponent<UIMusicListEntry>();
                 entry.m_IconAtlas = m_IconAtlas;
                 entry.width = m_MusicList.width - 10;
@@ -292,20 +299,25 @@ namespace CSLMusicMod.UI
                 entry.SetContentType(content.m_contentType);
                 entry.SetContentEnabled(AudioManagerHelper.ContentIsEnabled(content));
 
-                if(m_CurrentContent.Count % 5 == 0)
+                if(i % 5 == 0)
                     yield return null;
             }
-
-            //Restore the scroll position
-            try
-            {
-                m_MusicListScroll.value = scroll;
-            }
-            catch (Exception)
-            {
-            }
+          
             m_MusicListScroll.Enable();
             m_MusicList.Enable();
+        }
+
+        private void UpdateListWidgetStreamLoading()
+        {
+            if(m_MusicListScroll != null && m_CurrentContent != null && m_CurrentContent.Count != 0)
+            {
+                Debug.Log(m_MusicListScroll.value + "|" + (m_MusicListScroll.maxValue - m_MusicListScroll.scrollSize)); 
+
+                if(Math.Abs(m_MusicListScroll.value - m_MusicListScroll.maxValue) < 0.1)
+                {
+                    StartCoroutine(RefreshListWidget());
+                }
+            }
         }
 
         private void UpdateValues()
