@@ -134,7 +134,14 @@ namespace CSLMusicMod.UI
                         "SortAscending",
                         "SortDescending",
                         "Search",
-                        "Clear"
+                        "Clear",
+                        "Talk", 
+                        "Broadcast",
+                        "Commercial", 
+                        "Blurb", 
+                        "ListEntryNormal",  
+                        "ListEntryHover", 
+                        "ContentDisabled"                     
                     });  
 
             }
@@ -185,7 +192,7 @@ namespace CSLMusicMod.UI
 
                 //m_LabelCurrentMusic.text = "";               
 
-                if (m_VolumeSlider.value / 100f != m_MusicAudioVolume.value)
+                if (Math.Abs(m_VolumeSlider.value / 100f - m_MusicAudioVolume.value) > 0.01)
                 {
                     m_VolumeSlider.value = m_MusicAudioVolume.value * 100f;
                 }            
@@ -200,7 +207,7 @@ namespace CSLMusicMod.UI
 
             //Debug.Log("Selected active channel " + activechannel + " of " + mgr.m_radioChannelCount);
 
-            Dictionary<RadioContentInfo, String> entrytexts = new Dictionary<RadioContentInfo, string>();
+            //Dictionary<RadioContentInfo, String> entrytexts = new Dictionary<RadioContentInfo, string>();
 
             if(activechannel >= 0)
             {
@@ -230,9 +237,10 @@ namespace CSLMusicMod.UI
 
                         if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                         {
-                            entrytexts[c] = GetEntryTextFor(c);
+                            //entrytexts[c] = GetEntryTextFor(c);
 
-                            if(!IsFiltered(entrytexts[c]))
+                            //if(!IsFiltered(entrytexts[c]))
+                            if(!IsFiltered(AudioManagerHelper.GetContentName(c)))
                             {
                                 m_CurrentContent.Add(c);
                             }
@@ -249,11 +257,13 @@ namespace CSLMusicMod.UI
                 {
                     if(m_SortAscending)
                     {
-                        return entrytexts[x].CompareTo(entrytexts[y]);
+                        //return string.Compare(entrytexts[x], entrytexts[y], StringComparison.CurrentCulture);
+                        return string.Compare(AudioManagerHelper.GetContentName(x), AudioManagerHelper.GetContentName(y), StringComparison.CurrentCulture);
                     }
                     else
                     {
-                        return entrytexts[x].CompareTo(entrytexts[y]);
+                        //return string.Compare(entrytexts[y], entrytexts[x], StringComparison.CurrentCulture);
+                        return string.Compare(AudioManagerHelper.GetContentName(y), AudioManagerHelper.GetContentName(x), StringComparison.CurrentCulture);
                     }
                 });
 
@@ -262,14 +272,32 @@ namespace CSLMusicMod.UI
 
         private String GetEntryTextFor(RadioContentInfo content)
         {
-            String name = String.IsNullOrEmpty(content.m_displayName) ? content.name : content.m_displayName;
-            name = "[" + content.m_contentType.ToString().Substring(0,2) + "] " + name;
+            String name = AudioManagerHelper.GetContentName(content);
 
-            String id = content.m_folderName + "/" + content.m_fileName;
-            if(m_ModOptionsInstance.DisabledContent.Contains(id)) // Use optimized access
+            switch(content.m_contentType)
             {
-                name = "[X]" + name;
+                case RadioContentInfo.ContentType.Blurb:
+                    name = "<sprite Blurb> " + name;
+                    break;
+                case RadioContentInfo.ContentType.Broadcast:
+                    name = "<sprite Broadcast> " + name;
+                    break;
+                case RadioContentInfo.ContentType.Commercial:
+                    name = "<sprite Commercial> " + name;
+                    break;
+                case RadioContentInfo.ContentType.Music:
+                    name = "<sprite Music> " + name;
+                    break;
+                case RadioContentInfo.ContentType.Talk:
+                    name = "<sprite Talk> " + name;
+                    break;
             }
+
+            if(!AudioManagerHelper.ContentIsEnabled(content))
+            {
+                name = "<sprite ContentDisabled>" + name;
+            }
+
 
             return name;
         }
@@ -301,6 +329,157 @@ namespace CSLMusicMod.UI
             }
         }
 
+        private void InitializeHeaderToolbarVolumeSlider()
+        {
+            m_VolumeSlider = AddUIComponent<UISlider>();
+            m_VolumeSlider.relativePosition = new Vector3(15, 22);
+            m_VolumeSlider.width = 100;
+            m_VolumeSlider.height = 10;
+            //_MusicVolumeSlider.backgroundSprite = "GenericPanelLight";
+            //_MusicVolumeSlider.color = new Color32(255, 255, 255, 100);
+            m_VolumeSlider.minValue = 0;
+            m_VolumeSlider.maxValue = 100;
+            m_VolumeSlider.tooltip = "Drag to change the music volume";
+
+            UIPanel thumb = m_VolumeSlider.AddUIComponent<UIPanel>();
+            thumb.width = 15;
+            thumb.height = 15;
+            thumb.backgroundSprite = "GenericProgressBarFill";
+
+            UIPanel fill = m_VolumeSlider.AddUIComponent<UIPanel>();
+            fill.backgroundSprite = "GenericProgressBarFill";
+            //fill.color = new Color32(79, 210, 233, 255);
+            m_VolumeSlider.fillIndicatorObject = fill;
+
+            m_VolumeSlider.thumbObject = thumb;
+
+            m_VolumeSlider.eventValueChanged += delegate (UIComponent component, float value)
+            {
+                if (this.m_IsDisposing)
+                    return;
+
+                    //I use x100 because it failed with 0..1?
+                    value = value / 100f;
+
+                if (Math.Abs(m_MusicAudioVolume.value - value) > 0.01)
+                {
+                    m_MusicAudioVolume.value = value;
+                }
+            };
+        }
+
+        private void InitializeHeaderToolbarNextTrackButton()
+        {
+            m_NextTrack = AddUIComponent<UIButton>();
+            m_NextTrack.width = 36;
+            m_NextTrack.height = 36;
+            m_NextTrack.relativePosition = new Vector3(130, 10);
+            m_NextTrack.normalBgSprite = "GenericPanel";
+            m_NextTrack.tooltip = "Play next track";
+
+            m_NextTrack.atlas = m_IconAtlas;
+            m_NextTrack.hoveredBgSprite = "OptionBaseFocused";
+            m_NextTrack.pressedBgSprite = "OptionBasePressed";
+            m_NextTrack.normalFgSprite = "Next";
+
+            m_NextTrack.eventClick += buttonNextTrackClicked;
+        }
+
+        private void InitializeHeaderToolbarSortAscendingButton()
+        {
+            m_ButtonSortAscending = AddUIComponent<UIButton>();
+            m_ButtonSortAscending.width = 36;
+            m_ButtonSortAscending.height = 36;
+            m_ButtonSortAscending.relativePosition = new Vector3(130 + 40, 10);
+            m_ButtonSortAscending.normalBgSprite = "GenericPanel";
+            m_ButtonSortAscending.tooltip = "Sort ascending";
+
+            m_ButtonSortAscending.atlas = m_IconAtlas;
+            m_ButtonSortAscending.hoveredBgSprite = "OptionBaseFocused";
+            m_ButtonSortAscending.pressedBgSprite = "OptionBasePressed";
+            m_ButtonSortAscending.normalFgSprite = "SortAscending";
+
+            m_ButtonSortAscending.eventClick += delegate (UIComponent component, UIMouseEventParameter eventParam)
+            {
+                m_SortAscending = true;
+                RebuildList();
+            };
+        }
+
+        private void InitializeHeaderToolbarSortDescendingButton()
+        {
+            m_ButtonSortDescending = AddUIComponent<UIButton>();
+            m_ButtonSortDescending.width = 36;
+            m_ButtonSortDescending.height = 36;
+            m_ButtonSortDescending.relativePosition = new Vector3(130 + 40 * 2, 10);
+            m_ButtonSortDescending.normalBgSprite = "GenericPanel";
+            m_ButtonSortDescending.tooltip = "Sort descending";
+
+            m_ButtonSortDescending.atlas = m_IconAtlas;
+            m_ButtonSortDescending.hoveredBgSprite = "OptionBaseFocused";
+            m_ButtonSortDescending.pressedBgSprite = "OptionBasePressed";
+            m_ButtonSortDescending.normalFgSprite = "SortDescending";
+
+            m_ButtonSortDescending.eventClick += delegate (UIComponent component, UIMouseEventParameter eventParam)
+            {
+                m_SortAscending = false;
+                RebuildList();
+            };
+        }
+
+        private void InitializeHeaderToolbarFilterBar()
+        {
+            m_Filter = AddUIComponent<UITextField>();
+            m_Filter.width = width - 130 - 40 - 36 - 10 - 10 - 36 * 2 - 10;
+            m_Filter.height = 36;
+            m_Filter.relativePosition = new Vector3(130 + 40 + 10 + 36 * 2, 10);
+            m_Filter.padding = new RectOffset(6, 6, 3, 3);
+            m_Filter.builtinKeyNavigation = true;
+            m_Filter.isInteractive = true;
+            m_Filter.readOnly = false;
+            m_Filter.horizontalAlignment = UIHorizontalAlignment.Left;
+            m_Filter.verticalAlignment = UIVerticalAlignment.Middle;
+            m_Filter.selectionSprite = "EmptySprite";
+            m_Filter.selectionBackgroundColor = new Color32(0, 172, 234, 255);
+            m_Filter.normalBgSprite = "TextFieldPanel";
+            m_Filter.disabledTextColor = new Color32(0, 0, 0, 128);
+            m_Filter.color = new Color32(60, 60, 60, 255);
+            m_Filter.textColor = Color.gray;
+            m_Filter.padding = new RectOffset(6, 6, 9, 9);
+
+            m_ClearFilter = AddUIComponent<UIButton>();
+            m_ClearFilter.width = 22;
+            m_ClearFilter.height = 22;
+            m_ClearFilter.relativePosition = m_Filter.relativePosition + new Vector3(7 + m_Filter.width - 36, 7);
+            m_ClearFilter.atlas = m_IconAtlas;
+            m_ClearFilter.normalFgSprite = "Search";
+            m_ClearFilter.hoveredColor = new Color32(255, 255, 255, 128);
+
+            m_Filter.eventTextChanged += filterTextChanged;
+            m_ClearFilter.eventClick += (component, eventParam) =>
+            {
+                m_Filter.text = "";
+            };
+        }
+
+        private void InitializeHeaderToolbarCloseButton()
+        {
+            m_Close = AddUIComponent<UIButton>();
+            m_Close.width = 36;
+            m_Close.height = 36;
+            m_Close.relativePosition = new Vector3(width - 10 - 36, 10);
+            m_Close.normalBgSprite = "GenericPanel";
+            m_Close.tooltip = "Close this panel";
+
+            m_Close.atlas = m_IconAtlas;
+            m_Close.normalBgSprite = "GenericPanel";
+            m_Close.hoveredBgSprite = "OptionBaseFocused";
+            m_Close.pressedBgSprite = "OptionBasePressed";
+            m_Close.normalFgSprite = "Close";
+
+            m_Close.eventClicked += buttonCloseClicked;
+        }
+
         private void InitializeHeaderToolbar()
         {
             //Header background
@@ -311,145 +490,13 @@ namespace CSLMusicMod.UI
                 header.height = 60;
                 header.backgroundSprite = "GenericTab";
             }
-            {
-                m_VolumeSlider = AddUIComponent<UISlider>();
-                m_VolumeSlider.relativePosition = new Vector3(15, 22);
-                m_VolumeSlider.width = 100;
-                m_VolumeSlider.height = 10;
-                //_MusicVolumeSlider.backgroundSprite = "GenericPanelLight";
-                //_MusicVolumeSlider.color = new Color32(255, 255, 255, 100);
-                m_VolumeSlider.minValue = 0;
-                m_VolumeSlider.maxValue = 100;
-                m_VolumeSlider.tooltip = "Drag to change the music volume";
 
-                UIPanel thumb = m_VolumeSlider.AddUIComponent<UIPanel>();
-                thumb.width = 15;
-                thumb.height = 15;
-                thumb.backgroundSprite = "GenericProgressBarFill";
-
-                UIPanel fill = m_VolumeSlider.AddUIComponent<UIPanel>();
-                fill.backgroundSprite = "GenericProgressBarFill";
-                //fill.color = new Color32(79, 210, 233, 255);
-                m_VolumeSlider.fillIndicatorObject = fill;
-
-                m_VolumeSlider.thumbObject = thumb;
-
-                m_VolumeSlider.eventValueChanged += delegate(UIComponent component, float value)
-                {
-                    if (this.m_IsDisposing)
-                        return;
-
-                    //I use x100 because it failed with 0..1?
-                    value = value / 100f;
-
-                    if (Math.Abs(m_MusicAudioVolume.value - value) > 0.01)
-                    {
-                        m_MusicAudioVolume.value = value;                   
-                    }
-                };
-            }       
-            {
-                m_NextTrack = AddUIComponent<UIButton>();
-                m_NextTrack.width = 36;
-                m_NextTrack.height = 36;
-                m_NextTrack.relativePosition = new Vector3(130, 10);
-                m_NextTrack.normalBgSprite = "GenericPanel";
-                m_NextTrack.tooltip = "Play next track";
-
-                m_NextTrack.atlas = m_IconAtlas;
-                m_NextTrack.hoveredBgSprite = "OptionBaseFocused";
-                m_NextTrack.pressedBgSprite = "OptionBasePressed";
-                m_NextTrack.normalFgSprite = "Next";
-
-                m_NextTrack.eventClick += buttonNextTrackClicked;
-            }
-            {
-                m_ButtonSortAscending = AddUIComponent<UIButton>();
-                m_ButtonSortAscending.width = 36;
-                m_ButtonSortAscending.height = 36;
-                m_ButtonSortAscending.relativePosition = new Vector3(130 + 40, 10);
-                m_ButtonSortAscending.normalBgSprite = "GenericPanel";
-                m_ButtonSortAscending.tooltip = "Sort ascending";
-
-                m_ButtonSortAscending.atlas = m_IconAtlas;
-                m_ButtonSortAscending.hoveredBgSprite = "OptionBaseFocused";
-                m_ButtonSortAscending.pressedBgSprite = "OptionBasePressed";
-                m_ButtonSortAscending.normalFgSprite = "SortAscending";
-
-                m_ButtonSortAscending.eventClick += delegate(UIComponent component, UIMouseEventParameter eventParam)
-                {
-                        m_SortAscending = true;
-                        RebuildList();
-                };
-            }
-            {
-                m_ButtonSortDescending = AddUIComponent<UIButton>();
-                m_ButtonSortDescending.width = 36;
-                m_ButtonSortDescending.height = 36;
-                m_ButtonSortDescending.relativePosition = new Vector3(130 + 40 * 2, 10);
-                m_ButtonSortDescending.normalBgSprite = "GenericPanel";
-                m_ButtonSortDescending.tooltip = "Sort descending";
-
-                m_ButtonSortDescending.atlas = m_IconAtlas;
-                m_ButtonSortDescending.hoveredBgSprite = "OptionBaseFocused";
-                m_ButtonSortDescending.pressedBgSprite = "OptionBasePressed";
-                m_ButtonSortDescending.normalFgSprite = "SortDescending";
-
-                m_ButtonSortDescending.eventClick += delegate(UIComponent component, UIMouseEventParameter eventParam)
-                {
-                        m_SortAscending = false;
-                        RebuildList();
-                };
-            }
-            {
-                m_Filter = AddUIComponent<UITextField>();
-                m_Filter.width = width - 130 - 40 - 36 - 10 - 10 - 36 * 2 - 10;
-                m_Filter.height = 36;
-                m_Filter.relativePosition = new Vector3(130 + 40 + 10 + 36 * 2, 10);
-                m_Filter.padding = new RectOffset(6, 6, 3, 3);
-                m_Filter.builtinKeyNavigation = true;
-                m_Filter.isInteractive = true;
-                m_Filter.readOnly = false;
-                m_Filter.horizontalAlignment = UIHorizontalAlignment.Left;
-                m_Filter.verticalAlignment = UIVerticalAlignment.Middle;
-                m_Filter.selectionSprite = "EmptySprite";
-                m_Filter.selectionBackgroundColor = new Color32(0, 172, 234, 255);
-                m_Filter.normalBgSprite = "TextFieldPanel";
-                m_Filter.disabledTextColor = new Color32(0, 0, 0, 128);
-                m_Filter.color = new Color32(60, 60, 60, 255);
-                m_Filter.textColor = Color.gray;
-                m_Filter.padding = new RectOffset(6, 6, 9, 9);
-
-                m_ClearFilter = AddUIComponent<UIButton>();
-                m_ClearFilter.width = 22;
-                m_ClearFilter.height = 22;
-                m_ClearFilter.relativePosition = m_Filter.relativePosition + new Vector3(7 + m_Filter.width - 36, 7);
-                m_ClearFilter.atlas = m_IconAtlas;
-                m_ClearFilter.normalFgSprite = "Search";
-                m_ClearFilter.hoveredColor = new Color32(255, 255, 255, 128);
-            
-                m_Filter.eventTextChanged += filterTextChanged;
-                m_ClearFilter.eventClick += (component, eventParam) =>
-                {
-                    m_Filter.text = "";
-                };
-            }
-            {
-                m_Close = AddUIComponent<UIButton>();
-                m_Close.width = 36;
-                m_Close.height = 36;
-                m_Close.relativePosition = new Vector3(width - 10 - 36, 10);
-                m_Close.normalBgSprite = "GenericPanel";
-                m_Close.tooltip = "Close this panel";
-
-                m_Close.atlas = m_IconAtlas;
-                m_Close.normalBgSprite = "GenericPanel";
-                m_Close.hoveredBgSprite = "OptionBaseFocused";
-                m_Close.pressedBgSprite = "OptionBasePressed";
-                m_Close.normalFgSprite = "Close";
-
-                m_Close.eventClicked += buttonCloseClicked;
-            }
+            InitializeHeaderToolbarVolumeSlider();
+            InitializeHeaderToolbarNextTrackButton();
+            InitializeHeaderToolbarSortAscendingButton();
+            InitializeHeaderToolbarSortDescendingButton();
+            InitializeHeaderToolbarFilterBar();
+            InitializeHeaderToolbarCloseButton();
          
         }
 
@@ -468,17 +515,7 @@ namespace CSLMusicMod.UI
         void musicEntryEnableDisable (UIComponent component, int value)
         {
             RadioContentInfo info = m_CurrentContent[value];
-            String id = info.m_folderName + "/" + info.m_fileName;
-
-            if(ModOptions.Instance.DisabledContent.Contains(id))
-            {
-                ModOptions.Instance.DisabledContent.Remove(id);
-            }
-            else
-            {
-                ModOptions.Instance.DisabledContent.Add(id);
-            }
-            ModOptions.Instance.SaveSettings();
+            AudioManagerHelper.SetContentEnabled(info, !AudioManagerHelper.ContentIsEnabled(info));
 
             RebuildList();
         }
@@ -499,73 +536,83 @@ namespace CSLMusicMod.UI
             radiopanel.HideRadio();
         }
 
+        private void InitializeMusicListChannelInfo()
+        {
+            m_RadioChannelInfo = AddUIComponent<UILabel>();
+            m_RadioChannelInfo.relativePosition = new Vector3(10, 60 + 10);
+            m_RadioChannelInfo.width = m_MusicList.width;
+            m_RadioChannelInfo.height = m_MusicList.height;
+            m_RadioChannelInfo.textColor = new Color32(150, 150, 150, 255);
+            m_RadioChannelInfo.text = "This channel is not a radio-channel.\nYour custom music can be found in\n'Userdefined', 'CSLMusic Mix' and\nchannels created by music packs.";
+            m_RadioChannelInfo.wordWrap = false;
+            m_RadioChannelInfo.Show();
+        }
+
+        private void InitializeMusicListScrollBar()
+        {
+            var scroller = m_MusicList.AddUIComponent<UIScrollbar>();
+            scroller.width = 15;
+            scroller.height = m_MusicList.height;
+            scroller.relativePosition = new Vector3(width - 15 - 15f, 0);
+            scroller.orientation = UIOrientation.Vertical;
+
+            //All credits to https://github.com/justacid/Skylines-ExtendedPublicTransport
+            {
+                var track = scroller.AddUIComponent<UISlicedSprite>();
+                track.relativePosition = Vector2.zero;
+                track.autoSize = true;
+                track.size = track.parent.size;
+                track.fillDirection = UIFillDirection.Vertical;
+                track.spriteName = "ScrollbarTrack";
+                scroller.trackObject = track;
+
+                {
+                    UISlicedSprite thumbSprite = track.AddUIComponent<UISlicedSprite>();
+                    thumbSprite.relativePosition = Vector2.zero;
+                    thumbSprite.fillDirection = UIFillDirection.Vertical;
+                    thumbSprite.autoSize = true;
+                    thumbSprite.width = thumbSprite.parent.width;
+                    thumbSprite.spriteName = "ChirpScrollbarThumb";
+                    thumbSprite.color = new Color32(255, 255, 255, 128);
+                    //thumbSprite.color = new Color32(0, 100, 180, 255);
+
+                    scroller.thumbObject = thumbSprite;
+                }
+            }
+
+            m_MusicList.scrollbar = scroller;
+
+            scroller.isVisible = true;
+        }
+
         private void InitializeMusicList()
         {
-            var panel = m_MusicList = AddUIComponent<UIListBox>();
+            m_MusicList = AddUIComponent<UIListBox>();
 
-            panel.width = width - 34;
-            panel.height = height - 60 - 20;
-            panel.relativePosition = new Vector3(10, 60 + 10);
-            panel.textColor = new Color32(150, 150, 150, 255);
-            panel.itemHover = "SubcategoriesPanel";
-            panel.itemHeight = 32;
-            panel.itemPadding = new RectOffset(0, 0, 4, 4);
-            panel.tooltip = "Double-click to disable an entry";
-            panel.zOrder = -50;
+            m_MusicList.width = width - 34;
+            m_MusicList.height = height - 60 - 20;
+            m_MusicList.relativePosition = new Vector3(10, 60 + 10);
+            m_MusicList.textColor = new Color32(150, 150, 150, 255);
+            m_MusicList.itemHighlight = "ListEntryNormal";
+            m_MusicList.itemHover = "ListEntryHover";
+            m_MusicList.itemHeight = 32;
+            m_MusicList.itemPadding = new RectOffset(0, 0, 4, 4);
+            m_MusicList.tooltip = "Double-click to disable an entry";
+            m_MusicList.zOrder = -50;
+            m_MusicList.atlas = m_IconAtlas;
+            m_MusicList.processMarkup = true;
+            //m_MusicList.animateHover = true;
          
-            panel.Show();
+            m_MusicList.Show();
 
-            {
-                m_RadioChannelInfo = AddUIComponent<UILabel>();
-                m_RadioChannelInfo.relativePosition = new Vector3(10, 60 + 10);
-                m_RadioChannelInfo.width = panel.width;
-                m_RadioChannelInfo.height = panel.height;
-                m_RadioChannelInfo.textColor = new Color32(150, 150, 150, 255);
-                m_RadioChannelInfo.text = "This channel is not a radio-channel.\nYour custom music can be found in\n'Userdefined', 'CSLMusic Mix' and\nchannels created by music packs.";
-                m_RadioChannelInfo.wordWrap = false;
-                m_RadioChannelInfo.Show();
-            }
+            InitializeMusicListChannelInfo();
 
-            {
-                var scroller = panel.AddUIComponent<UIScrollbar>();
-                scroller.width = 15;
-                scroller.height = panel.height;
-                scroller.relativePosition = new Vector3(width - 15 - 15f, 0);
-                scroller.orientation = UIOrientation.Vertical;
-
-                //All credits to https://github.com/justacid/Skylines-ExtendedPublicTransport
-                {
-                    var track = scroller.AddUIComponent<UISlicedSprite>();
-                    track.relativePosition = Vector2.zero;
-                    track.autoSize = true;
-                    track.size = track.parent.size;
-                    track.fillDirection = UIFillDirection.Vertical;
-                    track.spriteName = "ScrollbarTrack";
-                    scroller.trackObject = track;
-
-                    {
-                        UISlicedSprite thumbSprite = track.AddUIComponent<UISlicedSprite>();
-                        thumbSprite.relativePosition = Vector2.zero;
-                        thumbSprite.fillDirection = UIFillDirection.Vertical;
-                        thumbSprite.autoSize = true;
-                        thumbSprite.width = thumbSprite.parent.width;
-                        thumbSprite.spriteName = "ChirpScrollbarThumb";
-                        thumbSprite.color = new Color32(255, 255, 255, 128);
-                        //thumbSprite.color = new Color32(0, 100, 180, 255);
-
-                        scroller.thumbObject = thumbSprite;
-                    }
-                }
-
-                m_MusicList.scrollbar = scroller;
-
-                scroller.isVisible = true;
-            }
+            InitializeMusicListScrollBar();
 
             //UpdateMusicList();
 
-            panel.eventItemClicked += musicEntrySelected;
-            panel.eventItemDoubleClicked += musicEntryEnableDisable;
+            m_MusicList.eventItemClicked += musicEntrySelected;
+            m_MusicList.eventItemDoubleClicked += musicEntryEnableDisable;
            
         }
 
