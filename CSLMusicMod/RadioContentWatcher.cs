@@ -86,7 +86,7 @@ namespace CSLMusicMod
 					if (usercontent.m_VanillaContentInfo != null)
 					{
                         bool isincontext = (!ModOptions.Instance.EnableContextSensitivity || allowedcollections.Contains(usercontent.m_Collection));
-                        bool isenabled = (!ModOptions.Instance.EnableDisabledContent || ContentIsEnabled(usercontent.m_VanillaContentInfo));
+                        bool isenabled = (!ModOptions.Instance.EnableDisabledContent || AudioManagerHelper.ContentIsEnabled(usercontent.m_VanillaContentInfo));
 
                         if(!isincontext || !isenabled)
                         {
@@ -107,7 +107,7 @@ namespace CSLMusicMod
 						var content = mgr.m_radioContents[i];
                         if (content.Info != null && content.Info.m_radioChannels != null && content.Info.m_radioChannels.Contains(channel.Info))
 						{
-							if (!ContentIsEnabled(content.Info))
+							if (!AudioManagerHelper.ContentIsEnabled(content.Info))
 							{
 								disallowed.Add(content.Info);
 							}
@@ -209,22 +209,7 @@ namespace CSLMusicMod
                     ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", null);
                 }
             }
-        }
-
-        /// <summary>
-        /// Returns true if a radio content info is disabled.
-        /// </summary>
-        /// <returns><c>true</c>, if is marked as disabled, <c>false</c> otherwise.</returns>
-        /// <param name="info">Info.</param>
-        public static bool ContentIsEnabled(RadioContentInfo info)
-        {
-            if (info == null)
-                return true;
-
-			string id = info.m_folderName + "/" + info.m_fileName;
-            return !ModOptions.Instance.DisabledContent.Contains(id);			
-        }
-
+        }     
     }
 }
 
