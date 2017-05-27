@@ -73,10 +73,17 @@ namespace CSLMusicMod
             }
 
             // Get the allowed radio content
-            HashSet<RadioContentInfo> allowed_content;
-            RadioContentWatcher.AllowedContent.TryGetValue(channel, out allowed_content);
+            HashSet<RadioContentInfo> allowed_content = null;
+            if(channel != null)
+            {
+                RadioContentWatcher.AllowedContent.TryGetValue(channel, out allowed_content);
+            }
 
             //Debug.Log("[update]" + channel.GetLocalizedTitle() + " | " + allowed_content);
+            /*if(allowed_content == null || allowed_content.Count == 0)
+            {
+                Debug.Log(channel.GetLocalizedTitle() + ": All content enabled!");
+            }*/
 
             int prefabDataIndex = channel.m_prefabDataIndex;
             if (prefabDataIndex != -1)
