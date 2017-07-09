@@ -404,7 +404,7 @@ namespace CSLMusicMod
             {
                 try
                 {
-                    String data = File.ReadAllText("CSLMusicMod.json");
+                    String data = File.ReadAllText(SettingsFilename);
                     m_Options = JsonMapper.ToObject<Options>(data);
                 }
                 catch(Exception ex)
