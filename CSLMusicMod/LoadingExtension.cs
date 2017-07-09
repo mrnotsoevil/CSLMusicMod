@@ -30,11 +30,11 @@ namespace CSLMusicMod
         {
             base.OnCreated(loading);
 
-            if(!Directory.Exists("CSLMusicMod_Music"))
+            if(!Directory.Exists(UserRadioCollection.GameDirUserCollectionDirectory))
             {
                 try
                 {
-                    Directory.CreateDirectory("CSLMusicMod_Music");
+                    Directory.CreateDirectory(UserRadioCollection.GameDirUserCollectionDirectory);
                 }
                 catch(Exception e)
                 {

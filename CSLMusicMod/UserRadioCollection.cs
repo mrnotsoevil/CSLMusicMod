@@ -15,6 +15,18 @@ namespace CSLMusicMod
     /// </summary>
     public class UserRadioCollection : MonoBehaviour
     {
+        /// <summary>
+        /// Contains the collection in the game directory
+        /// </summary>
+        /// <value>The user collection directory.</value>
+        public static String GameDirUserCollectionDirectory
+        {
+            get
+            {
+                return Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music");
+            }
+        }
+
         public Dictionary<String, UserRadioContent> m_Songs = new Dictionary<string, UserRadioContent>();
         public Dictionary<String, UserRadioChannel> m_Stations = new Dictionary<string, UserRadioChannel>();
 
@@ -71,7 +83,7 @@ namespace CSLMusicMod
                 }
             }
 
-            LoadSongsFromCollection("Userdefined", "", Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
+            LoadSongsFromCollection("Userdefined", "", UserRadioCollection.GameDirUserCollectionDirectory);
         }
 
         private void LoadVanillaSongs(RadioContentInfo.ContentType type)
@@ -149,7 +161,7 @@ namespace CSLMusicMod
                 CreateLegacyChannel("Userdefined", new string[] { "Userdefined" });
             }
 
-            LoadChannelsFromCollection(Path.Combine(DataLocation.applicationBase, "CSLMusicMod_Music"));
+            LoadChannelsFromCollection(UserRadioCollection.GameDirUserCollectionDirectory);
         }
 
         private void LoadChannelsFromCollection(String dir)

@@ -358,7 +358,7 @@ namespace CSLMusicMod
 			}
 		}
 
-        public String SettingsFilename
+        public static String SettingsFilename
         {
             get
             {
