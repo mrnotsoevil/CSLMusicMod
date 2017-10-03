@@ -358,15 +358,15 @@ namespace CSLMusicMod
 			}
 		}
         
-        public bool EnableAddingVanillaStations
+        public bool AddVanillaSongsToMusicMix
         {
             get
             {
-                return m_Options.EnableAddingVanillaStations;
+                return m_Options.AddVanillaSongsToMusicMix;
             }
             set
             {
-                m_Options.EnableAddingVanillaStations = value;
+                m_Options.AddVanillaSongsToMusicMix = value;
                 SaveSettings();
             }
         }
@@ -513,7 +513,7 @@ namespace CSLMusicMod
 
             public bool EnableDebugInfo { get; set; }
             
-            public bool EnableAddingVanillaStations { get; set; }
+            public bool AddVanillaSongsToMusicMix { get; set; }
             public bool EnableImprovedRadioStationList { get; set; }
 
             public Options()
@@ -552,7 +552,7 @@ namespace CSLMusicMod
 
                 EnableDebugInfo = false;
 
-                EnableAddingVanillaStations = true;
+                AddVanillaSongsToMusicMix = true;
                 EnableImprovedRadioStationList = true;
             }
         }

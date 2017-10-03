@@ -268,7 +268,7 @@ namespace CSLMusicMod
         {
             if (!ModOptions.Instance.EnableAddingContentToVanillaStations)
                 return;
-            if (!ModOptions.Instance.EnableAddingVanillaStations)
+            if (!ModOptions.Instance.AddVanillaSongsToMusicMix)
                 return;
 
             for(uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)

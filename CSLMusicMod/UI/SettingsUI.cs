@@ -151,12 +151,6 @@ namespace CSLMusicMod.UI
                         {
                             options.EnableAddingContentToVanillaStations = isChecked;
                         }));
-                subgroup.AddCheckbox("Load vanilla stations (Needs reload)", 
-                    options.EnableAddingVanillaStations, 
-                    new OnCheckChanged((bool isChecked) =>
-                    {
-                        options.EnableAddingVanillaStations = isChecked;
-                    }));
                 subgroup.AddButton("Reset disabled entries", new OnButtonClicked(() =>
                     {
                         options.DisabledContent.Clear();
@@ -273,6 +267,12 @@ namespace CSLMusicMod.UI
                         {
                             options.CreateMixChannels = isChecked;
                         }));
+                subgroup.AddCheckbox("Include vanilla songs", 
+                    options.AddVanillaSongsToMusicMix, 
+                    new OnCheckChanged((bool isChecked) =>
+                    {
+                        options.AddVanillaSongsToMusicMix = isChecked;
+                    }));
                 subgroup.AddCheckbox("Include music", 
                     options.MixContentMusic, 
                     new OnCheckChanged((bool isChecked) =>

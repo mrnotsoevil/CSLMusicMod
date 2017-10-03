@@ -57,14 +57,11 @@ namespace CSLMusicMod
 
         private void LoadSongs()
         {
-            if (ModOptions.Instance.EnableAddingVanillaStations)
-            {
-                LoadVanillaSongs(RadioContentInfo.ContentType.Music);
-                LoadVanillaSongs(RadioContentInfo.ContentType.Talk);
-                LoadVanillaSongs(RadioContentInfo.ContentType.Blurb);
-                LoadVanillaSongs(RadioContentInfo.ContentType.Commercial);
-                LoadVanillaSongs(RadioContentInfo.ContentType.Broadcast);
-            }
+            LoadVanillaSongs(RadioContentInfo.ContentType.Music);
+            LoadVanillaSongs(RadioContentInfo.ContentType.Talk);
+            LoadVanillaSongs(RadioContentInfo.ContentType.Blurb);
+            LoadVanillaSongs(RadioContentInfo.ContentType.Commercial);
+            LoadVanillaSongs(RadioContentInfo.ContentType.Broadcast);
 
             HashSet<String> visitedmoddirs = new HashSet<string>();
 
@@ -96,6 +93,7 @@ namespace CSLMusicMod
             // The content determination algorithm will always return "Music". Set it manually.
             foreach(var content in LoadSongsFromCollection("Vanilla Legacy " + type.ToString(), type.ToString() + ": " ,path)) //!! Breaks adding custom songs to vanilla content if changed!
             {
+                content.m_isVanilla = true;
                 content.m_ContentType = type;
             }
         }
@@ -208,7 +206,7 @@ namespace CSLMusicMod
         {
             UserRadioChannel channel = new UserRadioChannel("CSLMusic Mix");
             channel.m_ThumbnailFile = "thumbnail_mix.png";
-            channel.m_Collections = new HashSet<string>(m_Songs.Values.Select(song => song.m_Collection)); // Default channel loads from all collections
+            channel.m_Collections = new HashSet<string>(m_Songs.Values.Where(song => !song.m_isVanilla || ModOptions.Instance.AddVanillaSongsToMusicMix).Select(song => song.m_Collection)); // Default channel loads from all collections
 
             List<RadioContentInfo.ContentType> allowedcontent = new List<RadioContentInfo.ContentType>();
 
