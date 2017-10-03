@@ -5,6 +5,7 @@ using ColossalFramework.UI;
 using ColossalFramework;
 using System.IO;
 using System.Collections.Generic;
+using ColossalFramework.IO;
 
 namespace CSLMusicMod.UI
 {
@@ -35,6 +36,9 @@ namespace CSLMusicMod.UI
         private UIButton m_ButtonSortDescending;
         private UIButton m_Close;
         private UILabel m_RadioChannelInfo;
+        
+        // Additional options UI
+        private UIButton m_OpenStationDirectory;
 
         private bool m_SortAscending = true;
 
@@ -90,6 +94,9 @@ namespace CSLMusicMod.UI
             this.canFocus = true;
             this.isInteractive = true;
             this.m_ZIndex = -100;
+            
+            if(ModOptions.Instance.EnableOpenStationDirButton)
+                InitializeOpenStationDirectoryButton();
 
             //Add header
             InitializeHeaderToolbar();         
@@ -142,7 +149,7 @@ namespace CSLMusicMod.UI
                         "ListEntryNormal",  
                         "ListEntryHover", 
                         "ContentDisabled",
-                        "Arrow"
+                        "Open"
                     });  
 
             }
@@ -499,6 +506,42 @@ namespace CSLMusicMod.UI
             InitializeHeaderToolbarFilterBar();
             InitializeHeaderToolbarCloseButton();
          
+        }
+
+        private void InitializeOpenStationDirectoryButton()
+        {
+            UIMultiStateButton mutebutton =
+                ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
+            UIPanel radiopanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+
+            m_OpenStationDirectory = radiopanel.AddUIComponent<UIButton>();
+            m_OpenStationDirectory.position = mutebutton.position + new Vector3(mutebutton.size.x + 5, 0);
+            m_OpenStationDirectory.size = new Vector2(mutebutton.size.y, mutebutton.size.y);
+            m_OpenStationDirectory.atlas = m_IconAtlas;
+            m_OpenStationDirectory.normalBgSprite = "Open";
+            m_OpenStationDirectory.hoveredBgSprite = "Open";
+            m_OpenStationDirectory.color = new Color32(225, 225, 225, 255);
+            m_OpenStationDirectory.hoveredColor = new Color32(255, 255, 255, 255);
+            m_OpenStationDirectory.tooltip = "Open folder containing the radio station.";
+            m_OpenStationDirectory.Show();
+
+            m_OpenStationDirectory.eventClick += (component, param) =>
+            {
+                var data = AudioManagerHelper.GetActiveChannelData();
+                if (data != null)
+                {
+                    var info = AudioManagerHelper.GetUserChannelInfo(data.Value.Info);
+                    var dir = DataLocation.gameContentPath;
+
+                    if (info != null)
+                    {
+                        dir = info.m_DefinitionDirectory;
+                    }
+                    
+                    DesktopHelper.OpenFileExternally(dir);
+                }
+            };
+
         }
 
         void buttonNextTrackClicked (UIComponent component, UIMouseEventParameter eventParam)

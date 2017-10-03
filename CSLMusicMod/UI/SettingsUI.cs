@@ -108,7 +108,13 @@ namespace CSLMusicMod.UI
                 new OnCheckChanged((bool isChecked) =>
                     {
                         options.EnableCustomUI = isChecked;
-                    }));               
+                    }));     
+            helper.AddCheckbox("Open station directory button (need reload)", 
+                options.EnableOpenStationDirButton, 
+                new OnCheckChanged((bool isChecked) =>
+                {
+                    options.EnableOpenStationDirButton = isChecked;
+                }));     
         }
 
         private void AddOptionsContent(UIHelperBase helper)

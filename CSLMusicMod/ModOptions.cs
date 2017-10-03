@@ -383,6 +383,19 @@ namespace CSLMusicMod
                 SaveSettings();
             }
         }
+        
+        public bool EnableOpenStationDirButton
+        {
+            get
+            {
+                return m_Options.EnableOpenStationDirButton;
+            }
+            set
+            {
+                m_Options.EnableOpenStationDirButton = value;
+                SaveSettings();
+            }
+        }
 
         public static String SettingsFilename
         {
@@ -515,6 +528,7 @@ namespace CSLMusicMod
             
             public bool AddVanillaSongsToMusicMix { get; set; }
             public bool EnableImprovedRadioStationList { get; set; }
+            public bool EnableOpenStationDirButton { get; set; }
 
             public Options()
             {
@@ -554,6 +568,7 @@ namespace CSLMusicMod
 
                 AddVanillaSongsToMusicMix = true;
                 EnableImprovedRadioStationList = true;
+                EnableOpenStationDirButton = false;
             }
         }
     }

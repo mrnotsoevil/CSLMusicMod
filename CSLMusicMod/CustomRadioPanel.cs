@@ -40,7 +40,7 @@ namespace CSLMusicMod
 	                    "ListEntryNormal",  
 	                    "ListEntryHover", 
 	                    "ContentDisabled",
-		                "Arrow"
+		                "Open"
 	                });  
 	            }
 

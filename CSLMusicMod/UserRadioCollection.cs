@@ -146,7 +146,7 @@ namespace CSLMusicMod
 
                                 if (ModOptions.Instance.CreateChannelsFromLegacyPacks)
                                 {
-                                    CreateLegacyChannel("MusicPack " + mod.Name, new string[] { "MusicPack " + mod.Name });
+                                    CreateLegacyChannel("MusicPack " + mod.Name, new string[] { "MusicPack " + mod.Name }, info.modPath);
                                 }
 
                                 LoadChannelsFromCollection(path);
@@ -159,7 +159,7 @@ namespace CSLMusicMod
 
             if (ModOptions.Instance.CreateChannelsFromLegacyPacks)
             {
-                CreateLegacyChannel("Userdefined", new string[] { "Userdefined" });
+                CreateLegacyChannel("Userdefined", new string[] { "Userdefined" }, UserRadioCollection.GameDirUserCollectionDirectory);
             }
 
             LoadChannelsFromCollection(UserRadioCollection.GameDirUserCollectionDirectory);
@@ -184,6 +184,7 @@ namespace CSLMusicMod
 
                     if(channel != null)
                     {
+                        channel.m_DefinitionDirectory = dir;
                         m_Stations[channel.m_Name] = channel;
                     }
                     else
@@ -194,11 +195,17 @@ namespace CSLMusicMod
             }
         }
 
-        private void CreateLegacyChannel(String name, String[] collections)
+        private void CreateLegacyChannel(String name, String[] collections, String dir)
         {
             UserRadioChannel channel = new UserRadioChannel(name);
             channel.m_Collections = new HashSet<string>(collections);
             channel.m_ThumbnailFile = "thumbnail_package.png";
+
+            if (dir != null)
+            {
+                channel.m_DefinitionDirectory = dir;
+            }
+            
             m_Stations[channel.m_Name] = channel;
         }
 

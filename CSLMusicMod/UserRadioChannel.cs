@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ColossalFramework.UI;
 using UnityEngine;
 using System.IO;
+using ColossalFramework.IO;
 using CSLMusicMod.LitJson;
 
 namespace CSLMusicMod
@@ -26,6 +27,8 @@ namespace CSLMusicMod
         public RadioContentInfo.ContentType[] m_SupportedContent = (RadioContentInfo.ContentType[])Enum.GetValues(typeof(RadioContentInfo.ContentType));
 
         public String m_ThumbnailFile;
+
+        public String m_DefinitionDirectory = DataLocation.gameContentPath;
 
         // Post-launch
         public RadioChannelInfo m_VanillaChannelInfo;
