@@ -114,16 +114,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Resources\" />
     <Folder Include="Compatibility\" />
     <Folder Include="Helpers\" />
     <Folder Include="Contexts\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\thumbnail.png" />
-    <EmbeddedResource Include="Resources\thumbnail_extra.png" />
-    <EmbeddedResource Include="Resources\thumbnail_package.png" />
-    <EmbeddedResource Include="Resources\icons.png" />
-    <EmbeddedResource Include="Resources\thumbnail_mix.png" />
+    <EmbeddedResource Include="icons.png" />
+    <EmbeddedResource Include="thumbnail.png" />
+    <EmbeddedResource Include="thumbnail_extra.png" />
+    <EmbeddedResource Include="thumbnail_mix.png" />
+    <EmbeddedResource Include="thumbnail_package.png" />
   </ItemGroup>
 </Project>
