@@ -49,7 +49,7 @@ namespace CSLMusicMod
             {
                 filename = m_ThumbnailFile;
             }
-            else if(m_ThumbnailFile != null && assembly.GetManifestResourceNames().Contains("CSLMusicMod.Resources." + m_ThumbnailFile))
+            else if(m_ThumbnailFile != null && assembly.GetManifestResourceNames().Contains("CSLMusicMod." + m_ThumbnailFile))
             {
                 filename = m_ThumbnailFile;
             }

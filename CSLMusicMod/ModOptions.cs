@@ -357,6 +357,32 @@ namespace CSLMusicMod
 				SaveSettings();
 			}
 		}
+        
+        public bool EnableAddingVanillaStations
+        {
+            get
+            {
+                return m_Options.EnableAddingVanillaStations;
+            }
+            set
+            {
+                m_Options.EnableAddingVanillaStations = value;
+                SaveSettings();
+            }
+        }
+        
+        public bool EnableImprovedRadioStationList
+        {
+            get
+            {
+                return m_Options.EnableImprovedRadioStationList;
+            }
+            set
+            {
+                m_Options.EnableImprovedRadioStationList = value;
+                SaveSettings();
+            }
+        }
 
         public static String SettingsFilename
         {
@@ -486,6 +512,9 @@ namespace CSLMusicMod
             public List<String> DisabledRadioStations { get; set; }
 
             public bool EnableDebugInfo { get; set; }
+            
+            public bool EnableAddingVanillaStations { get; set; }
+            public bool EnableImprovedRadioStationList { get; set; }
 
             public Options()
             {
@@ -522,6 +551,9 @@ namespace CSLMusicMod
                 DisabledRadioStations = new List<string>();
 
                 EnableDebugInfo = false;
+
+                EnableAddingVanillaStations = true;
+                EnableImprovedRadioStationList = true;
             }
         }
     }

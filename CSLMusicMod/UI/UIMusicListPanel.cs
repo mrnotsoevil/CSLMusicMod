@@ -141,7 +141,8 @@ namespace CSLMusicMod.UI
                         "Blurb", 
                         "ListEntryNormal",  
                         "ListEntryHover", 
-                        "ContentDisabled"                     
+                        "ContentDisabled",
+                        "Arrow"
                     });  
 
             }

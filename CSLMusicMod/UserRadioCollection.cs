@@ -56,12 +56,15 @@ namespace CSLMusicMod
         }
 
         private void LoadSongs()
-        {           
-            LoadVanillaSongs(RadioContentInfo.ContentType.Music);
-            LoadVanillaSongs(RadioContentInfo.ContentType.Talk);
-            LoadVanillaSongs(RadioContentInfo.ContentType.Blurb);
-            LoadVanillaSongs(RadioContentInfo.ContentType.Commercial);
-            LoadVanillaSongs(RadioContentInfo.ContentType.Broadcast);
+        {
+            if (ModOptions.Instance.EnableAddingVanillaStations)
+            {
+                LoadVanillaSongs(RadioContentInfo.ContentType.Music);
+                LoadVanillaSongs(RadioContentInfo.ContentType.Talk);
+                LoadVanillaSongs(RadioContentInfo.ContentType.Blurb);
+                LoadVanillaSongs(RadioContentInfo.ContentType.Commercial);
+                LoadVanillaSongs(RadioContentInfo.ContentType.Broadcast);
+            }
 
             HashSet<String> visitedmoddirs = new HashSet<string>();
 

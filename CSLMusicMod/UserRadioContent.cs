@@ -18,6 +18,8 @@ namespace CSLMusicMod
 
         public String m_FileName;
 
+        public bool m_isVanilla;
+
         public UserRadioChannel[] m_Channels;
 
         // Post-launch

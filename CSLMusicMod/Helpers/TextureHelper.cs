@@ -23,6 +23,8 @@ namespace CSLMusicMod
 		/// <param name="spriteNames">Sprite names.</param>
 		public static UITextureAtlas CreateAtlas(string file, string name, Material baseMaterial, int spriteWidth, int spriteHeight, string[] spriteNames)
         {
+            CSLMusicMod.Log("Loading icon atlas from " + file + " as " + name);
+            
             var tex = new Texture2D(spriteWidth * spriteNames.Length, spriteHeight, TextureFormat.ARGB32, false)
                 {
                     filterMode = FilterMode.Bilinear,
@@ -42,8 +44,14 @@ namespace CSLMusicMod
             else
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                using (var textureStream = assembly.GetManifestResourceStream("CSLMusicMod.Resources." + file))
+                
+                using (var textureStream = assembly.GetManifestResourceStream("CSLMusicMod." + file))
                 {
+                    if (textureStream == null)
+                    {
+                        CSLMusicMod.Log("Texture stream is NULL!");
+                    }
+                    
                     var buf = new byte[textureStream.Length];  //declare arraysize
                     textureStream.Read(buf, 0, buf.Length); // read from stream to byte array
                     tex.LoadImage(buf);
