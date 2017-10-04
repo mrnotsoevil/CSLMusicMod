@@ -147,12 +147,28 @@ namespace CSLMusicMod
 
                     channel.m_StateChain = states.ToArray();
                 }
+                
+                // Named conditions
+                var namedConditions = new Dictionary<string, RadioContextCondition>();
+                if (json.Keys.Contains("filters") && json["filters"].IsObject)
+                {
+                    foreach (var name in json["filters"].Keys)
+                    {
+                        var entry = json["filters"][name];
+                        var cond = RadioContextCondition.LoadFromJsonUsingType(entry);
+
+                        if (cond != null)
+                        {
+                            namedConditions[name] = cond;
+                        }
+                    }
+                }
 
                 if(json.Keys.Contains("contexts"))
                 {
                     foreach(JsonData entry in json["contexts"])
                     {
-                        RadioContext context = RadioContext.LoadFromJson(entry);
+                        var context = RadioContext.LoadFromJson(entry, namedConditions);
 
                         if(context != null)
                         {

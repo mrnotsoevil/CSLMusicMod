@@ -41,7 +41,7 @@ namespace CSLMusicMod
         {
         }
 
-        public bool Applies()
+        public override bool Applies()
         {
             return m_Invert ? !_Applies() : _Applies();
         }

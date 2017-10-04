@@ -50,13 +50,13 @@ namespace CSLMusicMod
 
             return false;
         }
-
+        
         /// <summary>
         /// Loads the context definition from JSON formatted data
         /// </summary>
         /// <returns>The RadioContext loaded from JSON</returns>
         /// <param name="json">JSON data</param>
-        public static RadioContext LoadFromJson(JsonData json)
+        public static RadioContext LoadFromJson(JsonData json, Dictionary<string, RadioContextCondition> namedConditions)
         {
             RadioContext radiocontext = new RadioContext();
 
@@ -66,31 +66,29 @@ namespace CSLMusicMod
 
                 foreach(JsonData entry in conj)
                 {
-                    RadioContextCondition context = null;
-
-                    switch((String)entry["type"])
+                    if (entry.IsObject)
                     {
-                        case "time":
-                            context = TimeContextCondition.LoadFromJson(entry);
-                            break;
-                        case "weather":
-                            context = WeatherContextCondition.LoadFromJson(entry);
-                            break;
-                        case "mood":
-                            context = MoodContextCondition.LoadFromJson(entry);
-                            break;
-                        case "disaster":
-                            context = DisasterContextCondition.LoadFromJson(entry);
-                            break;
-                        default:
-                            Debug.LogError("[CSLMusic] Error: Unknown context type!");
-                            break;
-                    }
+                        RadioContextCondition context = RadioContextCondition.LoadFromJsonUsingType(entry);
 
-                    if(context != null)
-                    {
-                        radiocontext.m_Conditions.Last().Add(context);
+                        if(context != null)
+                        {
+                            radiocontext.m_Conditions.Last().Add(context);
+                        }
                     }
+                    else if (entry.IsString)
+                    {
+                        RadioContextCondition context;
+
+                        if (namedConditions.TryGetValue(entry.ToString(), out context))
+                        {
+                            radiocontext.m_Conditions.Last().Add(context);
+                        }
+                        else
+                        {
+                            CSLMusicMod.Log("Could not find named condition " + entry + "!");
+                        }
+                    }
+                    
                 }
             }
 
