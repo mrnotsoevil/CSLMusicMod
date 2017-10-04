@@ -51,7 +51,7 @@ namespace CSLMusicMod
         /// </summary>
         /// <returns>The log.</returns>
         /// <param name="message">Message.</param>
-        public static void Log(string message)
+        public static void Log(object message)
         {
             if(ModOptions.Instance.EnableDebugInfo)
             {

@@ -52,9 +52,9 @@ namespace CSLMusicMod.UI
 
         public void Start()
         {
-            Debug.Log(ModOptions.Instance.ShortcutNextTrack);
-            Debug.Log(ModOptions.Instance.ShortcutNextStation);
-            Debug.Log(ModOptions.Instance.ShortcutOpenRadioPanel);
+            CSLMusicMod.Log(ModOptions.Instance.ShortcutNextTrack);
+            CSLMusicMod.Log(ModOptions.Instance.ShortcutNextStation);
+            CSLMusicMod.Log(ModOptions.Instance.ShortcutOpenRadioPanel);
         }
 
         private bool ShortcutDown(ModOptions.Shortcut shortcut)

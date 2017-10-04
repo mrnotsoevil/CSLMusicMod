@@ -80,13 +80,19 @@ namespace CSLMusicMod
 			if (userchannel != null)
 			{
 				// If the channel is a custom channel, we can check for context and for content disabling
-				var allowedcollections = userchannel.GetApplyingContentCollections();
+			    // The method returns NULL if all songs apply!
+				var allowedsongs = userchannel.GetApplyingSongs();
+
+				if (allowedsongs == null)
+				{
+					return;
+				}
 
 				foreach (UserRadioContent usercontent in userchannel.m_Content)
 				{
 					if (usercontent.m_VanillaContentInfo != null)
 					{
-                        bool isincontext = (!ModOptions.Instance.EnableContextSensitivity || allowedcollections.Contains(usercontent.m_Collection));
+                        bool isincontext = (!ModOptions.Instance.EnableContextSensitivity || allowedsongs.Contains(usercontent));
                         bool isenabled = (!ModOptions.Instance.EnableDisabledContent || AudioManagerHelper.ContentIsEnabled(usercontent.m_VanillaContentInfo));
 
                         if(!isincontext || !isenabled)
@@ -167,10 +173,13 @@ namespace CSLMusicMod
 
                     if(DisallowedContent.TryGetValue(currentchannel.Value.Info, out disallowed))
                     {
-                        foreach(var v in disallowed)
-                        {
-                            Debug.Log("Disallowed:" + v.name + "," + v.m_displayName);
-                        }
+	                    if (ModOptions.Instance.EnableDebugInfo)
+	                    {
+		                    foreach(var v in disallowed)
+		                    {
+			                    CSLMusicMod.Log("Disallowed:" + v.name + "," + v.m_displayName);
+		                    }
+	                    }
 
                         if (disallowed != null && disallowed.Contains(currentcontent.Value.Info))
 						{							

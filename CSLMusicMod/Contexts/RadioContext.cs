@@ -11,7 +11,16 @@ namespace CSLMusicMod.Contexts
     /// </summary>
     public class RadioContext
     {
+        public UserRadioChannel m_RadioChannel;
+        
         public HashSet<string> m_Collections = new HashSet<string>();
+        
+        public HashSet<string> m_Songs = new HashSet<string>();
+
+        /// <summary>
+        /// The songs that are associated to this context
+        /// </summary>
+        private HashSet<UserRadioContent> m_AttachedSongs = null;
 
         /// <summary>
         /// Stores the literals (radio context conditions) in disjunctive normal form.
@@ -96,7 +105,36 @@ namespace CSLMusicMod.Contexts
                 radiocontext.m_Collections.Add((String)e);
             }
 
+            if (json.Keys.Contains("songs"))
+            {
+                foreach (JsonData e in json["songs"])
+                {
+                    radiocontext.m_Songs.Add((String) e);
+                }
+            }
+            
+
             return radiocontext;
+        }
+
+        public HashSet<UserRadioContent> GetAttachedSongs()
+        {
+            if (m_AttachedSongs == null)
+            {
+                m_AttachedSongs = new HashSet<UserRadioContent>();
+                foreach (var song in m_RadioChannel.m_Content)
+                {
+                    if (m_Collections.Contains(song.m_Collection))
+                    {
+                        if (m_Songs.Count == 0 || m_Songs.Contains(song.m_DisplayName))
+                        {
+                            m_AttachedSongs.Add(song);
+                        }
+                    }
+                }
+            }
+
+            return m_AttachedSongs;
         }
     }
 }

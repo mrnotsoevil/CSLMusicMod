@@ -72,28 +72,28 @@ namespace CSLMusicMod
         }
 
         /// <summary>
-        /// Returns the list of collections that should be active.
+        /// Returns the list of songs that should be active.
         /// </summary>
-        /// <returns>The applying content collections.</returns>
-        public HashSet<String> GetApplyingContentCollections()
+        /// <returns>The applying content songs. Null if all songs apply.</returns>
+        public HashSet<UserRadioContent> GetApplyingSongs()
         {
             // If we have no contexts, all collections can be used.
             if(m_Contexts.Count == 0)
             {
-                return m_Collections;
+                return null;
             }
 
-            HashSet<String> collections = new HashSet<string>();
+            HashSet<UserRadioContent> songs = new HashSet<UserRadioContent>();
 
             foreach(RadioContext context in m_Contexts)
             {
                 if(context.Applies())
                 {
-                    collections.UnionWith(context.m_Collections);
+                    songs.UnionWith(context.GetAttachedSongs());
                 }
             }
 
-            return collections;
+            return songs;
         }
 
         public bool IsValid()
@@ -174,6 +174,7 @@ namespace CSLMusicMod
 
                         if(context != null)
                         {
+                            context.m_RadioChannel = channel;
                             channel.m_Contexts.Add(context);
 
                             // Auto-load collections that are defined in contexts
