@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Helpers
 {
     public static class DesktopHelper
     {

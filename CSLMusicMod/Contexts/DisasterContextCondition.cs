@@ -1,10 +1,9 @@
 ﻿using System;
-using CSLMusicMod.LitJson;
-using ColossalFramework;
 using System.Collections.Generic;
-using UnityEngine;
+using ColossalFramework;
+using CSLMusicMod.LitJson;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Contexts
 {
     /// <summary>
     /// This condition handles if a disaster is currently in your city

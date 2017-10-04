@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using CSLMusicMod.UI;
 using System.IO;
 using ColossalFramework.IO;
+using CSLMusicMod.Helpers;
 
 namespace CSLMusicMod
 {

@@ -1,10 +1,7 @@
-﻿using System;
+﻿using ColossalFramework;
 using CSLMusicMod.LitJson;
-using ColossalFramework;
-using System.Collections.Generic;
-using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Contexts
 {
     /// <summary>
     /// Allows conditions based on the current weather

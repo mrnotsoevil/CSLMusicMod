@@ -1,9 +1,8 @@
-﻿using System;
+﻿using System.IO;
 using ColossalFramework.UI;
 using UnityEngine;
-using System.IO;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Helpers
 {
     /// <summary>
     /// Helpers for all texture related things

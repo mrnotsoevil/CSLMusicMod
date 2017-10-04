@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Helpers
 {
     /// <summary>
     /// Helpers to improve QOL with reflection

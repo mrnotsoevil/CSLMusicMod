@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CSLMusicMod.LitJson;
-using System.Collections.Generic;
-using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Contexts
 {
     /// <summary>
     /// Allows context-sensitive music to be played.

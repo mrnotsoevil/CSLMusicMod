@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Reflection;
 using System.Linq;
 using ColossalFramework;
 using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Helpers
 {
     /// <summary>
     /// Contains some helper functions that work the AudioManager class of the game

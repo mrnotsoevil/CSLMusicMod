@@ -1,8 +1,8 @@
 ﻿using System;
-using ColossalFramework.Plugins;
 using System.IO;
+using ColossalFramework.Plugins;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Helpers
 {
     /// <summary>
     /// Helper methods for interacting with other mods

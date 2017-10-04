@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using UnityEngine;
+﻿using System.Linq;
 using ColossalFramework.UI;
+using CSLMusicMod.Helpers;
+using UnityEngine;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.UI
 {
     /// <summary>
     /// Behavior that handles all shortcuts
