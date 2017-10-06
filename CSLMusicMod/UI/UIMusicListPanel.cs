@@ -39,7 +39,10 @@ namespace CSLMusicMod.UI
         private UILabel m_RadioChannelInfo;
         
         // Additional options UI
-        private UIButton m_OpenStationDirectory;
+        private int m_AdditionalButtonCount = 0;
+        private UIButton m_TopShowMusicList;
+        private UIButton m_TopNextTrack;
+        private UIButton m_TopOpenStationDirectory;
 
         private bool m_SortAscending = true;
 
@@ -96,6 +99,9 @@ namespace CSLMusicMod.UI
             this.isInteractive = true;
             this.m_ZIndex = -100;
             
+            InitializeShowMusicPanelButton();
+            InitializeTopNextTrackButton();
+            
             if(ModOptions.Instance.EnableOpenStationDirButton)
                 InitializeOpenStationDirectoryButton();
 
@@ -128,30 +134,7 @@ namespace CSLMusicMod.UI
             {
 
                 CSLMusicMod.Log("Creating icon atlases ...");
-                m_IconAtlas = TextureHelper.CreateAtlas("icons.png", "CSLMusicModUI", UIView.Find<UITabstrip>("ToolMode").atlas.material, 31, 31, new string[]
-                    {
-                        "OptionBase",
-                        "OptionBaseDisabled",
-                        "OptionBaseFocused",
-                        "OptionBaseHovered",
-                        "OptionBasePressed",
-                        "Music",
-                        "Next",
-                        "Previous",
-                        "Close",
-                        "SortAscending",
-                        "SortDescending",
-                        "Search",
-                        "Clear",
-                        "Talk", 
-                        "Broadcast",
-                        "Commercial", 
-                        "Blurb", 
-                        "ListEntryNormal",  
-                        "ListEntryHover", 
-                        "ContentDisabled",
-                        "Open"
-                    });  
+                m_IconAtlas = TextureHelper.CreateDefaultIconAtlas();
 
             }
         }
@@ -509,40 +492,87 @@ namespace CSLMusicMod.UI
          
         }
 
+        private void InitializeShowMusicPanelButton()
+        {
+            UIMultiStateButton mutebutton =
+                ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
+            UIPanel radiopanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+
+            m_TopShowMusicList = radiopanel.AddUIComponent<UIButton>();
+            m_TopShowMusicList.position = mutebutton.position + new Vector3((mutebutton.size.x + 5) + (m_AdditionalButtonCount++ * (mutebutton.size.y + 5)), 0);
+            m_TopShowMusicList.size = new Vector2(mutebutton.size.y, mutebutton.size.y);
+            m_TopShowMusicList.atlas = m_IconAtlas;
+            m_TopShowMusicList.normalBgSprite = "Menu";
+            m_TopShowMusicList.hoveredBgSprite = "Menu";
+            m_TopShowMusicList.color = new Color32(225, 225, 225, 255);
+            m_TopShowMusicList.hoveredColor = new Color32(255, 255, 255, 255);
+            m_TopShowMusicList.tooltip = "Shows/hides the playlist.";
+            m_TopShowMusicList.Show();
+            
+            m_TopShowMusicList.eventClick += TopShowMusicListOnEventClick;
+        }
+
+        private void TopShowMusicListOnEventClick(UIComponent uiComponent, UIMouseEventParameter param)
+        {
+            ModOptions.Instance.MusicListVisible = !ModOptions.Instance.MusicListVisible;
+        }
+
+        private void InitializeTopNextTrackButton()
+        {
+            UIMultiStateButton mutebutton =
+                ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
+            UIPanel radiopanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+
+            m_TopNextTrack = radiopanel.AddUIComponent<UIButton>();
+            m_TopNextTrack.position = mutebutton.position + new Vector3((mutebutton.size.x + 5) + (m_AdditionalButtonCount++ * (mutebutton.size.y + 5)), 0);
+            m_TopNextTrack.size = new Vector2(mutebutton.size.y, mutebutton.size.y);
+            m_TopNextTrack.atlas = m_IconAtlas;
+            m_TopNextTrack.normalBgSprite = "Next";
+            m_TopNextTrack.hoveredBgSprite = "Next";
+            m_TopNextTrack.color = new Color32(225, 225, 225, 255);
+            m_TopNextTrack.hoveredColor = new Color32(255, 255, 255, 255);
+            m_TopNextTrack.tooltip = "Switches to the next track.";
+            m_TopNextTrack.Show();
+
+            m_TopNextTrack.eventClick += buttonNextTrackClicked;
+        }
+
         private void InitializeOpenStationDirectoryButton()
         {
             UIMultiStateButton mutebutton =
                 ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
             UIPanel radiopanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
 
-            m_OpenStationDirectory = radiopanel.AddUIComponent<UIButton>();
-            m_OpenStationDirectory.position = mutebutton.position + new Vector3(mutebutton.size.x + 5, 0);
-            m_OpenStationDirectory.size = new Vector2(mutebutton.size.y, mutebutton.size.y);
-            m_OpenStationDirectory.atlas = m_IconAtlas;
-            m_OpenStationDirectory.normalBgSprite = "Open";
-            m_OpenStationDirectory.hoveredBgSprite = "Open";
-            m_OpenStationDirectory.color = new Color32(225, 225, 225, 255);
-            m_OpenStationDirectory.hoveredColor = new Color32(255, 255, 255, 255);
-            m_OpenStationDirectory.tooltip = "Open folder containing the radio station.";
-            m_OpenStationDirectory.Show();
+            m_TopOpenStationDirectory = radiopanel.AddUIComponent<UIButton>();
+            m_TopOpenStationDirectory.position = mutebutton.position + new Vector3((mutebutton.size.x + 5) + (m_AdditionalButtonCount++ * (mutebutton.size.y + 5)), 0);
+            m_TopOpenStationDirectory.size = new Vector2(mutebutton.size.y, mutebutton.size.y);
+            m_TopOpenStationDirectory.atlas = m_IconAtlas;
+            m_TopOpenStationDirectory.normalBgSprite = "Open";
+            m_TopOpenStationDirectory.hoveredBgSprite = "Open";
+            m_TopOpenStationDirectory.color = new Color32(225, 225, 225, 255);
+            m_TopOpenStationDirectory.hoveredColor = new Color32(255, 255, 255, 255);
+            m_TopOpenStationDirectory.tooltip = "Open folder containing the radio station.";
+            m_TopOpenStationDirectory.Show();
+           
+            m_TopOpenStationDirectory.eventClick += TopOpenStationDirectoryOnEventClick;
 
-            m_OpenStationDirectory.eventClick += (component, param) =>
+        }
+
+        private void TopOpenStationDirectoryOnEventClick(UIComponent uiComponent, UIMouseEventParameter uiMouseEventParameter)
+        {
+            var data = AudioManagerHelper.GetActiveChannelData();
+            if (data != null)
             {
-                var data = AudioManagerHelper.GetActiveChannelData();
-                if (data != null)
+                var info = AudioManagerHelper.GetUserChannelInfo(data.Value.Info);
+                var dir = DataLocation.gameContentPath;
+
+                if (info != null)
                 {
-                    var info = AudioManagerHelper.GetUserChannelInfo(data.Value.Info);
-                    var dir = DataLocation.gameContentPath;
-
-                    if (info != null)
-                    {
-                        dir = info.m_DefinitionDirectory;
-                    }
-                    
-                    DesktopHelper.OpenFileExternally(dir);
+                    dir = info.m_DefinitionDirectory;
                 }
-            };
-
+                    
+                DesktopHelper.OpenFileExternally(dir);
+            }
         }
 
         void buttonNextTrackClicked (UIComponent component, UIMouseEventParameter eventParam)

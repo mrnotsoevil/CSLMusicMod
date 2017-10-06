@@ -87,7 +87,7 @@ namespace CSLMusicMod.UI
 
                 if (radiopanel != null && m_ListPanel != null)
                 {
-                    m_ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ReflectionHelper.GetPrivateField<bool>(radiopanel, "m_isVisible");
+                    m_ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(radiopanel, "m_isVisible");
                 }
             }
             else

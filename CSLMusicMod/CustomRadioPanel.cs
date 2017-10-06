@@ -19,30 +19,7 @@ namespace CSLMusicMod
 	        {
 	            if (_listAtlas == null)
 	            {
-		            _listAtlas = TextureHelper.CreateAtlas("icons.png", "CSLMusicModUI", UIView.Find<UITabstrip>("ToolMode").atlas.material, 31, 31, new string[]
-	                {
-	                    "OptionBase",
-	                    "OptionBaseDisabled",
-	                    "OptionBaseFocused",
-	                    "OptionBaseHovered",
-	                    "OptionBasePressed",
-	                    "Music",
-	                    "Next",
-	                    "Previous",
-	                    "Close",
-	                    "SortAscending",
-	                    "SortDescending",
-	                    "Search",
-	                    "Clear",
-	                    "Talk", 
-	                    "Broadcast",
-	                    "Commercial", 
-	                    "Blurb", 
-	                    "ListEntryNormal",  
-	                    "ListEntryHover", 
-	                    "ContentDisabled",
-		                "Open"
-	                });  
+		            _listAtlas = TextureHelper.CreateDefaultIconAtlas();
 	            }
 
 		        return _listAtlas;
