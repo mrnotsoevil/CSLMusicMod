@@ -89,11 +89,11 @@ namespace CSLMusicMod
             {
                 if(context.Applies())
                 {
-                    songs.UnionWith(context.GetAttachedSongs());
+                    return context.GetAttachedSongs();
                 }
             }
 
-            return songs;
+            return null; // Default case: Play all songs
         }
 
         public bool IsValid()
