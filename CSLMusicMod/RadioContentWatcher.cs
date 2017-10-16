@@ -85,20 +85,36 @@ namespace CSLMusicMod
 
 				if (allowedsongs == null)
 				{
-					return;
-				}
-
-				foreach (UserRadioContent usercontent in userchannel.m_Content)
-				{
-					if (usercontent.m_VanillaContentInfo != null)
+					if (ModOptions.Instance.EnableDisabledContent && ModOptions.Instance.DisabledContent.Count != 0)
 					{
-                        bool isincontext = (!ModOptions.Instance.EnableContextSensitivity || allowedsongs.Contains(usercontent));
-                        bool isenabled = (!ModOptions.Instance.EnableDisabledContent || AudioManagerHelper.ContentIsEnabled(usercontent.m_VanillaContentInfo));
+						foreach (UserRadioContent usercontent in userchannel.m_Content)
+						{
+							if (usercontent.m_VanillaContentInfo != null)
+							{
+								bool isenabled = (!ModOptions.Instance.EnableDisabledContent || AudioManagerHelper.ContentIsEnabled(usercontent.m_VanillaContentInfo));
 
-                        if(!isincontext || !isenabled)
-                        {
-                            disallowed.Add(usercontent.m_VanillaContentInfo);   
-                        }						
+								if(!isenabled)
+								{
+									disallowed.Add(usercontent.m_VanillaContentInfo);   
+								}						
+							}
+						}
+					}
+				}
+				else
+				{
+					foreach (UserRadioContent usercontent in userchannel.m_Content)
+					{
+						if (usercontent.m_VanillaContentInfo != null)
+						{
+							bool isincontext = (!ModOptions.Instance.EnableContextSensitivity || allowedsongs.Contains(usercontent));
+							bool isenabled = (!ModOptions.Instance.EnableDisabledContent || AudioManagerHelper.ContentIsEnabled(usercontent.m_VanillaContentInfo));
+
+							if(!isincontext || !isenabled)
+							{
+								disallowed.Add(usercontent.m_VanillaContentInfo);   
+							}						
+						}
 					}
 				}
 			}

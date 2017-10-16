@@ -335,6 +335,8 @@ namespace CSLMusicMod.Helpers
             {
                 ModOptions.Instance.DisabledContent.Add(id);
             }
+            
+            ModOptions.Instance.SaveSettings();
 
         }
 
