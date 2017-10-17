@@ -110,7 +110,9 @@ namespace CSLMusicMod.Helpers
                 "ListEntryHover", 
                 "ContentDisabled",
                 "Open",
-                "Menu"
+                "Menu",
+                "ContentUnchecked",
+                "ContentChecked"
             });  
         }
     }

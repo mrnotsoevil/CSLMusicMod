@@ -409,6 +409,19 @@ namespace CSLMusicMod
                 SaveSettings();
             }
         }
+        
+        public bool ImprovedDisableContentUI
+        {
+            get
+            {
+                return m_Options.ImprovedDisableContentUI;
+            }
+            set
+            {
+                m_Options.ImprovedDisableContentUI = value;
+                SaveSettings();
+            }
+        }
 
         public static String SettingsFilename
         {
@@ -544,6 +557,8 @@ namespace CSLMusicMod
             public bool EnableOpenStationDirButton { get; set; }
             
             public bool MusicListVisible { get; set; }
+            
+            public bool ImprovedDisableContentUI { get; set; }
 
             public Options()
             {
@@ -586,6 +601,8 @@ namespace CSLMusicMod
                 EnableOpenStationDirButton = false;
 
                 MusicListVisible = true;
+
+                ImprovedDisableContentUI = true;
             }
         }
     }

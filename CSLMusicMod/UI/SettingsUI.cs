@@ -109,17 +109,23 @@ namespace CSLMusicMod.UI
                     {
                         options.EnableCustomUI = isChecked;
                     }));     
-            helper.AddCheckbox("Improved radio station selection (need reload)", 
+            helper.AddCheckbox("Improved radio station selection (needs reload)", 
                 options.EnableImprovedRadioStationList, 
                 new OnCheckChanged((bool isChecked) =>
                 {
                     options.EnableImprovedRadioStationList = isChecked;
                 }));     
-            helper.AddCheckbox("Open station directory button (need reload)", 
+            helper.AddCheckbox("Open station directory button (needs reload)", 
                 options.EnableOpenStationDirButton, 
                 new OnCheckChanged((bool isChecked) =>
                 {
                     options.EnableOpenStationDirButton = isChecked;
+                }));     
+            helper.AddCheckbox("Checkboxes to disable content", 
+                options.ImprovedDisableContentUI, 
+                new OnCheckChanged((bool isChecked) =>
+                {
+                    options.ImprovedDisableContentUI = isChecked;
                 }));     
         }
 

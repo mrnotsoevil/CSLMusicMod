@@ -244,7 +244,7 @@ namespace CSLMusicMod.UI
 
                 //Debug.Log(m_CurrentContent.Count + " entries ");
             }
-
+            
             m_CurrentContent.Sort((RadioContentInfo x, RadioContentInfo y) =>
                 {
                     if(m_SortAscending)
@@ -285,10 +285,25 @@ namespace CSLMusicMod.UI
                     break;
             }
 
-            if(!AudioManagerHelper.ContentIsEnabled(content))
+            if (ModOptions.Instance.ImprovedDisableContentUI)
             {
-                name = "<sprite ContentDisabled>" + name;
+                if (!AudioManagerHelper.ContentIsEnabled(content))
+                {
+                    name = "<sprite ContentUnchecked>" + name;
+                }
+                else
+                {
+                    name = "<sprite ContentChecked>" + name;
+                }
             }
+            else
+            {
+                if(!AudioManagerHelper.ContentIsEnabled(content))
+                {
+                    name = "<sprite ContentDisabled>" + name;
+                }
+            }
+            
 
 
             return name;
@@ -582,6 +597,19 @@ namespace CSLMusicMod.UI
 
         void musicEntrySelected (UIComponent component, int value)
         {
+            if (ModOptions.Instance.ImprovedDisableContentUI)
+            {
+                Vector3 mouse = Input.mousePosition / component.GetUIView().inputScale;
+                Vector3 diff = mouse - component.absolutePosition;
+          
+                if (diff.x <= 20)
+                {
+                    musicEntryEnableDisable(component, value);
+                    return;
+                } 
+
+            }
+            
             RadioContentInfo info = m_CurrentContent[value];
             AudioManagerHelper.SwitchToContent(info);
         }
@@ -672,7 +700,7 @@ namespace CSLMusicMod.UI
             m_MusicList.itemHover = "ListEntryHover";
             m_MusicList.itemHeight = 32;
             m_MusicList.itemPadding = new RectOffset(0, 0, 4, 4);
-            m_MusicList.tooltip = "Double-click to disable an entry";
+            m_MusicList.tooltip = !ModOptions.Instance.ImprovedDisableContentUI ? "Double-click to disable an entry" : "";
             m_MusicList.zOrder = -50;
             m_MusicList.atlas = m_IconAtlas;
             m_MusicList.processMarkup = true;
@@ -687,8 +715,15 @@ namespace CSLMusicMod.UI
             //UpdateMusicList();
 
             m_MusicList.eventItemClicked += musicEntrySelected;
-            m_MusicList.eventItemDoubleClicked += musicEntryEnableDisable;
-           
+            m_MusicList.eventItemDoubleClicked += musicEntryDoubleClick;
+        }
+
+        private void musicEntryDoubleClick(UIComponent component, int value)
+        {
+            if (!ModOptions.Instance.ImprovedDisableContentUI)
+            {
+                musicEntryEnableDisable(component, value);
+            }
         }
 
         private bool IsFiltered(String entrytext)
