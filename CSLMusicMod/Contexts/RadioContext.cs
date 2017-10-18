@@ -37,6 +37,9 @@ namespace CSLMusicMod.Contexts
         /// <returns>true if one set of conditions apply</returns>
         public bool Applies()
         {
+            if (m_Conditions.Count == 0)
+                return true;
+            
             foreach(var conj in m_Conditions)
             {
                 bool applies = true;
