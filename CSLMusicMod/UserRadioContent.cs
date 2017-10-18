@@ -42,18 +42,22 @@ namespace CSLMusicMod
             if(basename.EndsWith("#blurb"))
             {
                 m_ContentType = RadioContentInfo.ContentType.Blurb;
+                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#blurb".Length );
             }
             else if(basename.EndsWith("#talk"))
             {
                 m_ContentType = RadioContentInfo.ContentType.Talk;
+                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#talk".Length );
             }
             else if(basename.EndsWith("#commercial"))
             {
                 m_ContentType = RadioContentInfo.ContentType.Commercial;
+                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#commercial".Length );
             }
             else if(basename.EndsWith("#broadcast"))
             {
                 m_ContentType = RadioContentInfo.ContentType.Broadcast;
+                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#broadcast".Length );
             }
             else
             {
