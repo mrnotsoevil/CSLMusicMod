@@ -50,6 +50,15 @@
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\run\media\ruman\3ed06029-b479-4349-a125-a8c07ee0dad5\ruman\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ColossalManaged, Version=0.3.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\run\media\ruman\3ed06029-b479-4349-a125-a8c07ee0dad5\ruman\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
+    </Reference>
+    <Reference Include="ICities, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\run\media\ruman\3ed06029-b479-4349-a125-a8c07ee0dad5\ruman\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\..\..\home\ruman\.local\share\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
@@ -65,6 +74,9 @@
     </Reference>
     <Reference Include="System.Core">
       <HintPath>..\..\..\..\..\..\..\..\home\ruman\.local\share\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\run\media\ruman\3ed06029-b479-4349-a125-a8c07ee0dad5\ruman\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -45,7 +45,7 @@ namespace CSLMusicMod.Contexts
                 {
                     DisasterInfo info = Singleton<DisasterManager>.instance.m_disasters[i].Info;
 
-                    if(info != null)
+                    if(info != null && info.isActiveAndEnabled)
                     {
                         if(m_DisasterFilter.Contains(info.name))
                         {

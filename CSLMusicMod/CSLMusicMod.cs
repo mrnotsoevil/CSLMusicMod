@@ -15,7 +15,7 @@ namespace CSLMusicMod
     {
         public static System.Random RANDOM = new System.Random();
 
-        public const String VersionName = "Rewrite 1.1.11.2";
+        public const String VersionName = "Rewrite 1.1.11.3";
 
         private SettingsUI m_SettingsUI;
 
