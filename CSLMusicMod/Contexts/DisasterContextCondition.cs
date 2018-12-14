@@ -33,29 +33,22 @@ namespace CSLMusicMod.Contexts
         {
             int disasterCount = Singleton<DisasterManager>.instance.m_disasterCount;
 
-            if(m_DisasterFilter.Count == 0)
-            {
-                return disasterCount >= m_DisasterCountFrom && disasterCount <= m_DisasterCountTo;
-            }
-            else
-            {
-                int count = 0;
+            int count = 0;
 
-                for(int i = 0; i < disasterCount; ++i)
+            for(int i = 0; i < disasterCount; ++i)
+            {
+                DisasterData data = Singleton<DisasterManager>.instance.m_disasters[i];
+
+                if(data.Info != null && (data.m_flags & DisasterData.Flags.Active) != DisasterData.Flags.None)
                 {
-                    DisasterInfo info = Singleton<DisasterManager>.instance.m_disasters[i].Info;
-
-                    if(info != null && info.isActiveAndEnabled)
+                    if(m_DisasterFilter.Count == 0 || m_DisasterFilter.Contains(data.Info.name))
                     {
-                        if(m_DisasterFilter.Contains(info.name))
-                        {
-                            ++count;
-                        }
+                        ++count;
                     }
                 }
-
-                return count >= m_DisasterCountFrom && count <= m_DisasterCountTo;
             }
+
+            return count >= m_DisasterCountFrom && count <= m_DisasterCountTo;
         }
 
         public static DisasterContextCondition LoadFromJson(JsonData json)
